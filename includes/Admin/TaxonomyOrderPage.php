@@ -51,8 +51,12 @@ abstract class TaxonomyOrderPage {
 
 		// Build a map for quick lookups
 		$orderMap = [];
+		$termMap = [];
 		foreach ( $ordering as $order ) {
 			$orderMap[ $order->termId ] = $order;
+		}
+		foreach ( $terms as $term ) {
+			$termMap[ $term['id'] ] = $term;
 		}
 
 		// Build hierarchical tree
@@ -73,7 +77,7 @@ abstract class TaxonomyOrderPage {
 
 			<div class="counter-taxonomy-order__tree">
 				<ul id="counter-taxonomy-tree" class="counter-taxonomy-tree sortable-list">
-					<?php $this->renderTree( $tree, $orderMap ); ?>
+					<?php $this->renderTree( $tree, $orderMap, $termMap ); ?>
 				</ul>
 			</div>
 		</div>
@@ -128,8 +132,9 @@ abstract class TaxonomyOrderPage {
 	 *
 	 * @param array<int, array<string, mixed>> $items
 	 * @param array<int, \Counter\Models\TaxonomyOrder> $orderMap
+	 * @param array<int, array<string, mixed>> $termMap
 	 */
-	private function renderTree( array $items, array $orderMap, int $depth = 0 ): void {
+	private function renderTree( array $items, array $orderMap, array $termMap, int $depth = 0 ): void {
 		foreach ( $items as $item ) {
 			$term = $item['term'];
 			$order = $item['order'];
@@ -148,22 +153,24 @@ abstract class TaxonomyOrderPage {
 				<?php
 				// Render children if any
 				$children = [];
-				if ( isset( $orderMap ) ) {
-					foreach ( $orderMap as $o ) {
-						if ( $o->parentId === $termId ) {
-							// Find the term
-							$childTerms = array_filter( array( $term ), fn( $t ) => $t['id'] !== $termId );
-							if ( $childTerms ) {
-								$children[] = [ 'term' => current( $childTerms ), 'order' => $o ];
-							}
-						}
+				foreach ( $orderMap as $o ) {
+					if ( $o->parentId === $termId && isset( $termMap[ $o->termId ] ) ) {
+						$children[] = [
+							'term'  => $termMap[ $o->termId ],
+							'order' => $o,
+						];
 					}
 				}
 
 				if ( $children ) {
+					// Sort children by position
+					usort( $children, fn( $a, $b ) =>
+						( $a['order']?->position ?? 0 ) <=> ( $b['order']?->position ?? 0 )
+					);
+
 					?>
 					<ul class="counter-taxonomy-item__children">
-						<?php $this->renderTree( $children, $orderMap, $depth + 1 ); ?>
+						<?php $this->renderTree( $children, $orderMap, $termMap, $depth + 1 ); ?>
 					</ul>
 					<?php
 				}
