@@ -27,6 +27,7 @@ final class AdminMenu {
 		private readonly StudioPayPage    $studioPay,
 		private readonly CustomersPage    $customers,
 		private readonly OrderIoPage      $orderIo,
+		private readonly UpdatesPage      $updates,
 	) {}
 
 	public function register(): void {
@@ -104,6 +105,16 @@ final class AdminMenu {
 			capability:  'manage_woocommerce',
 			menu_slug:   'shop-studio-pay',
 			callback:    [ $this->studioPay, 'render' ],
+		);
+		// Updates is gated on `manage_options` (full WP admin) since
+		// it can rewrite the plugin filesystem.
+		add_submenu_page(
+			parent_slug: 'shop',
+			page_title:  __( 'Updates', 'shop' ),
+			menu_title:  __( 'Updates', 'shop' ),
+			capability:  'manage_options',
+			menu_slug:   'shop-updates',
+			callback:    [ $this->updates, 'render' ],
 		);
 
 		// Pure page builder — only when the active mode wants it.

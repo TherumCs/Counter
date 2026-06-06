@@ -3,7 +3,7 @@
  * Plugin Name:       Shop by Therum
  * Plugin URI:        https://therum.studio/plugins/shop
  * Description:       A native commerce engine built for speed. One product entity with capability toggles (variants, shipping, digital delivery, POD routing), purpose-built SQLite schema, unified cart/checkout session, typed events + pipelines instead of hook spam. Pluggable payment, tax, shipping, and fulfillment providers via Nexus by Therum.
- * Version:           0.26.0
+ * Version:           0.27.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Therum Creative Studios
@@ -24,7 +24,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SHOP_VERSION', '0.2.0' );
+define( 'SHOP_VERSION', '0.27.0' );
 define( 'SHOP_FILE', __FILE__ );
 define( 'SHOP_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SHOP_URL', plugin_dir_url( __FILE__ ) );
@@ -521,6 +521,11 @@ function shop_register_container_bindings(): void {
 	$c->singleton( \Shop\Admin\StudioPayPage::class, fn() => new \Shop\Admin\StudioPayPage() );
 	$c->singleton( \Shop\Admin\CustomersPage::class, fn() => new \Shop\Admin\CustomersPage() );
 	$c->singleton( \Shop\Admin\OrderIoPage::class,   fn() => new \Shop\Admin\OrderIoPage() );
+	$c->singleton( \Shop\Admin\UpdatesPage::class,   fn() => new \Shop\Admin\UpdatesPage() );
+	$c->singleton( \Shop\Services\Updater::class,    fn() => new \Shop\Services\Updater() );
+	$c->singleton( \Shop\Rest\UpdaterController::class, fn( $c ) =>
+		new \Shop\Rest\UpdaterController( $c->get( \Shop\Services\Updater::class ) )
+	);
 	$c->singleton( \Shop\Admin\AdminMenu::class, fn( $c ) =>
 		new \Shop\Admin\AdminMenu(
 			$c->get( \Shop\Admin\SettingsPage::class ),
@@ -531,6 +536,7 @@ function shop_register_container_bindings(): void {
 			$c->get( \Shop\Admin\StudioPayPage::class ),
 			$c->get( \Shop\Admin\CustomersPage::class ),
 			$c->get( \Shop\Admin\OrderIoPage::class ),
+			$c->get( \Shop\Admin\UpdatesPage::class ),
 		)
 	);
 
@@ -604,6 +610,7 @@ add_action( 'rest_api_init', function (): void {
 	$c->get( \Shop\Rest\CustomersController::class )->register();
 	$c->get( \Shop\Rest\OrderIoController::class )->register();
 	$c->get( \Shop\Rest\GridViewsController::class )->register();
+	$c->get( \Shop\Rest\UpdaterController::class )->register();
 } );
 
 // ─── Asset enqueue ─────────────────────────────────────────────────────────
