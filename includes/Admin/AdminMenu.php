@@ -2,7 +2,7 @@
 /**
  * Counter by Therum — admin menu registration.
  *
- * Top-level "Shop" menu in the WP admin sidebar with sub-pages:
+ * Top-level "Counter" menu in the WP admin sidebar with sub-pages:
  *
  *   Settings   — cart/checkout presentation, product source, button position
  *   Products   — spreadsheet-style manager (inline edit, bulk actions)
@@ -38,7 +38,7 @@ final class AdminMenu {
 	public function menus(): void {
 		add_menu_page(
 			page_title: __( 'Counter by Therum', 'counter' ),
-			menu_title: __( 'Shop', 'counter' ),
+			menu_title: __( 'Counter', 'counter' ),
 			capability: 'manage_woocommerce',
 			menu_slug:   'counter',
 			callback:   [ $this->settings, 'render' ],
@@ -142,7 +142,7 @@ final class AdminMenu {
 	}
 
 	public function assets( string $hook ): void {
-		// Only enqueue on Shop's own admin pages.
+		// Only enqueue on Counter's own admin pages.
 		if ( strpos( $hook, 'shop' ) === false ) return;
 
 		wp_register_style( 'counter-admin', COUNTER_URL . 'assets/admin/admin.css', [], COUNTER_VERSION );
