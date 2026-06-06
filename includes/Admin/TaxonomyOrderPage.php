@@ -63,9 +63,15 @@ abstract class TaxonomyOrderPage {
 		$tree = $this->buildTree( $terms, $orderMap );
 
 		?>
-		<div class="wrap counter-taxonomy-order">
-			<h1><?php echo esc_html( $this->getPageTitle() ); ?></h1>
-			<p class="description"><?php echo esc_html( $this->getDescription() ); ?></p>
+		<div class="wrap counter-admin">
+
+			<h1 class="counter-admin__title">
+				<span class="counter-admin__mark">T</span>
+				<?php echo esc_html( $this->getPageTitle() ); ?>
+				<span class="counter-admin__version">v<?php echo esc_html( COUNTER_VERSION ); ?></span>
+			</h1>
+
+			<p class="counter-admin__description"><?php echo esc_html( $this->getDescription() ); ?></p>
 
 			<div class="counter-taxonomy-order__controls">
 				<button type="button" class="button button-primary" id="counter-save-order">

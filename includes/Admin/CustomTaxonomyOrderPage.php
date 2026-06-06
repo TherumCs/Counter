@@ -23,9 +23,32 @@ final class CustomTaxonomyOrderPage extends TaxonomyOrderPage {
 			$this->activeTaxonomy = 'vendors';
 		}
 
+		// Render parent with Therum design, then add tabs overlay
+		$taxonomy = $this->getTaxonomy();
+		$terms = $this->getTerms();
+		$ordering = $this->orders->getTree( $taxonomy );
+
+		// Build a map for quick lookups
+		$orderMap = [];
+		$termMap = [];
+		foreach ( $ordering as $order ) {
+			$orderMap[ $order->termId ] = $order;
+		}
+		foreach ( $terms as $term ) {
+			$termMap[ $term['id'] ] = $term;
+		}
+
+		// Build hierarchical tree
+		$tree = $this->buildTree( $terms, $orderMap );
+
 		?>
-		<div class="wrap counter-taxonomy-order">
-			<h1><?php echo esc_html( $this->getPageTitle() ); ?></h1>
+		<div class="wrap counter-admin">
+
+			<h1 class="counter-admin__title">
+				<span class="counter-admin__mark">T</span>
+				<?php echo esc_html( $this->getPageTitle() ); ?>
+				<span class="counter-admin__version">v<?php echo esc_html( COUNTER_VERSION ); ?></span>
+			</h1>
 
 			<div class="counter-taxonomy-order__tabs">
 				<a href="?page=counter-taxonomies&taxonomy=vendors"
@@ -38,8 +61,30 @@ final class CustomTaxonomyOrderPage extends TaxonomyOrderPage {
 				</a>
 			</div>
 
-			<?php parent::render(); ?>
+			<p class="counter-admin__description"><?php echo esc_html( $this->getDescription() ); ?></p>
+
+			<div class="counter-taxonomy-order__controls">
+				<button type="button" class="button button-primary" id="counter-save-order">
+					<?php esc_html_e( 'Save Order', 'counter' ); ?>
+				</button>
+				<span class="spinner" id="counter-order-spinner"></span>
+				<span id="counter-order-message" class="counter-order-message"></span>
+			</div>
+
+			<div class="counter-taxonomy-order__tree">
+				<ul id="counter-taxonomy-tree" class="counter-taxonomy-tree sortable-list">
+					<?php $this->renderTree( $tree, $orderMap, $termMap ); ?>
+				</ul>
+			</div>
 		</div>
+
+		<script>
+		window.CounterTaxonomyOrderConfig = {
+			taxonomy: <?php echo wp_json_encode( $taxonomy ); ?>,
+			restUrl: <?php echo wp_json_encode( rest_url() ); ?>,
+			nonce: <?php echo wp_json_encode( wp_create_nonce( 'wp_rest' ) ); ?>,
+		};
+		</script>
 		<?php
 	}
 
