@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Element contract.
+ * Counter by Therum — Element contract.
  *
  * Every element ships two halves:
  *
@@ -23,7 +23,7 @@
  * builder's own DB (Bricks/Elementor/Gutenberg).
  */
 
-namespace Shop\Elements;
+namespace Counter\Elements;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

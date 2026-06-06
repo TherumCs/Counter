@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CheckoutRenderer.
+ * Counter by Therum — CheckoutRenderer.
  *
  * Server-side renderer for checkout pages. Mirrors CartRenderer. Three
  * presentation patterns (settle on one per store via settings, or per-page
@@ -20,13 +20,13 @@
  *
  * Resolution order for a checkout page:
  *   1. Per-request filter `shop_checkout_presentation`
- *   2. `get_option('shop_checkout_presentation')`
+ *   2. `get_option('counter_checkout_presentation')`
  *   3. Default: 'classic'
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Models\Cart;
+use Counter\Models\Cart;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -72,8 +72,8 @@ final class CheckoutRenderer {
 	}
 
 	public function defaultMode(): string {
-		$mode = (string) get_option( 'shop_checkout_presentation', self::MODE_CLASSIC );
-		$mode = (string) apply_filters( 'shop_checkout_presentation', $mode );
+		$mode = (string) get_option( 'counter_checkout_presentation', self::MODE_CLASSIC );
+		$mode = (string) apply_filters( 'counter_checkout_presentation', $mode );
 		return in_array( $mode, self::ALL_MODES, true ) ? $mode : self::MODE_CLASSIC;
 	}
 
@@ -86,7 +86,7 @@ final class CheckoutRenderer {
 		$candidates = [
 			get_stylesheet_directory() . '/shop/' . $relative,
 			get_template_directory()   . '/shop/' . $relative,
-			SHOP_DIR . 'templates/' . $relative,
+			COUNTER_DIR . 'templates/' . $relative,
 		];
 
 		$path = '';

@@ -6,12 +6,12 @@
  * typically pair Short on the hero band and Full further down.
  */
 
-namespace Shop\Elements\Catalog;
+namespace Counter\Elements\Catalog;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Repositories\ProductRepository;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -67,7 +67,7 @@ final class ProductDescription implements Element {
 		$content = $allow_html ? wp_kses_post( $text ) : esc_html( $text );
 
 		return sprintf(
-			'<div class="shop-el shop-el-product-desc shop-el--align-%s"%s>%s</div>',
+			'<div class="counter-el counter-el-product-desc counter-el--align-%s"%s>%s</div>',
 			esc_attr( $alignment ),
 			$style,
 			$content,

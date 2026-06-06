@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Studio Pay.
+ * Counter by Therum — Studio Pay.
  *
  * The unified gateway. Implements `PSPGateway` so the rest of the
  * plugin (CheckoutService, RefundService, WebhookController) keeps
@@ -9,7 +9,7 @@
  *
  * Routing rules (in order):
  *   1. Per-method override in the merchant's settings
- *      ('shop_studio_pay_method_routes' => [ 'card' => 'square', ... ])
+ *      ('counter_studio_pay_method_routes' => [ 'card' => 'square', ... ])
  *   2. First connected provider in the method's `providers` array
  *   3. Throw — no provider available
  *
@@ -20,14 +20,14 @@
  *     Square" — they think "Card payments"
  */
 
-namespace Shop\Payments\Studio;
+namespace Counter\Payments\Studio;
 
-use Shop\Models\Order;
-use Shop\Money;
-use Shop\Payments\PaymentIntent;
-use Shop\Payments\Providers\PaymentProvider;
-use Shop\Payments\PSPGateway;
-use Shop\Payments\WebhookEvent;
+use Counter\Models\Order;
+use Counter\Money;
+use Counter\Payments\PaymentIntent;
+use Counter\Payments\Providers\PaymentProvider;
+use Counter\Payments\PSPGateway;
+use Counter\Payments\WebhookEvent;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -125,7 +125,7 @@ final class StudioPay implements PSPGateway {
 		if ( $meta === null ) return null;
 
 		// 1. Per-method routing override
-		$routes = (array) get_option( 'shop_studio_pay_method_routes', [] );
+		$routes = (array) get_option( 'counter_studio_pay_method_routes', [] );
 		if ( isset( $routes[ $method ] ) ) {
 			$p = $this->providers[ (string) $routes[ $method ] ] ?? null;
 			if ( $p && $p->isConnected() ) return $p;

@@ -1,9 +1,9 @@
 <?php
 /**
- * Shop by Therum — SQLite connection.
+ * Counter by Therum — SQLite connection.
  *
  * The plugin owns its own SQLite file. WordPress's own database (MySQL or
- * otherwise) is untouched. The file lives in wp-content/uploads/therum-shop/
+ * otherwise) is untouched. The file lives in wp-content/uploads/counter/
  * so it's inside the WP upload tree (gets backed up with the site, survives
  * plugin updates).
  *
@@ -13,11 +13,11 @@
  *   - foreign_keys = ON     → FKs are off by default in SQLite; we need them
  *   - busy_timeout = 5000ms → retry on lock instead of failing immediately
  *
- * Access is through Shop\DB::pdo() — singleton. Caller writes plain SQL with
+ * Access is through Counter\DB::pdo() — singleton. Caller writes plain SQL with
  * named placeholders. No ORM, no query builder, no abstraction tax.
  */
 
-namespace Shop;
+namespace Counter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -41,7 +41,7 @@ final class DB {
 	 */
 	public static function path(): string {
 		$uploads = wp_upload_dir();
-		$dir     = trailingslashit( $uploads['basedir'] ) . 'therum-shop';
+		$dir     = trailingslashit( $uploads['basedir'] ) . 'counter';
 		if ( ! is_dir( $dir ) ) {
 			wp_mkdir_p( $dir );
 			// Lock the directory down — no web access. wp-content/uploads is

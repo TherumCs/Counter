@@ -1,8 +1,8 @@
 <?php
 /**
- * Shop by Therum — REST: PSP webhook endpoint.
+ * Counter by Therum — REST: PSP webhook endpoint.
  *
- *   POST /shop/v1/webhooks/{provider}
+ *   POST /counter/v1/webhooks/{provider}
  *
  * Single entry point for every PSP. The provider slug must match the
  * gateway's id(). Raw body is forwarded to WebhookReceiver for signature
@@ -12,15 +12,15 @@
  * Each gateway's verifyWebhook() rejects forgeries.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Services\WebhookReceiver;
+use Counter\Services\WebhookReceiver;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class WebhookController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly WebhookReceiver $receiver,

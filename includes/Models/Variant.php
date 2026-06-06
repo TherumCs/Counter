@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Variant DTO.
+ * Counter by Therum — Variant DTO.
  *
  * Immutable read view of a `product_variants` row. POD routing fields
  * (podProvider, podProductId, podVariantId) are the per-variant vendor
@@ -8,9 +8,9 @@
  * variants from different fulfillment vendors.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

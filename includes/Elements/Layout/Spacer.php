@@ -3,11 +3,11 @@
  * Shop — Spacer element. Pure vertical space.
  */
 
-namespace Shop\Elements\Layout;
+namespace Counter\Elements\Layout;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -27,6 +27,6 @@ final class Spacer implements Element {
 
 	public function render( array $settings, ElementContext $context ): string {
 		$h = (int) ( $settings['height'] ?? 24 );
-		return sprintf( '<div class="shop-el shop-el-spacer" style="height:%dpx"></div>', $h );
+		return sprintf( '<div class="counter-el counter-el-spacer" style="height:%dpx"></div>', $h );
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — RefundService.
+ * Counter by Therum — RefundService.
  *
  * Full and partial refunds. Flow:
  *
@@ -22,13 +22,13 @@
  * the line picker.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\DB;
-use Shop\Models\Order;
-use Shop\Repositories\OrderRepository;
-use Shop\Repositories\PaymentGatewayRegistry;
-use Shop\Repositories\RefundRepository;
+use Counter\DB;
+use Counter\Models\Order;
+use Counter\Repositories\OrderRepository;
+use Counter\Repositories\PaymentGatewayRegistry;
+use Counter\Repositories\RefundRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -68,7 +68,7 @@ final class RefundService {
 		if ( $amountCents > $max_refundable ) {
 			throw new \DomainException( sprintf(
 				'Refund amount exceeds refundable balance (%s available).',
-				\Shop\Money::cents( $max_refundable, $order->currency )->format(),
+				\Counter\Money::cents( $max_refundable, $order->currency )->format(),
 			) );
 		}
 		if ( $order->paymentProvider === null || $order->paymentIntentId === null ) {
@@ -90,7 +90,7 @@ final class RefundService {
 			$gateway = $this->gateways->get( $order->paymentProvider );
 			$gateway_id = $gateway->refund(
 				order:          $order,
-				amount:         \Shop\Money::cents( $amountCents, $order->currency ),
+				amount:         \Counter\Money::cents( $amountCents, $order->currency ),
 				idempotencyKey: $refund->uuid,
 			);
 		} catch ( \Throwable $e ) {
@@ -117,7 +117,7 @@ final class RefundService {
 				content:      sprintf(
 					'%s refund of %s issued via %s (refund #%d, gateway %s).',
 					$is_full ? 'Full' : 'Partial',
-					\Shop\Money::cents( $amountCents, $order->currency )->format(),
+					\Counter\Money::cents( $amountCents, $order->currency )->format(),
 					$order->paymentProvider,
 					$refund->id,
 					$gateway_id,

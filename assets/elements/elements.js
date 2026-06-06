@@ -1,5 +1,5 @@
 /**
- * Shop by Therum — element interactivity.
+ * Counter by Therum — element interactivity.
  *
  * Three behaviors:
  *
@@ -8,7 +8,7 @@
  *      tally the selection across all attribute groups, resolve to a
  *      variant_id via the REST endpoint, then broadcast that variant_id
  *      so Price / Stock / AddToCart re-render
- *   3. Add to cart: click → ShopCart.addItem( productId, variantId, qty )
+ *   3. Add to cart: click → CounterCart.addItem( productId, variantId, qty )
  *
  * ~5 KB minified. Loaded once per page when any interactive element is
  * on the page (server decides via Element::needsJs()).
@@ -17,22 +17,22 @@
 ( function () {
 	'use strict';
 
-	var cfg  = window.ShopCartConfig || {};
+	var cfg  = window.CounterCartConfig || {};
 	var REST = ( cfg.rest || '/wp-json/' ) + 'shop/v1/';
 
 	// ─── Gallery ────────────────────────────────────────────────────────────
 	document.addEventListener( 'click', function ( e ) {
-		var thumb = e.target.closest( '[data-shop-gallery-thumb]' );
+		var thumb = e.target.closest( '[data-counter-gallery-thumb]' );
 		if ( ! thumb ) return;
 
-		var gallery = thumb.closest( '[data-shop-gallery]' );
+		var gallery = thumb.closest( '[data-counter-gallery]' );
 		if ( ! gallery ) return;
 
 		var src = thumb.getAttribute( 'data-src' );
-		var img = gallery.querySelector( '[data-shop-gallery-main] img' );
+		var img = gallery.querySelector( '[data-counter-gallery-main] img' );
 		if ( img && src ) img.src = src;
 
-		gallery.querySelectorAll( '[data-shop-gallery-thumb]' ).forEach( function ( t ) {
+		gallery.querySelectorAll( '[data-counter-gallery-thumb]' ).forEach( function ( t ) {
 			t.classList.remove( 'is-active' );
 		} );
 		thumb.classList.add( 'is-active' );
@@ -40,7 +40,7 @@
 
 	// ─── Variant picker ─────────────────────────────────────────────────────
 	// Each picker holds a state object: { attrSlug: optionSlug }. Updated
-	// on any selection. We POST to /shop/v1/products/match-variant to
+	// on any selection. We POST to /counter/v1/products/match-variant to
 	// resolve, then broadcast `shop:variantChange` so Price / Stock /
 	// AddToCart can update without a page reload.
 	function pickerState( picker ) {
@@ -49,7 +49,7 @@
 	}
 
 	function resolveVariant( picker ) {
-		var productId = picker.getAttribute( 'data-shop-product-id' );
+		var productId = picker.getAttribute( 'data-counter-product-id' );
 		var state     = pickerState( picker );
 		var params = new URLSearchParams( { product_id: productId } );
 		Object.keys( state ).forEach( function ( k ) {
@@ -62,10 +62,10 @@
 		.then( function ( r ) { return r.json(); } )
 		.then( function ( res ) {
 			var variantId = res && res.variant_id ? res.variant_id : null;
-			picker.setAttribute( 'data-shop-variant-id', variantId || '' );
+			picker.setAttribute( 'data-counter-variant-id', variantId || '' );
 
 			// Broadcast for siblings (AddToCart, Price)
-			document.dispatchEvent( new CustomEvent( 'shop:variantChange', {
+			document.dispatchEvent( new CustomEvent( 'counter:variantChange', {
 				detail: { productId: productId, variantId: variantId },
 			} ) );
 		} );
@@ -73,19 +73,19 @@
 
 	// Swatch / button picks
 	document.addEventListener( 'click', function ( e ) {
-		var btn = e.target.closest( '[data-shop-option-value]' );
+		var btn = e.target.closest( '[data-counter-option-value]' );
 		if ( ! btn ) return;
-		var group = btn.closest( '[data-shop-attr-slug]' );
+		var group = btn.closest( '[data-counter-attr-slug]' );
 		if ( ! group ) return;
-		var picker = group.closest( '[data-shop-variant-picker]' );
+		var picker = group.closest( '[data-counter-variant-picker]' );
 		if ( ! picker ) return;
 
-		var slug = group.getAttribute( 'data-shop-attr-slug' );
-		var val  = btn.getAttribute( 'data-shop-option-value' );
+		var slug = group.getAttribute( 'data-counter-attr-slug' );
+		var val  = btn.getAttribute( 'data-counter-option-value' );
 
 		pickerState( picker )[ slug ] = val;
 
-		group.querySelectorAll( '[data-shop-option-value]' ).forEach( function ( b ) {
+		group.querySelectorAll( '[data-counter-option-value]' ).forEach( function ( b ) {
 			b.classList.remove( 'is-selected' );
 		} );
 		btn.classList.add( 'is-selected' );
@@ -95,13 +95,13 @@
 
 	// Dropdown picks
 	document.addEventListener( 'change', function ( e ) {
-		var sel = e.target.closest( '[data-shop-option-select]' );
+		var sel = e.target.closest( '[data-counter-option-select]' );
 		if ( ! sel ) return;
-		var group  = sel.closest( '[data-shop-attr-slug]' );
-		var picker = sel.closest( '[data-shop-variant-picker]' );
+		var group  = sel.closest( '[data-counter-attr-slug]' );
+		var picker = sel.closest( '[data-counter-variant-picker]' );
 		if ( ! group || ! picker ) return;
 
-		var slug = group.getAttribute( 'data-shop-attr-slug' );
+		var slug = group.getAttribute( 'data-counter-attr-slug' );
 		pickerState( picker )[ slug ] = sel.value;
 		resolveVariant( picker );
 	} );
@@ -112,41 +112,41 @@
 	// in a map.
 	var selectedVariants = {}; // productId → variantId
 
-	document.addEventListener( 'shop:variantChange', function ( e ) {
+	document.addEventListener( 'counter:variantChange', function ( e ) {
 		selectedVariants[ e.detail.productId ] = e.detail.variantId;
 	} );
 
 	// Qty stepper
 	document.addEventListener( 'click', function ( e ) {
-		var inc = e.target.closest( '[data-shop-qty-inc]' );
-		var dec = e.target.closest( '[data-shop-qty-dec]' );
+		var inc = e.target.closest( '[data-counter-qty-inc]' );
+		var dec = e.target.closest( '[data-counter-qty-dec]' );
 		if ( ! inc && ! dec ) return;
-		var wrap = ( inc || dec ).closest( '[data-shop-qty]' );
+		var wrap = ( inc || dec ).closest( '[data-counter-qty]' );
 		if ( ! wrap ) return;
-		var input = wrap.querySelector( '[data-shop-qty-input]' );
+		var input = wrap.querySelector( '[data-counter-qty-input]' );
 		if ( ! input ) return;
 		var cur = parseInt( input.value, 10 ) || 1;
 		input.value = String( Math.max( 1, inc ? cur + 1 : cur - 1 ) );
 	} );
 
 	document.addEventListener( 'click', function ( e ) {
-		var btn = e.target.closest( '[data-shop-add-to-cart-btn]' );
+		var btn = e.target.closest( '[data-counter-add-to-cart-btn]' );
 		if ( ! btn ) return;
-		if ( ! window.ShopCart || typeof window.ShopCart.addItem !== 'function' ) return;
+		if ( ! window.CounterCart || typeof window.CounterCart.addItem !== 'function' ) return;
 
-		var productId = parseInt( btn.getAttribute( 'data-shop-product-id' ), 10 );
-		var wrap      = btn.closest( '[data-shop-add-to-cart]' );
-		var qtyInput  = wrap && wrap.querySelector( '[data-shop-qty-input]' );
+		var productId = parseInt( btn.getAttribute( 'data-counter-product-id' ), 10 );
+		var wrap      = btn.closest( '[data-counter-add-to-cart]' );
+		var qtyInput  = wrap && wrap.querySelector( '[data-counter-qty-input]' );
 		var qty       = qtyInput ? Math.max( 1, parseInt( qtyInput.value, 10 ) || 1 ) : 1;
 		var variantId = selectedVariants[ String( productId ) ] || null;
 
 		// Optimistic UX — disable briefly
 		btn.disabled = true;
-		var origLabel = btn.querySelector( '.shop-el-add-to-cart__label' );
+		var origLabel = btn.querySelector( '.counter-el-add-to-cart__label' );
 		var origText  = origLabel ? origLabel.textContent : '';
 		if ( origLabel ) origLabel.textContent = 'Adding…';
 
-		Promise.resolve( window.ShopCart.addItem( productId, variantId, qty ) )
+		Promise.resolve( window.CounterCart.addItem( productId, variantId, qty ) )
 			.then( function () {
 				if ( origLabel ) origLabel.textContent = 'Added ✓';
 				setTimeout( function () {
@@ -161,14 +161,14 @@
 	} );
 
 	// ─── Cart button (chrome): open + live count badge ────────────────
-	// Delegated open — any [data-shop-cart-open] click asks the active
+	// Delegated open — any [data-counter-cart-open] click asks the active
 	// cart pattern to show itself. Falls back to navigating to /cart/.
 	document.addEventListener( 'click', function ( e ) {
-		var btn = e.target.closest( '[data-shop-cart-open]' );
+		var btn = e.target.closest( '[data-counter-cart-open]' );
 		if ( ! btn ) return;
 		e.preventDefault();
-		if ( window.ShopCart && typeof window.ShopCart.open === 'function' ) {
-			window.ShopCart.open();
+		if ( window.CounterCart && typeof window.CounterCart.open === 'function' ) {
+			window.CounterCart.open();
 		} else {
 			window.location.href = '/cart/';
 		}
@@ -176,19 +176,19 @@
 
 	// Live count — initial fetch + react to shop:cartChange events.
 	function paintCount( count ) {
-		document.querySelectorAll( '[data-shop-cart-count]' ).forEach( function ( el ) {
+		document.querySelectorAll( '[data-counter-cart-count]' ).forEach( function ( el ) {
 			el.textContent = String( count );
 			el.style.display = count > 0 ? '' : 'none';
 		} );
 	}
-	if ( window.ShopCart && typeof window.ShopCart.snapshot === 'function' ) {
-		Promise.resolve( window.ShopCart.snapshot() )
+	if ( window.CounterCart && typeof window.CounterCart.snapshot === 'function' ) {
+		Promise.resolve( window.CounterCart.snapshot() )
 			.then( function ( s ) { paintCount( s && s.count ? s.count : 0 ); } )
 			.catch( function () {} );
 	} else {
 		paintCount( 0 );
 	}
-	document.addEventListener( 'shop:cartChange', function ( e ) {
+	document.addEventListener( 'counter:cartChange', function ( e ) {
 		paintCount( e.detail && typeof e.detail.count === 'number' ? e.detail.count : 0 );
 	} );
 } )();

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — admin menu registration.
+ * Counter by Therum — admin menu registration.
  *
  * Top-level "Shop" menu in the WP admin sidebar with sub-pages:
  *
@@ -12,7 +12,7 @@
  * Each sub-page is its own class so the menu file stays a thin shell.
  */
 
-namespace Shop\Admin;
+namespace Counter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -37,105 +37,105 @@ final class AdminMenu {
 
 	public function menus(): void {
 		add_menu_page(
-			page_title: __( 'Shop by Therum', 'shop' ),
-			menu_title: __( 'Shop', 'shop' ),
+			page_title: __( 'Counter by Therum', 'counter' ),
+			menu_title: __( 'Shop', 'counter' ),
 			capability: 'manage_woocommerce',
-			menu_slug:  'shop',
+			menu_slug:   'counter',
 			callback:   [ $this->settings, 'render' ],
 			icon_url:   'dashicons-cart',
 			position:   58,
 		);
 
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Settings', 'shop' ),
-			menu_title:  __( 'Settings', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Settings', 'counter' ),
+			menu_title:  __( 'Settings', 'counter' ),
 			capability:  'manage_woocommerce',
-			menu_slug:   'shop',
+			menu_slug:   'counter',
 			callback:    [ $this->settings, 'render' ],
 		);
 
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Products', 'shop' ),
-			menu_title:  __( 'Products', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Products', 'counter' ),
+			menu_title:  __( 'Products', 'counter' ),
 			capability:  'manage_woocommerce',
-			menu_slug:   'shop-products',
+			menu_slug:   'counter-products',
 			callback:    [ $this->products, 'render' ],
 		);
 
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Orders', 'shop' ),
-			menu_title:  __( 'Orders', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Orders', 'counter' ),
+			menu_title:  __( 'Orders', 'counter' ),
 			capability:  'manage_woocommerce',
-			menu_slug:   'shop-orders',
+			menu_slug:   'counter-orders',
 			callback:    [ $this->orders, 'render' ],
 		);
 
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Import Catalog', 'shop' ),
-			menu_title:  __( 'Import', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Import Catalog', 'counter' ),
+			menu_title:  __( 'Import', 'counter' ),
 			capability:  'manage_woocommerce',
-			menu_slug:   'shop-import',
+			menu_slug:   'counter-import',
 			callback:    [ $this->importer, 'render' ],
 		);
 
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Customers', 'shop' ),
-			menu_title:  __( 'Customers', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Customers', 'counter' ),
+			menu_title:  __( 'Customers', 'counter' ),
 			capability:  'manage_woocommerce',
-			menu_slug:   'shop-customers',
+			menu_slug:   'counter-customers',
 			callback:    [ $this->customers, 'render' ],
 		);
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Order Import / Export', 'shop' ),
-			menu_title:  __( 'Order I/O', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Order Import / Export', 'counter' ),
+			menu_title:  __( 'Order I/O', 'counter' ),
 			capability:  'manage_woocommerce',
-			menu_slug:   'shop-orders-io',
+			menu_slug:   'counter-orders-io',
 			callback:    [ $this->orderIo, 'render' ],
 		);
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Studio Pay', 'shop' ),
-			menu_title:  __( 'Studio Pay', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Studio Pay', 'counter' ),
+			menu_title:  __( 'Studio Pay', 'counter' ),
 			capability:  'manage_woocommerce',
-			menu_slug:   'shop-studio-pay',
+			menu_slug:   'counter-studio-pay',
 			callback:    [ $this->studioPay, 'render' ],
 		);
 		// Updates is gated on `manage_options` (full WP admin) since
 		// it can rewrite the plugin filesystem.
 		add_submenu_page(
-			parent_slug: 'shop',
-			page_title:  __( 'Updates', 'shop' ),
-			menu_title:  __( 'Updates', 'shop' ),
+			parent_slug: 'counter',
+			page_title:  __( 'Updates', 'counter' ),
+			menu_title:  __( 'Updates', 'counter' ),
 			capability:  'manage_options',
-			menu_slug:   'shop-updates',
+			menu_slug:   'counter-updates',
 			callback:    [ $this->updates, 'render' ],
 		);
 
 		// Pure page builder — only when the active mode wants it.
-		if ( \Shop\Mode::loadsPureBuilder() ) {
+		if ( \Counter\Mode::loadsPureBuilder() ) {
 			add_submenu_page(
-				parent_slug: 'shop',
-				page_title:  __( 'Pages', 'shop' ),
-				menu_title:  __( 'Pages', 'shop' ),
+				parent_slug: 'counter',
+				page_title:  __( 'Pages', 'counter' ),
+				menu_title:  __( 'Pages', 'counter' ),
 				capability:  'manage_woocommerce',
-				menu_slug:   'shop-pages',
+				menu_slug:   'counter-pages',
 				callback:    [ $this->builder, 'renderPageList' ],
 			);
 
 			// The actual builder canvas — hidden from the menu but
-			// reachable via ?page=shop-builder&page_id=X
+			// reachable via ?page=counter-builder&page_id=X
 			add_submenu_page(
 				parent_slug: null,
-				page_title:  __( 'Builder', 'shop' ),
-				menu_title:  __( 'Builder', 'shop' ),
+				page_title:  __( 'Builder', 'counter' ),
+				menu_title:  __( 'Builder', 'counter' ),
 				capability:  'manage_woocommerce',
-				menu_slug:   'shop-builder',
+				menu_slug:   'counter-builder',
 				callback:    [ $this->builder, 'render' ],
 			);
 		}
@@ -145,82 +145,82 @@ final class AdminMenu {
 		// Only enqueue on Shop's own admin pages.
 		if ( strpos( $hook, 'shop' ) === false ) return;
 
-		wp_register_style( 'shop-admin', SHOP_URL . 'assets/admin/admin.css', [], SHOP_VERSION );
-		wp_enqueue_style( 'shop-admin' );
+		wp_register_style( 'counter-admin', COUNTER_URL . 'assets/admin/admin.css', [], COUNTER_VERSION );
+		wp_enqueue_style( 'counter-admin' );
 
 		$rest_config = wp_json_encode( [
 			'rest'  => esc_url_raw( rest_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 		] );
 
-		if ( str_contains( $hook, 'shop-import' ) ) {
-			wp_register_script( 'shop-importer', SHOP_URL . 'assets/admin/importer.js', [], SHOP_VERSION, [
+		if ( str_contains( $hook, 'counter-import' ) ) {
+			wp_register_script( 'counter-importer', COUNTER_URL . 'assets/admin/importer.js', [], COUNTER_VERSION, [
 				'in_footer' => true,
 				'strategy'  => 'defer',
 			] );
-			wp_add_inline_script( 'shop-importer',
+			wp_add_inline_script( 'counter-importer',
 				'window.ShopImporterConfig = ' . $rest_config . ';',
 				'before'
 			);
-			wp_enqueue_script( 'shop-importer' );
+			wp_enqueue_script( 'counter-importer' );
 		}
 
-		if ( str_contains( $hook, 'shop-products' ) ) {
-			wp_register_script( 'shop-products-grid', SHOP_URL . 'assets/admin/products-grid.js', [], SHOP_VERSION, [
+		if ( str_contains( $hook, 'counter-products' ) ) {
+			wp_register_script( 'counter-products-grid', COUNTER_URL . 'assets/admin/products-grid.js', [], COUNTER_VERSION, [
 				'in_footer' => true,
 				'strategy'  => 'defer',
 			] );
-			wp_add_inline_script( 'shop-products-grid',
+			wp_add_inline_script( 'counter-products-grid',
 				'window.ShopAdminGridConfig = ' . $rest_config . ';',
 				'before'
 			);
-			wp_enqueue_script( 'shop-products-grid' );
+			wp_enqueue_script( 'counter-products-grid' );
 
 			// Product editor drawer — ES module (Preact + htm via esm.sh).
 			// Registered with `type=module` filter so WP emits the right
 			// script tag attribute.
-			wp_register_style(  'shop-product-editor', SHOP_URL . 'assets/admin/product-editor.css', [], SHOP_VERSION );
-			wp_enqueue_style(   'shop-product-editor' );
+			wp_register_style(  'counter-product-editor', COUNTER_URL . 'assets/admin/product-editor.css', [], COUNTER_VERSION );
+			wp_enqueue_style(   'counter-product-editor' );
 			add_filter( 'script_loader_tag', function ( $tag, $handle ) {
-				if ( $handle === 'shop-product-editor' ) {
+				if ( $handle === 'counter-product-editor' ) {
 					return str_replace( '<script ', '<script type="module" ', $tag );
 				}
 				return $tag;
 			}, 10, 2 );
-			wp_register_script( 'shop-product-editor', SHOP_URL . 'assets/admin/product-editor.js', [], SHOP_VERSION, [ 'in_footer' => true ] );
-			wp_enqueue_script(  'shop-product-editor' );
+			wp_register_script( 'counter-product-editor', COUNTER_URL . 'assets/admin/product-editor.js', [], COUNTER_VERSION, [ 'in_footer' => true ] );
+			wp_enqueue_script(  'counter-product-editor' );
 		}
 
-		if ( str_contains( $hook, 'shop-orders' ) ) {
-			wp_register_script( 'shop-orders-grid', SHOP_URL . 'assets/admin/orders-grid.js', [], SHOP_VERSION, [
+		if ( str_contains( $hook, 'counter-orders' ) ) {
+			wp_register_script( 'counter-orders-grid', COUNTER_URL . 'assets/admin/orders-grid.js', [], COUNTER_VERSION, [
 				'in_footer' => true,
 				'strategy'  => 'defer',
 			] );
-			wp_add_inline_script( 'shop-orders-grid',
+			wp_add_inline_script( 'counter-orders-grid',
 				'window.ShopAdminGridConfig = ' . $rest_config . ';',
 				'before'
 			);
-			wp_enqueue_script( 'shop-orders-grid' );
+			wp_enqueue_script( 'counter-orders-grid' );
 		}
 
-		if ( str_contains( $hook, 'shop-builder' ) ) {
+		if ( str_contains( $hook, 'counter-builder' ) ) {
 			// Builder is full-bleed — hide standard admin chrome by
 			// adding a body class.
-			add_filter( 'admin_body_class', fn( $c ) => $c . ' shop-builder-active' );
+			add_filter( 'admin_body_class', fn( $c ) => $c . ' counter-builder-active' );
 
 			// WP media library is used by the image picker
 			wp_enqueue_media();
 
-			wp_register_style(  'shop-builder-css', SHOP_URL . 'assets/builder/builder.css', [], SHOP_VERSION );
-			wp_enqueue_style(   'shop-builder-css' );
+			wp_register_style(  'counter-builder-css', COUNTER_URL . 'assets/builder/builder.css', [], COUNTER_VERSION );
+			wp_enqueue_style(   'counter-builder-css' );
 
 			// ES module — Preact + htm from esm.sh, no build step
-			wp_register_script_module( 'shop-builder',
-				SHOP_URL . 'assets/builder/builder.js',
+			wp_register_script_module( 'counter-builder',
+				COUNTER_URL . 'assets/builder/builder.js',
 				[],
-				SHOP_VERSION,
+				COUNTER_VERSION,
 			);
-			wp_enqueue_script_module( 'shop-builder' );
+			wp_enqueue_script_module( 'counter-builder' );
 		}
 	}
 }

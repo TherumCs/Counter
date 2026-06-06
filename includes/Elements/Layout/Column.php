@@ -7,11 +7,11 @@
  * to full-width by default.
  */
 
-namespace Shop\Elements\Layout;
+namespace Counter\Elements\Layout;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -58,17 +58,17 @@ final class Column implements Element {
 		$radius      = (int) ( $settings['radius']     ?? 0 );
 
 		$styles = [
-			'--shop-span: '  . $span,
-			'--shop-gap: '   . $gap . 'px',
-			'--shop-pad: '   . $padding . 'px',
-			'--shop-radius: '. $radius . 'px',
+			'--counter-span: '  . $span,
+			'--counter-gap: '   . $gap . 'px',
+			'--counter-pad: '   . $padding . 'px',
+			'--counter-radius: '. $radius . 'px',
 		];
-		if ( $bg !== '' ) $styles[] = '--shop-bg: ' . $bg;
+		if ( $bg !== '' ) $styles[] = '--counter-bg: ' . $bg;
 
 		$children = (string) ( $context->extras['children'] ?? '' );
 
 		return sprintf(
-			'<div class="shop-el shop-el-column shop-el-column--align-%s" style="%s" data-shop-children>%s</div>',
+			'<div class="counter-el counter-el-column counter-el-column--align-%s" style="%s" data-counter-children>%s</div>',
 			esc_attr( $align_items ),
 			esc_attr( implode( '; ', $styles ) ),
 			$children,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — HPOS-style order adapter (opt-in).
+ * Counter by Therum — HPOS-style order adapter (opt-in).
  *
  * Surfaces our SQLite orders as if they were Woo HPOS orders so
  * third-party Woo extensions (accounting plugins, label generators,
@@ -33,9 +33,9 @@
  *     return reasonable empties
  */
 
-namespace Shop\Compat;
+namespace Counter\Compat;
 
-use Shop\Repositories\OrderRepository;
+use Counter\Repositories\OrderRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -49,7 +49,7 @@ final class HposOrderAdapter {
 	) {}
 
 	public static function isEnabled(): bool {
-		return (bool) get_option( 'shop_hpos_export', false );
+		return (bool) get_option( 'counter_hpos_export', false );
 	}
 
 	public function register(): void {
@@ -113,7 +113,7 @@ final class HposOrderAdapter {
 		return [
 			'id'                 => $id,
 			'parent_id'          => 0,
-			'order_key'          => 'shop_' . $order->number,
+			'order_key'          => 'counter_' . $order->number,
 			'created_via'        => 'shop',
 			'status'             => 'wc-' . $order->status,
 			'currency'           => $order->currency,

@@ -7,12 +7,12 @@
  * and quiet but it has real conversion impact.
  */
 
-namespace Shop\Elements\Catalog;
+namespace Counter\Elements\Catalog;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Repositories\ProductRepository;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -61,8 +61,8 @@ final class StockStatus implements Element {
 			default                  => [ 'in_stock',     (string) $settings['in_stock_label']    ],
 		};
 
-		$class = 'shop-el shop-el-stock shop-el-stock--' . esc_attr( $state );
-		$dot   = $show_dot ? '<span class="shop-el-stock__dot"></span>' : '';
+		$class = 'counter-el counter-el-stock counter-el-stock--' . esc_attr( $state );
+		$dot   = $show_dot ? '<span class="counter-el-stock__dot"></span>' : '';
 
 		return sprintf( '<span class="%s">%s%s</span>', $class, $dot, esc_html( $label ) );
 	}

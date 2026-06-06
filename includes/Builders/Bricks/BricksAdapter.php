@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Bricks Builder adapter.
+ * Counter by Therum — Bricks Builder adapter.
  *
  * Wraps every Shop element as a Bricks custom element so designers can
  * drag them onto pages in Bricks. The adapter walks the registry, builds
@@ -26,10 +26,10 @@
  * a few (productPicker, variantPicker) need custom Bricks controls.
  */
 
-namespace Shop\Builders\Bricks;
+namespace Counter\Builders\Bricks;
 
-use Shop\Elements\ElementContext;
-use Shop\Elements\ElementRegistry;
+use Counter\Elements\ElementContext;
+use Counter\Elements\ElementRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -65,7 +65,7 @@ final class BricksAdapter {
 			$class = BricksElementFactory::makeElementClass( $shop_element );
 			if ( $class !== null ) {
 				\Bricks\Elements::register_element(
-					SHOP_DIR . 'includes/Builders/Bricks/elements/' . $shop_element->id() . '.php',
+					COUNTER_DIR . 'includes/Builders/Bricks/elements/' . $shop_element->id() . '.php',
 					$shop_element->id(),
 					$class,
 				);
@@ -99,7 +99,7 @@ final class BricksAdapter {
 	 * @return array<string, string>
 	 */
 	public function registerQueryTypes( $types ): array {
-		$types['shop_products'] = 'Shop · Products';
+		$types['counter_products'] = 'Shop · Products';
 		return $types;
 	}
 

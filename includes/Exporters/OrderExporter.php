@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Order exporter.
+ * Counter by Therum — Order exporter.
  *
  * Two formats:
  *
@@ -19,11 +19,11 @@
  * doesn't blow memory.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
-use Shop\Models\Order;
-use Shop\Models\OrderItem;
-use Shop\Repositories\OrderRepository;
+use Counter\Models\Order;
+use Counter\Models\OrderItem;
+use Counter\Repositories\OrderRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

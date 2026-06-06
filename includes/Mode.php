@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Mode helper.
+ * Counter by Therum — Mode helper.
  *
  * Single source of truth for the Pure vs Unlocked feature gating.
  *
@@ -29,20 +29,20 @@
  *   }
  */
 
-namespace Shop;
+namespace Counter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class Mode {
 
 	public static function catalogSource(): string {
-		return (string) get_option( 'shop_product_source', 'native' );
+		return (string) get_option( 'counter_product_source', 'native' );
 	}
 
 	public static function isPure(): bool {
 		// Pure when catalog is native AND no external builder is
 		// driving the front-end (or user has explicitly forced Pure).
-		$forced = (string) get_option( 'shop_mode', 'auto' );
+		$forced = (string) get_option( 'counter_mode', 'auto' );
 		if ( $forced === 'pure' )     return true;
 		if ( $forced === 'unlocked' ) return false;
 

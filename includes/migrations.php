@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — migration runner.
+ * Counter by Therum — migration runner.
  *
  * Replaces the old dbDelta-based shop_run_migrations(). Reads the current
  * schema version from the SQLite file's own schema_version table; if behind
@@ -14,7 +14,7 @@
  *   - Test bootstrap
  */
 
-namespace Shop;
+namespace Counter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -93,10 +93,6 @@ final class Migrations {
 	}
 }
 
-/**
- * Back-compat shim — the activation hook from 0.1.0 calls the free function.
- * Keep it pointing at the new runner so legacy installs don't break.
- */
-function shop_run_migrations(): void {
-	\Shop\Migrations::run();
-}
+// Legacy `shop_run_migrations` shim removed in the Counter rename —
+// no installs predate 0.29.0 in the new namespace, so the shim has
+// nothing to call into.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ElementRegistry.
+ * Counter by Therum — ElementRegistry.
  *
  * Single registry shared by every page builder adapter. Bootstrap
  * registers each element once; adapters iterate and wrap.
@@ -8,7 +8,7 @@
  * Filter `shop_register_elements` lets plugins add custom elements.
  */
 
-namespace Shop\Elements;
+namespace Counter\Elements;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

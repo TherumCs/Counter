@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PayPalProvider.
+ * Counter by Therum — PayPalProvider.
  *
  * Covers everything in PayPal's family: paypal, paypal_credit, venmo
  * (PayPal owns Venmo). Uses PayPal Orders v2 API — REST + OAuth2 client
@@ -12,12 +12,12 @@
  * under the `shop_studio_pay_paypal_*` keys instead.
  */
 
-namespace Shop\Payments\Providers;
+namespace Counter\Payments\Providers;
 
-use Shop\Models\Order;
-use Shop\Money;
-use Shop\Payments\PaymentIntent;
-use Shop\Payments\WebhookEvent;
+use Counter\Models\Order;
+use Counter\Money;
+use Counter\Payments\PaymentIntent;
+use Counter\Payments\WebhookEvent;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -117,7 +117,7 @@ final class PayPalProvider implements PaymentProvider {
 			'cert_url'           => $headers['paypal-cert-url']   ?? $headers['Paypal-Cert-Url']   ?? '',
 			'auth_algo'          => $headers['paypal-auth-algo']  ?? $headers['Paypal-Auth-Algo']  ?? '',
 			'transmission_sig'   => $headers['paypal-transmission-sig'] ?? $headers['Paypal-Transmission-Sig'] ?? '',
-			'webhook_id'         => (string) get_option( 'shop_paypal_webhook_id', '' ),
+			'webhook_id'         => (string) get_option( 'counter_paypal_webhook_id', '' ),
 			'webhook_event'      => json_decode( $rawBody, true ),
 		] );
 		if ( ( $res['verification_status'] ?? '' ) !== 'SUCCESS' ) {
@@ -150,25 +150,25 @@ final class PayPalProvider implements PaymentProvider {
 	// ─── Internals ───────────────────────────────────────────────────────
 
 	private function baseUrl(): string {
-		$env = (string) get_option( 'shop_paypal_environment', 'live' );
+		$env = (string) get_option( 'counter_paypal_environment', 'live' );
 		return $env === 'sandbox'
 			? 'https://api-m.sandbox.paypal.com/'
 			: 'https://api-m.paypal.com/';
 	}
 
 	private function clientId(): string {
-		return (string) get_option( 'shop_studio_pay_paypal_client_id', '' )
-			?: (string) get_option( 'shop_paypal_client_id', '' );
+		return (string) get_option( 'counter_studio_pay_paypal_client_id', '' )
+			?: (string) get_option( 'counter_paypal_client_id', '' );
 	}
 
 	private function clientSecret(): string {
-		return (string) get_option( 'shop_studio_pay_paypal_client_secret', '' )
-			?: (string) get_option( 'shop_paypal_client_secret', '' );
+		return (string) get_option( 'counter_studio_pay_paypal_client_secret', '' )
+			?: (string) get_option( 'counter_paypal_client_secret', '' );
 	}
 
 	/** Cached for 8 minutes (token TTL is 9). */
 	private function accessToken(): string {
-		$cached = get_transient( 'shop_paypal_oauth_token' );
+		$cached = get_transient( 'counter_paypal_oauth_token' );
 		if ( is_string( $cached ) && $cached !== '' ) return $cached;
 		$res = wp_remote_post( $this->baseUrl() . 'v1/oauth2/token', [
 			'timeout' => 15,
@@ -182,7 +182,7 @@ final class PayPalProvider implements PaymentProvider {
 		$json = json_decode( (string) wp_remote_retrieve_body( $res ), true );
 		$tok  = (string) ( $json['access_token'] ?? '' );
 		if ( $tok === '' ) throw new \RuntimeException( 'PayPal token request failed.' );
-		set_transient( 'shop_paypal_oauth_token', $tok, 8 * MINUTE_IN_SECONDS );
+		set_transient( 'counter_paypal_oauth_token', $tok, 8 * MINUTE_IN_SECONDS );
 		return $tok;
 	}
 

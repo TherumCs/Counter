@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Bricks control mapper.
+ * Counter by Therum — Bricks control mapper.
  *
  * Translates a Shop control schema row (the canonical format used by
  * the Pure editor + all adapters) into Bricks's native control format.
@@ -23,7 +23,7 @@
  * with the same name).
  */
 
-namespace Shop\Builders\Bricks;
+namespace Counter\Builders\Bricks;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

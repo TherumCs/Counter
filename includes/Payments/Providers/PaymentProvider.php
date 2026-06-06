@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PaymentProvider contract.
+ * Counter by Therum — PaymentProvider contract.
  *
  * Wraps a single PSP (Stripe, Square, PayPal, ...). Studio Pay routes
  * specific payment methods (card, Klarna, Apple Pay, ...) through one
@@ -18,12 +18,12 @@
  * Studio Pay router may create multiple instances per request.
  */
 
-namespace Shop\Payments\Providers;
+namespace Counter\Payments\Providers;
 
-use Shop\Models\Order;
-use Shop\Money;
-use Shop\Payments\PaymentIntent;
-use Shop\Payments\WebhookEvent;
+use Counter\Models\Order;
+use Counter\Money;
+use Counter\Payments\PaymentIntent;
+use Counter\Payments\WebhookEvent;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -38,7 +38,7 @@ interface PaymentProvider {
 	 * provider supports it.
 	 *
 	 * Canonical method ids: 'card', 'apple_pay', 'google_pay', 'link',
-	 * 'shop_pay', 'paypal', 'paypal_credit', 'venmo', 'klarna',
+	 * 'counter_pay', 'paypal', 'paypal_credit', 'venmo', 'klarna',
 	 * 'affirm', 'afterpay', 'sezzle', 'zip', 'bank_ach', 'cashapp',
 	 * 'zelle', 'crypto'.
 	 *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PageRouter.
+ * Counter by Therum — PageRouter.
  *
  * Front-end routing for Pure pages. Two responsibilities:
  *
@@ -22,12 +22,12 @@
  * systems.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Elements\ElementContext;
-use Shop\Mode;
-use Shop\Models\Page;
-use Shop\Repositories\PageRepository;
+use Counter\Elements\ElementContext;
+use Counter\Mode;
+use Counter\Models\Page;
+use Counter\Repositories\PageRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -61,12 +61,12 @@ final class PageRouter {
 	 * @return string[]
 	 */
 	public function queryVars( array $vars ): array {
-		$vars[] = 'shop_pure';
-		$vars[] = 'shop_pure_product';
-		$vars[] = 'shop_pure_archive';
-		$vars[] = 'shop_pure_cart';
-		$vars[] = 'shop_pure_checkout';
-		$vars[] = 'shop_pure_received';
+		$vars[] = 'counter_pure';
+		$vars[] = 'counter_pure_product';
+		$vars[] = 'counter_pure_archive';
+		$vars[] = 'counter_pure_cart';
+		$vars[] = 'counter_pure_checkout';
+		$vars[] = 'counter_pure_received';
 		return $vars;
 	}
 
@@ -80,7 +80,7 @@ final class PageRouter {
 		if ( $theme !== '' ) return $theme;
 
 		// Plugin's bundled template
-		return SHOP_DIR . 'templates/pure-page.php';
+		return COUNTER_DIR . 'templates/pure-page.php';
 	}
 
 	/**
@@ -89,24 +89,24 @@ final class PageRouter {
 	 * template via renderCurrent().
 	 */
 	public function currentPage(): ?Page {
-		$slug = get_query_var( 'shop_pure' );
+		$slug = get_query_var( 'counter_pure' );
 		if ( is_string( $slug ) && $slug !== '' ) {
 			return $this->pages->findBySlug( $slug, Page::KIND_PAGE );
 		}
 
-		$product = get_query_var( 'shop_pure_product' );
+		$product = get_query_var( 'counter_pure_product' );
 		if ( is_string( $product ) && $product !== '' ) {
 			return $this->pages->findByAssignment( 'single-product' );
 		}
 
-		$archive = get_query_var( 'shop_pure_archive' );
+		$archive = get_query_var( 'counter_pure_archive' );
 		if ( $archive !== '' ) {
 			return $this->pages->findByAssignment( 'product-archive' );
 		}
 
-		if ( get_query_var( 'shop_pure_cart' )     !== '' ) return $this->pages->findByAssignment( 'cart-page' );
-		if ( get_query_var( 'shop_pure_checkout' ) !== '' ) return $this->pages->findByAssignment( 'checkout-page' );
-		if ( get_query_var( 'shop_pure_received' ) !== '' ) return $this->pages->findByAssignment( 'order-received' );
+		if ( get_query_var( 'counter_pure_cart' )     !== '' ) return $this->pages->findByAssignment( 'cart-page' );
+		if ( get_query_var( 'counter_pure_checkout' ) !== '' ) return $this->pages->findByAssignment( 'checkout-page' );
+		if ( get_query_var( 'counter_pure_received' ) !== '' ) return $this->pages->findByAssignment( 'order-received' );
 
 		return null;
 	}
@@ -117,9 +117,9 @@ final class PageRouter {
 	 * without re-querying.
 	 */
 	public function currentContext(): ElementContext {
-		$slug = get_query_var( 'shop_pure_product' );
+		$slug = get_query_var( 'counter_pure_product' );
 		if ( is_string( $slug ) && $slug !== '' ) {
-			$products = \Shop\Container::instance()->get( \Shop\Repositories\ProductRepository::class );
+			$products = \Counter\Container::instance()->get( \Counter\Repositories\ProductRepository::class );
 			$product  = $products->findBySlug( $slug );
 			return new ElementContext(
 				productId:   $product?->id,
@@ -142,9 +142,9 @@ final class PageRouter {
 		$out  = '';
 		$header = $this->chrome->activeHeader();
 		$footer = $this->chrome->activeFooter();
-		if ( $header !== null ) $out .= '<div class="shop-pure-header">' . $this->renderer->render( $header->tree, $ctx ) . '</div>';
-		$out .= '<div class="shop-pure-body">'   . $this->renderer->render( $page->tree, $ctx ) . '</div>';
-		if ( $footer !== null ) $out .= '<div class="shop-pure-footer">' . $this->renderer->render( $footer->tree, $ctx ) . '</div>';
+		if ( $header !== null ) $out .= '<div class="counter-pure-header">' . $this->renderer->render( $header->tree, $ctx ) . '</div>';
+		$out .= '<div class="counter-pure-body">'   . $this->renderer->render( $page->tree, $ctx ) . '</div>';
+		if ( $footer !== null ) $out .= '<div class="counter-pure-footer">' . $this->renderer->render( $footer->tree, $ctx ) . '</div>';
 		return $out;
 	}
 

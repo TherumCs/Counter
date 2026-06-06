@@ -1,14 +1,14 @@
 <?php
 /**
- * Shop by Therum — CouponRepository.
+ * Counter by Therum — CouponRepository.
  *
  * SQL for coupons + coupon_redemptions. CouponService is the only caller.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\Coupon;
+use Counter\DB;
+use Counter\Models\Coupon;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

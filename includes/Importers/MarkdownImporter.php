@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Markdown / plain text importer.
+ * Counter by Therum — Markdown / plain text importer.
  *
  * Heading hierarchy maps to products. A # or ## heading starts a new
  * product. Subsequent paragraphs become the description until the next
@@ -25,9 +25,9 @@
  * No AI needed. Pure heuristic. Fast.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

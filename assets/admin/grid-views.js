@@ -1,5 +1,5 @@
 /**
- * Shop by Therum — grid views.
+ * Counter by Therum — grid views.
  *
  * Companion module for products-grid.js / orders-grid.js that adds:
  *
@@ -9,7 +9,7 @@
  *     show up in a dropdown above the grid. Persisted server-side via
  *     /admin/grid-views so they survive across browsers.
  *
- * Boots itself on any element with [data-shop-grid-views="<grid-id>"].
+ * Boots itself on any element with [data-counter-grid-views="<grid-id>"].
  * Talks to the grid via a tiny event channel so products-grid /
  * orders-grid don't have to know it exists.
  *
@@ -23,17 +23,17 @@
 ( function () {
 	'use strict';
 
-	const cfg   = window.ShopAdminGridConfig || {};
+	const cfg   = window.CounterAdminGridConfig || {};
 	const REST  = ( cfg.rest || '/wp-json/' ) + 'shop/v1/admin/grid-views/';
 	const NONCE = cfg.nonce || '';
 
-	const mounts = document.querySelectorAll( '[data-shop-grid-views]' );
+	const mounts = document.querySelectorAll( '[data-counter-grid-views]' );
 	if ( ! mounts.length ) return;
 
 	mounts.forEach( init );
 
 	function init( root ) {
-		const gridId = root.getAttribute( 'data-shop-grid-views' );
+		const gridId = root.getAttribute( 'data-counter-grid-views' );
 		let views    = [];
 		let current  = { columns: null, filters: {}, sort: null };
 
@@ -45,28 +45,28 @@
 		api( gridId ).then( r => { views = ( r && r.views ) || []; render(); } );
 
 		// Track grid's current state so "Save view" captures what's on screen.
-		document.addEventListener( 'shop:grid:state', e => {
+		document.addEventListener( 'counter:grid:state', e => {
 			if ( ! e.detail || e.detail.gridId !== gridId ) return;
 			current = e.detail;
 		} );
 
 		function apply( view ) {
-			document.dispatchEvent( new CustomEvent( 'shop:grid:apply', { detail: Object.assign( { gridId }, view ) } ) );
+			document.dispatchEvent( new CustomEvent( 'counter:grid:apply', { detail: Object.assign( { gridId }, view ) } ) );
 		}
 
 		function render() {
 			root.innerHTML = `
-				<div class="shop-views">
-					<select class="shop-views__pick">
+				<div class="counter-views">
+					<select class="counter-views__pick">
 						<option value="">— Views —</option>
 						${ views.map( v => `<option value="${ v.id }">${ esc( v.name ) }</option>` ).join( '' ) }
 					</select>
 					<button class="button" data-action="save">Save current as view</button>
 					<button class="button" data-action="columns">Columns</button>
 				</div>
-				<div class="shop-views__col-panel" hidden></div>`;
+				<div class="counter-views__col-panel" hidden></div>`;
 
-			root.querySelector( '.shop-views__pick' ).addEventListener( 'change', e => {
+			root.querySelector( '.counter-views__pick' ).addEventListener( 'change', e => {
 				const v = views.find( x => String( x.id ) === e.target.value );
 				if ( v ) apply( v.config );
 			} );
@@ -77,7 +77,7 @@
 					.then( r => { if ( r && r.view ) { views.push( r.view ); render(); } } );
 			} );
 			root.querySelector( '[data-action="columns"]' ).addEventListener( 'click', () => {
-				const panel = root.querySelector( '.shop-views__col-panel' );
+				const panel = root.querySelector( '.counter-views__col-panel' );
 				panel.hidden = ! panel.hidden;
 				if ( ! panel.hidden ) renderColumnPanel( panel );
 			} );
@@ -86,17 +86,17 @@
 		function renderColumnPanel( panel ) {
 			const cols = ( current.columns || [] ).slice();
 			panel.innerHTML = `
-				<p class="shop-views__hint">Drag to reorder. Uncheck to hide.</p>
-				<ul class="shop-views__col-list">
+				<p class="counter-views__hint">Drag to reorder. Uncheck to hide.</p>
+				<ul class="counter-views__col-list">
 					${ cols.map( ( c, i ) => `
-						<li class="shop-views__col" draggable="true" data-i="${ i }">
-							<span class="shop-views__col-grip">⋮⋮</span>
+						<li class="counter-views__col" draggable="true" data-i="${ i }">
+							<span class="counter-views__col-grip">⋮⋮</span>
 							<label><input type="checkbox" data-c="${ c.id }" ${ c.visible ? 'checked' : '' }> ${ esc( c.label ) }</label>
 						</li>` ).join( '' ) }
 				</ul>`;
 
 			let dragI = null;
-			panel.querySelectorAll( '.shop-views__col' ).forEach( li => {
+			panel.querySelectorAll( '.counter-views__col' ).forEach( li => {
 				li.addEventListener( 'dragstart', e => { dragI = +li.getAttribute( 'data-i' ); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData( 'text/plain', String( dragI ) ); } );
 				li.addEventListener( 'dragover',  e => { e.preventDefault(); } );
 				li.addEventListener( 'drop',      e => {

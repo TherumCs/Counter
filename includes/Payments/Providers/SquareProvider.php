@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — SquareProvider.
+ * Counter by Therum — SquareProvider.
  *
  * Covers methods that Square does better than Stripe:
  *   - cashapp  (Square owns Cash App Pay — native flow)
@@ -12,12 +12,12 @@
  * or, in Studio Pay Connect mode, from `shop_studio_pay_square_token`.
  */
 
-namespace Shop\Payments\Providers;
+namespace Counter\Payments\Providers;
 
-use Shop\Models\Order;
-use Shop\Money;
-use Shop\Payments\PaymentIntent;
-use Shop\Payments\WebhookEvent;
+use Counter\Models\Order;
+use Counter\Money;
+use Counter\Payments\PaymentIntent;
+use Counter\Payments\WebhookEvent;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -90,7 +90,7 @@ final class SquareProvider implements PaymentProvider {
 	public function verifyWebhook( string $rawBody, array $headers ): ?array {
 		$sig = $headers['x-square-hmacsha256-signature'] ?? $headers['X-Square-HmacSha256-Signature'] ?? '';
 		if ( $sig === '' ) return null;
-		$secret = (string) get_option( 'shop_square_webhook_secret', '' );
+		$secret = (string) get_option( 'counter_square_webhook_secret', '' );
 		if ( $secret === '' ) return null;
 		$url    = rest_url( 'shop/v1/webhooks/square' );
 		$expected = base64_encode( hash_hmac( 'sha256', $url . $rawBody, $secret, true ) );
@@ -124,12 +124,12 @@ final class SquareProvider implements PaymentProvider {
 	// ─── Internals ───────────────────────────────────────────────────────
 
 	private function accessToken(): string {
-		return (string) get_option( 'shop_studio_pay_square_token', '' )
-			?: (string) get_option( 'shop_square_access_token', '' );
+		return (string) get_option( 'counter_studio_pay_square_token', '' )
+			?: (string) get_option( 'counter_square_access_token', '' );
 	}
 
 	private function locationId(): string {
-		return (string) get_option( 'shop_square_location_id', '' );
+		return (string) get_option( 'counter_square_location_id', '' );
 	}
 
 	/**

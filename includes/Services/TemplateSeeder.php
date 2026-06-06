@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — TemplateSeeder.
+ * Counter by Therum — TemplateSeeder.
  *
  * Creates the starter templates on first activation. Each template is
  * a Page row with kind='template' and an assigned_to slot:
@@ -15,10 +15,10 @@
  * Admins can edit or replace any of these in the builder.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Models\Page;
-use Shop\Repositories\PageRepository;
+use Counter\Models\Page;
+use Counter\Repositories\PageRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -42,7 +42,7 @@ final class TemplateSeeder {
 				'status' => 'published',
 				'tree'   => $this->defaultHeaderTree(),
 			] );
-			update_option( 'shop_active_header_id', $page->id );
+			update_option( 'counter_active_header_id', $page->id );
 		}
 
 		$existingFooters = $this->pages->list( Page::KIND_FOOTER, null, 1 );
@@ -52,7 +52,7 @@ final class TemplateSeeder {
 				'status' => 'published',
 				'tree'   => $this->defaultFooterTree(),
 			] );
-			update_option( 'shop_active_footer_id', $page->id );
+			update_option( 'counter_active_footer_id', $page->id );
 		}
 	}
 
@@ -262,7 +262,7 @@ final class TemplateSeeder {
 				] ),
 				$this->node( 'divider', [ 'color' => 'rgba(255,255,255,0.12)' ] ),
 				$this->node( 'rich-text', [
-					'html' => '<p style="opacity:.6;font-size:12px;">© ' . $year . ' ' . esc_html( $name ) . '. Built with Shop by Therum.</p>',
+					'html' => '<p style="opacity:.6;font-size:12px;">© ' . $year . ' ' . esc_html( $name ) . '. Built with Counter by Therum.</p>',
 				] ),
 			] ),
 		];

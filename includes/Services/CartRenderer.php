@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CartRenderer.
+ * Counter by Therum — CartRenderer.
  *
  * Server-side rendering for cart surfaces. Picks the shell from settings,
  * delegates to the inner template (cart/contents.php), returns the HTML
@@ -15,9 +15,9 @@
  * <plugin>/templates/cart/ to <theme>/shop/cart/ and yours wins.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Models\Cart;
+use Counter\Models\Cart;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -107,10 +107,10 @@ final class CartRenderer {
 	 */
 	public function defaultMode(): string {
 		$mode = (string) get_option(
-			'shop_cart_presentation',
-			(string) get_option( 'shop_cart_default_mode', self::MODE_STUDIO )
+			'counter_cart_presentation',
+			(string) get_option( 'counter_cart_default_mode', self::MODE_STUDIO )
 		);
-		$mode = (string) apply_filters( 'shop_cart_default_mode', $mode );
+		$mode = (string) apply_filters( 'counter_cart_default_mode', $mode );
 
 		return in_array( $mode, self::ALL_MODES, true ) ? $mode : self::MODE_STUDIO;
 	}
@@ -129,7 +129,7 @@ final class CartRenderer {
 		$candidates = [
 			get_stylesheet_directory() . '/shop/' . $relative,
 			get_template_directory()   . '/shop/' . $relative,
-			SHOP_DIR . 'templates/' . $relative,
+			COUNTER_DIR . 'templates/' . $relative,
 		];
 
 		$path = '';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PSP gateway contract.
+ * Counter by Therum — PSP gateway contract.
  *
  * Every payment provider (Square, Stripe, mock, future) implements this.
  * The plugin's checkout flow knows only this interface — to swap providers,
@@ -30,10 +30,10 @@
  * three. We can decompose later if a niche provider doesn't.
  */
 
-namespace Shop\Payments;
+namespace Counter\Payments;
 
-use Shop\Models\Order;
-use Shop\Money;
+use Counter\Models\Order;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

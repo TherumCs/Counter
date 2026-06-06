@@ -1,16 +1,16 @@
 <?php
 /**
- * Shop by Therum — generic CSV exporter.
+ * Counter by Therum — generic CSV exporter.
  *
  * One row per product. For variant-bearing products, also emits one
  * row per variant with the parent's title + variant attribute columns
  * filled in. Round-trips cleanly through CsvImporter.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
-use Shop\Models\Product;
-use Shop\Repositories\ProductRepository;
+use Counter\Models\Product;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -72,7 +72,7 @@ final class CsvExporter implements Exporter {
 		// the CSV importer can still consume the single-row form and
 		// admin can rebuild variants from that. Native catalog: hit the
 		// table directly.
-		$pdo = \Shop\DB::pdo();
+		$pdo = \Counter\DB::pdo();
 		$stmt = $pdo->prepare( "SELECT id FROM product_variants WHERE product_id = :p ORDER BY position ASC" );
 		$stmt->execute( [ ':p' => $product->id ] );
 		$variant_ids = array_map( 'intval', array_column( $stmt->fetchAll(), 'id' ) );
@@ -87,7 +87,7 @@ final class CsvExporter implements Exporter {
 		}
 	}
 
-	private function productRow( Product $product, ?\Shop\Models\Variant $variant ): array {
+	private function productRow( Product $product, ?\Counter\Models\Variant $variant ): array {
 		$options = $variant?->meta['options'] ?? [];
 		$image_url = $product->primaryImageId !== null
 			? (string) wp_get_attachment_image_url( $product->primaryImageId, 'large' )
@@ -114,7 +114,7 @@ final class CsvExporter implements Exporter {
 		];
 	}
 
-	private function money( ?\Shop\Money $m ): string {
+	private function money( ?\Counter\Money $m ): string {
 		if ( $m === null ) return '';
 		return number_format( $m->minor / 100, 2, '.', '' );
 	}

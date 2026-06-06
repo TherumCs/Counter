@@ -1,13 +1,13 @@
 <?php
 /**
- * Shop by Therum — admin Order Import / Export page.
+ * Counter by Therum — admin Order Import / Export page.
  *
  * Wraps OrderIoController. Roundtrip-compatible CSV (the importer +
  * exporter share the same column layout) so admins can export from
  * one store, edit in Excel, re-import to another.
  */
 
-namespace Shop\Admin;
+namespace Counter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -15,19 +15,19 @@ final class OrderIoPage {
 
 	public function render(): void {
 		?>
-		<div class="wrap shop-admin">
-			<h1 class="shop-admin__title">
-				<span class="shop-admin__mark">T</span> Order Import / Export
+		<div class="wrap counter-admin">
+			<h1 class="counter-admin__title">
+				<span class="counter-admin__mark">T</span> Order Import / Export
 			</h1>
 			<div
-				id="shop-order-io"
+				id="counter-order-io"
 				data-rest="<?php echo esc_url( rest_url() ); ?>"
 				data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"
 			></div>
 		</div>
 		<script>
 		( function () {
-			const root = document.getElementById( 'shop-order-io' );
+			const root = document.getElementById( 'counter-order-io' );
 			if ( ! root ) return;
 			const REST  = root.getAttribute( 'data-rest' ) + 'shop/v1/';
 			const NONCE = root.getAttribute( 'data-nonce' );
@@ -37,9 +37,9 @@ final class OrderIoPage {
 			}, opts || {} ) ).then( r => r.json() );
 
 			root.innerHTML = `
-				<div class="shop-sp-card">
-					<div class="shop-sp-card__head"><h3>Export orders</h3></div>
-					<div class="shop-sp-card__body">
+				<div class="counter-sp-card">
+					<div class="counter-sp-card__head"><h3>Export orders</h3></div>
+					<div class="counter-sp-card__body">
 						<p>One row per line item; order columns repeat. Matches WebToffee / Shopify export format.</p>
 						<p>
 							<label>Status: <input type="text" id="status" placeholder="(any)"></label>
@@ -47,14 +47,14 @@ final class OrderIoPage {
 							&nbsp;<label>To: <input type="date" id="to"></label>
 						</p>
 					</div>
-					<div class="shop-sp-card__actions">
+					<div class="counter-sp-card__actions">
 						<button class="button" id="csv">Download CSV</button>
 						<button class="button" id="json">Download JSON</button>
 					</div>
 				</div>
-				<div class="shop-sp-card">
-					<div class="shop-sp-card__head"><h3>Import orders</h3></div>
-					<div class="shop-sp-card__body">
+				<div class="counter-sp-card">
+					<div class="counter-sp-card__head"><h3>Import orders</h3></div>
+					<div class="counter-sp-card__body">
 						<p>Paste the CSV. Multiple rows with the same <code>order_number</code> are merged into one order with its line items.</p>
 						<textarea id="csvin" style="width:100%;height:200px;font-family:JetBrains Mono,monospace;font-size:11px"></textarea>
 						<p>
@@ -68,7 +68,7 @@ final class OrderIoPage {
 						</p>
 						<div id="result" style="font-family:JetBrains Mono,monospace;font-size:11px;color:#50575e"></div>
 					</div>
-					<div class="shop-sp-card__actions">
+					<div class="counter-sp-card__actions">
 						<button class="button button-primary" id="run">Run import</button>
 					</div>
 				</div>`;

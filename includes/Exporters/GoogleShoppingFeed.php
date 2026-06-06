@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Google Shopping XML feed.
+ * Counter by Therum — Google Shopping XML feed.
  *
  * Spec: https://support.google.com/merchants/answer/7052112
  *
@@ -17,12 +17,12 @@
  * image).
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
-use Shop\Models\Product;
-use Shop\Models\Variant;
-use Shop\Repositories\ProductRepository;
-use Shop\Services\VendorDictionaryService;
+use Counter\Models\Product;
+use Counter\Models\Variant;
+use Counter\Repositories\ProductRepository;
+use Counter\Services\VendorDictionaryService;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -136,7 +136,7 @@ final class GoogleShoppingFeed implements Exporter {
 
 	/** @return Variant[] */
 	private function variantsOf( Product $product ): array {
-		$pdo = \Shop\DB::pdo();
+		$pdo = \Counter\DB::pdo();
 		$stmt = $pdo->prepare( "SELECT id FROM product_variants WHERE product_id = :p AND enabled = 1 ORDER BY position ASC" );
 		$stmt->execute( [ ':p' => $product->id ] );
 		$out = [];

@@ -9,12 +9,12 @@
  *   - link          link to product (default false; usually on archive)
  */
 
-namespace Shop\Elements\Catalog;
+namespace Counter\Elements\Catalog;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Repositories\ProductRepository;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -50,7 +50,7 @@ final class ProductTitle implements Element {
 		$link      = ! empty( $settings['link'] );
 
 		$style = $color !== '' ? sprintf( ' style="color:%s"', esc_attr( $color ) ) : '';
-		$class = sprintf( 'shop-el shop-el-product-title shop-el--align-%s', esc_attr( $alignment ) );
+		$class = sprintf( 'counter-el counter-el-product-title counter-el--align-%s', esc_attr( $alignment ) );
 
 		$content = esc_html( $product->title );
 		if ( $link ) {

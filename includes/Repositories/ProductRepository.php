@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ProductRepository contract.
+ * Counter by Therum — ProductRepository contract.
  *
  * Catalogs live in different places per install:
  *
@@ -17,11 +17,11 @@
  * convenience until Nexus takes over vendor sync.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\Models\Product;
-use Shop\Models\Variant;
-use Shop\Money;
+use Counter\Models\Product;
+use Counter\Models\Variant;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

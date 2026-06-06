@@ -1,14 +1,14 @@
 <?php
 /**
- * Shop by Therum — CartItem DTO.
+ * Counter by Therum — CartItem DTO.
  *
  * One line in a Cart. Mirrors a `session_items` row with the prices
  * hydrated as Money.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

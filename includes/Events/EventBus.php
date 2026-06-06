@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — typed event bus.
+ * Counter by Therum — typed event bus.
  *
  * Two dispatch modes:
  *
@@ -23,7 +23,7 @@
  * compute, that's what Pipelines are for — events are for side-effects.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -73,19 +73,19 @@ final class EventBus {
 		if ( function_exists( 'as_schedule_single_action' ) ) {
 			return (int) as_schedule_single_action(
 				time() + max( 0, $delaySeconds ),
-				'shop_queued_event',
+				'counter_queued_event',
 				[ $payload ],
 				'shop'
 			);
 		}
 
-		wp_schedule_single_event( time() + max( 0, $delaySeconds ), 'shop_queued_event', [ $payload ] );
+		wp_schedule_single_event( time() + max( 0, $delaySeconds ), 'counter_queued_event', [ $payload ] );
 		return 0;
 	}
 
 	/**
 	 * Worker callback — receives a queued payload, reconstructs the event,
-	 * and dispatches it synchronously. Registered to both 'shop_queued_event'
+	 * and dispatches it synchronously. Registered to both 'counter_queued_event'
 	 * (wp-cron) and the Action Scheduler hook by the bootstrap.
 	 *
 	 * @param array<string,mixed> $payload

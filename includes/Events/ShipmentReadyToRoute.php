@@ -9,7 +9,7 @@
  * available, else wp-cron.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

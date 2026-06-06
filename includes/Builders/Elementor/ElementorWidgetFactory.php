@@ -1,27 +1,27 @@
 <?php
 /**
- * Shop by Therum — Elementor widget factory.
+ * Counter by Therum — Elementor widget factory.
  *
  * Generates a `\Elementor\Widget_Base` subclass per Shop element via
  * `eval()`. This is the same trick BricksElementFactory uses — it lets
- * Shop define elements once in `Shop\Elements\*` and have them appear
+ * Shop define elements once in `Counter\Elements\*` and have them appear
  * in every supported builder without writing N adapter classes.
  *
  * The generated class:
  *   - get_name()     returns 'shop-{element-id}'
  *   - get_title()    returns the element's display name
  *   - get_icon()     returns 'eicon-store' (Shop branding everywhere)
- *   - get_categories() returns [ 'shop-by-therum' ]
+ *   - get_categories() returns [ 'counter-by-therum' ]
  *   - _register_controls() builds Elementor controls from the element's
  *     control schema via ElementorControlMap
  *   - render() delegates to the Shop element's render() with the
  *     Elementor `get_settings_for_display()` array
  */
 
-namespace Shop\Builders\Elementor;
+namespace Counter\Builders\Elementor;
 
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -47,9 +47,9 @@ final class ElementorWidgetFactory {
 			public function get_name() { return 'shop-{$elementId}'; }
 			public function get_title() { return '{$el->name()}'; }
 			public function get_icon() { return 'eicon-store'; }
-			public function get_categories() { return [ 'shop-by-therum' ]; }
+			public function get_categories() { return [ 'counter-by-therum' ]; }
 			protected function register_controls() {
-				\$this->start_controls_section( 'shop_main', [
+				\$this->start_controls_section( 'counter_main', [
 					'label' => 'Settings',
 					'tab'   => \\Elementor\\Controls_Manager::TAB_CONTENT,
 				] );
@@ -58,9 +58,9 @@ final class ElementorWidgetFactory {
 			}
 			protected function render() {
 				\$settings = \$this->get_settings_for_display();
-				\$el = \\Shop\\Container::instance()->get( \\Shop\\Elements\\ElementRegistry::class )->get( '{$elementId}' );
+				\$el = \\Counter\\Container::instance()->get( \\Counter\\Elements\\ElementRegistry::class )->get( '{$elementId}' );
 				if ( \$el ) {
-					echo \$el->render( (array) \$settings, new \\Shop\\Elements\\ElementContext() );
+					echo \$el->render( (array) \$settings, new \\Counter\\Elements\\ElementContext() );
 				}
 			}
 		}

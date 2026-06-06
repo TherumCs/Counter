@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — admin Updates page.
+ * Counter by Therum — admin Updates page.
  *
  * Three sections:
  *   1. Status — version + git head/branch/dirty + lock state
@@ -10,7 +10,7 @@
  * Vanilla JS, inline. No framework. Hits /admin/updater/*.
  */
 
-namespace Shop\Admin;
+namespace Counter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -18,19 +18,19 @@ final class UpdatesPage {
 
 	public function render(): void {
 		?>
-		<div class="wrap shop-admin">
-			<h1 class="shop-admin__title">
-				<span class="shop-admin__mark">T</span> Updates
+		<div class="wrap counter-admin">
+			<h1 class="counter-admin__title">
+				<span class="counter-admin__mark">T</span> Updates
 			</h1>
 			<div
-				id="shop-updater"
+				id="counter-updater"
 				data-rest="<?php echo esc_url( rest_url() ); ?>"
 				data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"
 			><p>Loading…</p></div>
 		</div>
 		<script>
 		( function () {
-			const root = document.getElementById( 'shop-updater' );
+			const root = document.getElementById( 'counter-updater' );
 			if ( ! root ) return;
 			const REST  = root.getAttribute( 'data-rest' ) + 'shop/v1/admin/updater/';
 			const NONCE = root.getAttribute( 'data-nonce' );
@@ -46,22 +46,22 @@ final class UpdatesPage {
 
 			function render( s ) {
 				root.innerHTML = `
-					<div class="shop-up-card">
-						<div class="shop-up-head"><h3>Status</h3></div>
-						<div class="shop-up-body">
+					<div class="counter-up-card">
+						<div class="counter-up-head"><h3>Status</h3></div>
+						<div class="counter-up-body">
 							<div><strong>Plugin version:</strong> ${ esc( s.version || 'unknown' ) }</div>
 							${ s.git ? `
-								<div><strong>Git:</strong> ${ esc( s.git.branch || '?' ) } @ <code>${ esc( s.git.head || '?' ) }</code> ${ s.git.dirty ? '<span class="shop-up-pill shop-up-pill--warn">uncommitted</span>' : '<span class="shop-up-pill shop-up-pill--ok">clean</span>' }</div>
-								<div class="shop-up-sub">${ esc( s.git.subject || '' ) }</div>
-								<div class="shop-up-sub">remote: ${ esc( s.git.remote || '?' ) }</div>
-							` : '<div class="shop-up-sub">Not a git checkout — pull-from-git is unavailable. Zip install + rollback still work.</div>' }
-							${ s.locked ? '<div class="shop-up-pill shop-up-pill--warn">Another update is currently locked</div>' : '' }
+								<div><strong>Git:</strong> ${ esc( s.git.branch || '?' ) } @ <code>${ esc( s.git.head || '?' ) }</code> ${ s.git.dirty ? '<span class="counter-up-pill counter-up-pill--warn">uncommitted</span>' : '<span class="counter-up-pill counter-up-pill--ok">clean</span>' }</div>
+								<div class="counter-up-sub">${ esc( s.git.subject || '' ) }</div>
+								<div class="counter-up-sub">remote: ${ esc( s.git.remote || '?' ) }</div>
+							` : '<div class="counter-up-sub">Not a git checkout — pull-from-git is unavailable. Zip install + rollback still work.</div>' }
+							${ s.locked ? '<div class="counter-up-pill counter-up-pill--warn">Another update is currently locked</div>' : '' }
 						</div>
 					</div>
 
-					<div class="shop-up-card">
-						<div class="shop-up-head"><h3>Update</h3></div>
-						<div class="shop-up-body">
+					<div class="counter-up-card">
+						<div class="counter-up-head"><h3>Update</h3></div>
+						<div class="counter-up-body">
 							${ s.git ? `
 								<p>Pull latest from <code>origin/${ esc( s.git.branch || 'main' ) }</code>. Local working-tree changes will be discarded.</p>
 								<label>Branch: <input id="branch" value="${ esc( s.git.branch || 'main' ) }" style="width:180px"></label>
@@ -75,15 +75,15 @@ final class UpdatesPage {
 							<hr>
 							<p>Take a manual snapshot without changing anything:</p>
 							<button class="button" id="snap">Snapshot now</button>
-							<div id="result" class="shop-up-result"></div>
+							<div id="result" class="counter-up-result"></div>
 						</div>
 					</div>
 
-					<div class="shop-up-card">
-						<div class="shop-up-head"><h3>Snapshots <span class="shop-up-sub">(${ s.snapshots.length })</span></h3></div>
-						<div class="shop-up-body">
+					<div class="counter-up-card">
+						<div class="counter-up-head"><h3>Snapshots <span class="counter-up-sub">(${ s.snapshots.length })</span></h3></div>
+						<div class="counter-up-body">
 							${ s.snapshots.length === 0
-								? '<p class="shop-up-sub">No snapshots yet. One is taken automatically before every update.</p>'
+								? '<p class="counter-up-sub">No snapshots yet. One is taken automatically before every update.</p>'
 								: `<table class="wp-list-table widefat striped">
 									<thead><tr><th>Version</th><th>When</th><th>Size</th><th>Note</th><th></th></tr></thead>
 									<tbody>${ s.snapshots.map( sn => `
@@ -91,7 +91,7 @@ final class UpdatesPage {
 											<td><code>${ esc( sn.version ) }</code></td>
 											<td>${ date( sn.created_at ) }</td>
 											<td>${ bytes( sn.size ) }</td>
-											<td class="shop-up-sub">${ esc( sn.note || '' ) }</td>
+											<td class="counter-up-sub">${ esc( sn.note || '' ) }</td>
 											<td>
 												<button class="button" data-rollback="${ esc( sn.id ) }">Rollback</button>
 												<button class="button-link-delete" data-del="${ esc( sn.id ) }">Delete</button>
@@ -107,7 +107,7 @@ final class UpdatesPage {
 			function bind() {
 				const result = document.getElementById( 'result' );
 				const say = ( msg, kind ) => {
-					result.className = 'shop-up-result ' + ( kind === 'ok' ? 'is-ok' : kind === 'err' ? 'is-err' : '' );
+					result.className = 'counter-up-result ' + ( kind === 'ok' ? 'is-ok' : kind === 'err' ? 'is-err' : '' );
 					result.textContent = msg;
 				};
 
@@ -176,25 +176,25 @@ final class UpdatesPage {
 		} )();
 		</script>
 		<style>
-		.shop-up-card { background: #fff; border: 1px solid #dcdcde; border-radius: 8px; margin-bottom: 14px; }
-		.shop-up-head { padding: 14px 18px; border-bottom: 1px solid #f0f0f1; }
-		.shop-up-head h3 { margin: 0; font-size: 14px; }
-		.shop-up-body { padding: 14px 18px; font-size: 13px; color: #50575e; }
-		.shop-up-body > * + * { margin-top: 10px; }
-		.shop-up-body hr { border: 0; border-top: 1px solid #f0f0f1; margin: 12px 0; }
-		.shop-up-sub { color: #8c8f94; font-size: 11px; }
-		.shop-up-pill {
+		.counter-up-card { background: #fff; border: 1px solid #dcdcde; border-radius: 8px; margin-bottom: 14px; }
+		.counter-up-head { padding: 14px 18px; border-bottom: 1px solid #f0f0f1; }
+		.counter-up-head h3 { margin: 0; font-size: 14px; }
+		.counter-up-body { padding: 14px 18px; font-size: 13px; color: #50575e; }
+		.counter-up-body > * + * { margin-top: 10px; }
+		.counter-up-body hr { border: 0; border-top: 1px solid #f0f0f1; margin: 12px 0; }
+		.counter-up-sub { color: #8c8f94; font-size: 11px; }
+		.counter-up-pill {
 			display: inline-block; padding: 2px 8px;
 			font: 700 10px JetBrains Mono, ui-monospace, Menlo, monospace;
 			letter-spacing: .06em; text-transform: uppercase;
 			border-radius: 999px;
 			margin-left: 6px;
 		}
-		.shop-up-pill--ok   { background: #d4edda; color: #155724; }
-		.shop-up-pill--warn { background: #fff3cd; color: #856404; }
-		.shop-up-result { font: 12px JetBrains Mono, ui-monospace, Menlo, monospace; padding: 10px; border-radius: 6px; background: #f6f7f7; }
-		.shop-up-result.is-ok  { background: #d4edda; color: #155724; }
-		.shop-up-result.is-err { background: #f8d7da; color: #721c24; }
+		.counter-up-pill--ok   { background: #d4edda; color: #155724; }
+		.counter-up-pill--warn { background: #fff3cd; color: #856404; }
+		.counter-up-result { font: 12px JetBrains Mono, ui-monospace, Menlo, monospace; padding: 10px; border-radius: 6px; background: #f6f7f7; }
+		.counter-up-result.is-ok  { background: #d4edda; color: #155724; }
+		.counter-up-result.is-err { background: #f8d7da; color: #721c24; }
 		</style>
 		<?php
 	}

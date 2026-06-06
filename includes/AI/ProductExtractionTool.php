@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Claude tool: extract_products.
+ * Counter by Therum — Claude tool: extract_products.
  *
  * One canonical JSON schema for "given this image/page, list the products
  * you see." Used by PdfImporter (per page), ImageImporter (single image),
@@ -10,7 +10,7 @@
  * output is always structured.
  */
 
-namespace Shop\AI;
+namespace Counter\AI;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

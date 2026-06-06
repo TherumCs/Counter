@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — coupon pipeline step.
+ * Counter by Therum — coupon pipeline step.
  *
  * Runs after SubtotalStep, before RoundingStep. For each applied coupon
  * that still validates, computes its discount and adds to
@@ -28,15 +28,15 @@
  *   vendor   → only lines where the variant's pod_provider == scope_ref
  */
 
-namespace Shop\Pipelines\Steps;
+namespace Counter\Pipelines\Steps;
 
-use Shop\Models\CartItem;
-use Shop\Models\Coupon;
-use Shop\Money;
-use Shop\Pipelines\CartStep;
-use Shop\Pipelines\CartTotalsContext;
-use Shop\Services\CouponService;
-use Shop\Repositories\ProductRepository;
+use Counter\Models\CartItem;
+use Counter\Models\Coupon;
+use Counter\Money;
+use Counter\Pipelines\CartStep;
+use Counter\Pipelines\CartTotalsContext;
+use Counter\Services\CouponService;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

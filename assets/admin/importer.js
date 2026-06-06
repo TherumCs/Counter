@@ -1,7 +1,7 @@
 /**
- * Shop by Therum — admin importer wizard.
+ * Counter by Therum — admin importer wizard.
  *
- * Vanilla JS. Drives the three-stage flow against the /shop/v1/import/*
+ * Vanilla JS. Drives the three-stage flow against the /counter/v1/import/*
  * REST endpoints printed by ImporterPage.
  *
  * Stage transitions:
@@ -16,19 +16,19 @@
 ( function () {
 	'use strict';
 
-	var cfg   = window.ShopImporterConfig || {};
+	var cfg   = window.CounterImporterConfig || {};
 	var REST  = ( cfg.rest || '/wp-json/' ) + 'shop/v1/';
 	var NONCE = cfg.nonce || '';
 
-	var root = document.querySelector( '[data-shop-importer]' );
+	var root = document.querySelector( '[data-counter-importer]' );
 	if ( ! root ) return;
 
-	var form        = root.querySelector( '[data-shop-importer-form]' );
+	var form        = root.querySelector( '[data-counter-importer-form]' );
 	var stages      = root.querySelectorAll( '[data-stage]' );
-	var grid        = root.querySelector( '[data-shop-importer-grid]' );
-	var summary     = root.querySelector( '[data-shop-importer-summary]' );
-	var doneTitle   = root.querySelector( '[data-shop-importer-done-title]' );
-	var doneSub     = root.querySelector( '[data-shop-importer-done-sub]' );
+	var grid        = root.querySelector( '[data-counter-importer-grid]' );
+	var summary     = root.querySelector( '[data-counter-importer-summary]' );
+	var doneTitle   = root.querySelector( '[data-counter-importer-done-title]' );
+	var doneSub     = root.querySelector( '[data-counter-importer-done-sub]' );
 
 	var current = []; // preview product list — round-tripped to commit
 
@@ -45,9 +45,9 @@
 	// ─── Source → Preview ───────────────────────────────────────────────────
 	form.addEventListener( 'submit', function ( e ) {
 		e.preventDefault();
-		var fileEl  = form.querySelector( '[data-shop-importer-file]' );
-		var urlEl   = form.querySelector( '[data-shop-importer-url]' );
-		var pickEl  = form.querySelector( '[data-shop-importer-pick]' );
+		var fileEl  = form.querySelector( '[data-counter-importer-file]' );
+		var urlEl   = form.querySelector( '[data-counter-importer-url]' );
+		var pickEl  = form.querySelector( '[data-counter-importer-pick]' );
 
 		var body = new FormData();
 		if ( pickEl && pickEl.value ) body.append( 'importer', pickEl.value );
@@ -91,7 +91,7 @@
 	} );
 
 	// ─── Preview → Commit ───────────────────────────────────────────────────
-	var commitBtn = root.querySelector( '[data-shop-importer-commit]' );
+	var commitBtn = root.querySelector( '[data-counter-importer-commit]' );
 	commitBtn.addEventListener( 'click', function () {
 		var selected = current.filter( function ( p ) { return p._selected; } );
 		if ( selected.length === 0 ) {
@@ -127,11 +127,11 @@
 		} );
 	} );
 
-	root.querySelector( '[data-shop-importer-back]' ).addEventListener( 'click', function () {
+	root.querySelector( '[data-counter-importer-back]' ).addEventListener( 'click', function () {
 		show( 'source' );
 	} );
 
-	root.querySelector( '[data-shop-importer-restart]' ).addEventListener( 'click', function () {
+	root.querySelector( '[data-counter-importer-restart]' ).addEventListener( 'click', function () {
 		form.reset();
 		current = [];
 		grid.innerHTML = '';
@@ -149,20 +149,20 @@
 				return '<li>' + esc( s ) + '</li>';
 			} ).join( '' );
 			var variants = ( p.variants && p.variants.length )
-				? '<div class="shop-pcard__variants">' + p.variants.length + ' variant' + ( p.variants.length === 1 ? '' : 's' ) + '</div>'
+				? '<div class="counter-pcard__variants">' + p.variants.length + ' variant' + ( p.variants.length === 1 ? '' : 's' ) + '</div>'
 				: '';
 			return (
-				'<article class="shop-pcard' + ( low ? ' shop-pcard--low' : '' ) + '" data-i="' + i + '">' +
-					'<input type="checkbox" class="shop-pcard__check" data-toggle="' + i + '" ' + ( p._selected ? 'checked' : '' ) + ' aria-label="Include">' +
-					'<div class="shop-pcard__title">' + esc( p.title || 'Untitled' ) + '</div>' +
-					'<div class="shop-pcard__meta">' + esc( p.sku || 'No SKU' ) + '</div>' +
-					'<div class="shop-pcard__row shop-pcard__price"><span>Price</span><span>' + esc( price ) + '</span></div>' +
-					'<div class="shop-pcard__confidence" title="Confidence: ' + conf + '%">' +
-						'<div class="shop-pcard__confidence-bar" style="width:' + conf + '%"></div>' +
+				'<article class="counter-pcard' + ( low ? ' counter-pcard--low' : '' ) + '" data-i="' + i + '">' +
+					'<input type="checkbox" class="counter-pcard__check" data-toggle="' + i + '" ' + ( p._selected ? 'checked' : '' ) + ' aria-label="Include">' +
+					'<div class="counter-pcard__title">' + esc( p.title || 'Untitled' ) + '</div>' +
+					'<div class="counter-pcard__meta">' + esc( p.sku || 'No SKU' ) + '</div>' +
+					'<div class="counter-pcard__row counter-pcard__price"><span>Price</span><span>' + esc( price ) + '</span></div>' +
+					'<div class="counter-pcard__confidence" title="Confidence: ' + conf + '%">' +
+						'<div class="counter-pcard__confidence-bar" style="width:' + conf + '%"></div>' +
 					'</div>' +
 					variants +
-					( issues ? '<div class="shop-pcard__issues"><ul>' + issues + '</ul></div>' : '' ) +
-					'<div class="shop-pcard__source">' + esc( p.source_ref || '' ) + '</div>' +
+					( issues ? '<div class="counter-pcard__issues"><ul>' + issues + '</ul></div>' : '' ) +
+					'<div class="counter-pcard__source">' + esc( p.source_ref || '' ) + '</div>' +
 				'</article>'
 			);
 		} ).join( '' );

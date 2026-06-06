@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — context object passed through CartTotalsPipeline.
+ * Counter by Therum — context object passed through CartTotalsPipeline.
  *
  * Mutable. Each step reads what previous steps wrote and adds its own.
  * Single source of truth for "what does this cart total right now"
@@ -13,11 +13,11 @@
  * tx; mutability inside that tx is fine and matches mental model.
  */
 
-namespace Shop\Pipelines;
+namespace Counter\Pipelines;
 
-use Shop\Models\Cart;
-use Shop\Models\CartItem;
-use Shop\Money;
+use Counter\Models\Cart;
+use Counter\Models\CartItem;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

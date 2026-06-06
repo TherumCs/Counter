@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — SQLite schema.
+ * Counter by Therum — SQLite schema.
  *
  * The full schema lives in a single function returning an ordered array of
  * DDL statements. Run by Migrations::run() against our PDO connection.
@@ -21,7 +21,7 @@
  * top-to-bottom in dependency order.
  */
 
-namespace Shop;
+namespace Counter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

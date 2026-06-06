@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Studio Pay method registry.
+ * Counter by Therum — Studio Pay method registry.
  *
  * Source of truth for every payment method we expose in the checkout
  * UI (the method strip in checkout-experience.html). Each Method
@@ -19,7 +19,7 @@
  * don't have a connected provider are hidden until configured.
  */
 
-namespace Shop\Payments\Studio;
+namespace Counter\Payments\Studio;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -41,7 +41,7 @@ final class MethodRegistry {
 			  'providers' => [ 'stripe' ], 'needsRedirect' => false ],
 			[ 'id' => 'link',         'group' => 'wallets', 'label' => 'Link',
 			  'providers' => [ 'stripe' ], 'needsRedirect' => false ],
-			[ 'id' => 'shop_pay',     'group' => 'wallets', 'label' => 'Shop Pay',
+			[ 'id' => 'counter_pay',     'group' => 'wallets', 'label' => 'Shop Pay',
 			  'providers' => [ 'stripe' ], 'needsRedirect' => true  ],
 			[ 'id' => 'paypal',       'group' => 'wallets', 'label' => 'PayPal',
 			  'providers' => [ 'paypal' ], 'needsRedirect' => true  ],

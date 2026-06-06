@@ -1,34 +1,34 @@
 <?php
 /**
- * Shop by Therum — REST: pages.
+ * Counter by Therum — REST: pages.
  *
- *   GET    /shop/v1/admin/pages                 list
- *   POST   /shop/v1/admin/pages                 create  { title, kind, assigned_to }
- *   GET    /shop/v1/admin/pages/{id}            get one
- *   PUT    /shop/v1/admin/pages/{id}            save    { title?, slug?, status?, tree?, meta? }
- *   DELETE /shop/v1/admin/pages/{id}            delete
- *   POST   /shop/v1/admin/pages/{id}/render     preview render — returns HTML
+ *   GET    /counter/v1/admin/pages                 list
+ *   POST   /counter/v1/admin/pages                 create  { title, kind, assigned_to }
+ *   GET    /counter/v1/admin/pages/{id}            get one
+ *   PUT    /counter/v1/admin/pages/{id}            save    { title?, slug?, status?, tree?, meta? }
+ *   DELETE /counter/v1/admin/pages/{id}            delete
+ *   POST   /counter/v1/admin/pages/{id}/render     preview render — returns HTML
  *
- *   GET    /shop/v1/elements                    public element catalog (for editor UI)
+ *   GET    /counter/v1/elements                    public element catalog (for editor UI)
  *
  * Authoring routes gated; element-catalog read is public so the editor
  * can pre-load it.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Elements\ElementContext;
-use Shop\Elements\ElementRegistry;
-use Shop\Models\Page;
-use Shop\Repositories\PageRepository;
-use Shop\Services\BuilderAi;
-use Shop\Services\PageRenderer;
+use Counter\Elements\ElementContext;
+use Counter\Elements\ElementRegistry;
+use Counter\Models\Page;
+use Counter\Repositories\PageRepository;
+use Counter\Services\BuilderAi;
+use Counter\Services\PageRenderer;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class PagesController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly PageRepository $pages,
@@ -92,7 +92,7 @@ final class PagesController {
 		if ( $page === null || $page->kind !== $kind ) {
 			return new \WP_REST_Response( [ 'error' => 'Page not found or wrong kind.' ], 404 );
 		}
-		update_option( 'shop_active_' . $kind . '_id', $id );
+		update_option( 'counter_active_' . $kind . '_id', $id );
 		return new \WP_REST_Response( [ 'ok' => true ], 200 );
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — WC_Order wrapper for HPOS export.
+ * Counter by Therum — WC_Order wrapper for HPOS export.
  *
  * Extends WC_Order so Woo extensions that type-hint `WC_Order $order`
  * accept it. Reads our SQLite order via OrderRepository on demand;
@@ -10,7 +10,7 @@
  * declaration below that PHP swaps for the real class when Woo loads.
  */
 
-namespace Shop\Compat;
+namespace Counter\Compat;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -31,7 +31,7 @@ if ( class_exists( \WC_Order::class ) ) {
 		public function save() { return $this->get_id(); }
 
 		public function delete( $force_delete = false ) {
-			// Refuse to delete from this surface — admins must use Shop's
+			// Refuse to delete from this surface — admins must use Counter's
 			// own admin to delete.
 			return false;
 		}

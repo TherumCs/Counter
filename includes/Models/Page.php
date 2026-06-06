@@ -1,12 +1,12 @@
 <?php
 /**
- * Shop by Therum — Page DTO.
+ * Counter by Therum — Page DTO.
  *
  * Read view of a `pages` row. `tree` is the element JSON the Pure
  * editor saves and the PageRenderer walks.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

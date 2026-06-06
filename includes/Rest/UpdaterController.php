@@ -1,13 +1,13 @@
 <?php
 /**
- * Shop by Therum — REST: updater.
+ * Counter by Therum — REST: updater.
  *
- *   GET    /shop/v1/admin/updater/status            git status + snapshot list
- *   POST   /shop/v1/admin/updater/snapshot          take a manual snapshot
- *   POST   /shop/v1/admin/updater/pull              git fetch + reset --hard
- *   POST   /shop/v1/admin/updater/install-zip       multipart upload + extract
- *   POST   /shop/v1/admin/updater/rollback          { id }
- *   DELETE /shop/v1/admin/updater/snapshot/{id}     delete a snapshot
+ *   GET    /counter/v1/admin/updater/status            git status + snapshot list
+ *   POST   /counter/v1/admin/updater/snapshot          take a manual snapshot
+ *   POST   /counter/v1/admin/updater/pull              git fetch + reset --hard
+ *   POST   /counter/v1/admin/updater/install-zip       multipart upload + extract
+ *   POST   /counter/v1/admin/updater/rollback          { id }
+ *   DELETE /counter/v1/admin/updater/snapshot/{id}     delete a snapshot
  *
  * Auth is gated on `manage_options` (NOT manage_woocommerce) because
  * this can rewrite the filesystem — shop admins shouldn't be able to
@@ -17,15 +17,15 @@
  * the working tree, so rollback always has a candidate.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Services\Updater;
+use Counter\Services\Updater;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class UpdaterController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct( private readonly Updater $updater ) {}
 
@@ -54,10 +54,10 @@ final class UpdaterController {
 
 	public function status( \WP_REST_Request $req ): \WP_REST_Response {
 		return new \WP_REST_Response( [
-			'version'   => defined( 'SHOP_VERSION' ) ? SHOP_VERSION : null,
+			'version'   => defined( 'COUNTER_VERSION' ) ? COUNTER_VERSION : null,
 			'git'       => $this->updater->gitStatus(),
 			'snapshots' => $this->updater->snapshots(),
-			'locked'    => (bool) get_transient( 'shop_updater_locked' ),
+			'locked'    => (bool) get_transient( 'counter_updater_locked' ),
 		], 200 );
 	}
 

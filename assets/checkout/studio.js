@@ -1,5 +1,5 @@
 /**
- * Shop by Therum — Studio checkout (Studio Pay method strip).
+ * Counter by Therum — Studio checkout (Studio Pay method strip).
  *
  * Tiny vanilla JS — ~4KB. Fetches available methods from
  * /studio-pay/methods, renders pills grouped by `group`, and swaps
@@ -14,14 +14,14 @@
 ( function () {
 	'use strict';
 
-	const root = document.querySelector( '.shop-checkout--studio' );
+	const root = document.querySelector( '.counter-checkout--studio' );
 	if ( ! root ) return;
 
 	const REST  = root.getAttribute( 'data-rest' ) + 'shop/v1/';
 	const NONCE = root.getAttribute( 'data-nonce' );
-	const methodsEl = root.querySelector( '[data-shop-methods]' );
-	const panelsEl  = root.querySelector( '[data-shop-panels]' );
-	const payBtn    = root.querySelector( '[data-shop-pay]' );
+	const methodsEl = root.querySelector( '[data-counter-methods]' );
+	const panelsEl  = root.querySelector( '[data-counter-panels]' );
+	const payBtn    = root.querySelector( '[data-counter-pay]' );
 
 	let active = null;
 	let methods = [];
@@ -35,13 +35,13 @@
 		api( 'studio-pay/methods' ).then( res => {
 			methods = ( res && res.methods ) || [];
 			if ( ! methods.length ) {
-				methodsEl.innerHTML = '<div class="shop-checkout__methods-empty">No payment methods are connected. Connect Studio Pay in admin.</div>';
+				methodsEl.innerHTML = '<div class="counter-checkout__methods-empty">No payment methods are connected. Connect Studio Pay in admin.</div>';
 				return;
 			}
 			renderStrip();
 			select( methods[0].id );
 		} ).catch( () => {
-			methodsEl.innerHTML = '<div class="shop-checkout__methods-empty">Couldn\'t load payment methods.</div>';
+			methodsEl.innerHTML = '<div class="counter-checkout__methods-empty">Couldn\'t load payment methods.</div>';
 		} );
 	}
 
@@ -57,8 +57,8 @@
 	function renderStrip() {
 		const html = methods.map( m => {
 			const group = GROUPS.find( g => g[0] === m.group ) || [ m.group, '·', m.label ];
-			return `<button class="shop-checkout__method-pill" data-method="${ m.id }" data-group="${ m.group }" type="button">
-				<span class="shop-checkout__pill-ico" data-group-ico="${ m.group }">${ group[1] }</span>
+			return `<button class="counter-checkout__method-pill" data-method="${ m.id }" data-group="${ m.group }" type="button">
+				<span class="counter-checkout__pill-ico" data-group-ico="${ m.group }">${ group[1] }</span>
 				${ m.label }
 			</button>`;
 		} ).join( '' );
@@ -99,22 +99,22 @@
 		// fall back to a manual capture-via-server flow (sandbox only).
 		return `
 			<div data-card-panel>
-				<div class="shop-checkout__row shop-checkout__row--1">
+				<div class="counter-checkout__row counter-checkout__row--1">
 					<label>Card number
-						<input class="shop-checkout__input" id="shop-card-num" autocomplete="cc-number" inputmode="numeric" placeholder="1234 1234 1234 1234">
+						<input class="counter-checkout__input" id="counter-card-num" autocomplete="cc-number" inputmode="numeric" placeholder="1234 1234 1234 1234">
 					</label>
 				</div>
-				<div class="shop-checkout__row">
+				<div class="counter-checkout__row">
 					<label>Expiry
-						<input class="shop-checkout__input" id="shop-card-exp" autocomplete="cc-exp" placeholder="MM / YY" maxlength="7">
+						<input class="counter-checkout__input" id="counter-card-exp" autocomplete="cc-exp" placeholder="MM / YY" maxlength="7">
 					</label>
 					<label>CVC
-						<input class="shop-checkout__input" id="shop-card-cvc" autocomplete="cc-csc" inputmode="numeric" placeholder="•••" maxlength="4">
+						<input class="counter-checkout__input" id="counter-card-cvc" autocomplete="cc-csc" inputmode="numeric" placeholder="•••" maxlength="4">
 					</label>
 				</div>
-				<div class="shop-checkout__row shop-checkout__row--1">
+				<div class="counter-checkout__row counter-checkout__row--1">
 					<label>Name on card
-						<input class="shop-checkout__input" id="shop-card-name" autocomplete="cc-name" placeholder="As shown on card">
+						<input class="counter-checkout__input" id="counter-card-name" autocomplete="cc-name" placeholder="As shown on card">
 					</label>
 				</div>
 			</div>`;
@@ -123,50 +123,50 @@
 	function walletPanel( m ) {
 		const buttons = methods
 			.filter( x => x.group === 'wallets' )
-			.map( w => `<button class="shop-checkout__wallet shop-checkout__wallet--${ w.id }" data-method="${ w.id }" type="button">${ escapeHtml( w.label ) }</button>` )
+			.map( w => `<button class="counter-checkout__wallet counter-checkout__wallet--${ w.id }" data-method="${ w.id }" type="button">${ escapeHtml( w.label ) }</button>` )
 			.join( '' );
-		return `<div class="shop-checkout__wallet-grid">${ buttons }</div>`;
+		return `<div class="counter-checkout__wallet-grid">${ buttons }</div>`;
 	}
 
 	function bnplPanel( active ) {
 		const rows = methods.filter( m => m.group === 'bnpl' ).map( m => `
-			<button class="shop-checkout__bnpl-card${ m.id === active.id ? ' is-active' : '' }" data-method="${ m.id }" type="button">
-				<div class="shop-checkout__bnpl-logo shop-checkout__bnpl-logo--${ m.id }">${ escapeHtml( m.label ) }</div>
-				<div class="shop-checkout__bnpl-name">Continue with ${ escapeHtml( m.label ) }</div>
-				<span class="shop-checkout__chev">→</span>
+			<button class="counter-checkout__bnpl-card${ m.id === active.id ? ' is-active' : '' }" data-method="${ m.id }" type="button">
+				<div class="counter-checkout__bnpl-logo counter-checkout__bnpl-logo--${ m.id }">${ escapeHtml( m.label ) }</div>
+				<div class="counter-checkout__bnpl-name">Continue with ${ escapeHtml( m.label ) }</div>
+				<span class="counter-checkout__chev">→</span>
 			</button>` ).join( '' );
-		return `<div class="shop-checkout__bnpl-list">${ rows }</div>`;
+		return `<div class="counter-checkout__bnpl-list">${ rows }</div>`;
 	}
 
 	function bankPanel() {
 		return `
-			<button class="shop-checkout__bank" data-method="bank_ach" type="button">
-				<div class="shop-checkout__bank-ico">⏧</div>
+			<button class="counter-checkout__bank" data-method="bank_ach" type="button">
+				<div class="counter-checkout__bank-ico">⏧</div>
 				<div style="flex:1">
-					<div class="shop-checkout__bank-name">Connect with Plaid</div>
-					<div class="shop-checkout__bank-sub">Pay directly from your bank. Saves ~2% in card fees.</div>
+					<div class="counter-checkout__bank-name">Connect with Plaid</div>
+					<div class="counter-checkout__bank-sub">Pay directly from your bank. Saves ~2% in card fees.</div>
 				</div>
-				<span class="shop-checkout__chev">→</span>
+				<span class="counter-checkout__chev">→</span>
 			</button>`;
 	}
 
 	function cryptoPanel() {
 		const coins = [ 'BTC', 'ETH', 'USDC', 'USDT', 'SOL', 'XRP' ];
 		const chips = coins.map( c => `
-			<button class="shop-checkout__crypto-chip" data-coin="${ c }" type="button">
-				<div class="shop-checkout__crypto-sym shop-checkout__crypto-sym--${ c.toLowerCase() }">${ c[0] }</div>
-				<div class="shop-checkout__crypto-label">${ c }</div>
+			<button class="counter-checkout__crypto-chip" data-coin="${ c }" type="button">
+				<div class="counter-checkout__crypto-sym counter-checkout__crypto-sym--${ c.toLowerCase() }">${ c[0] }</div>
+				<div class="counter-checkout__crypto-label">${ c }</div>
 			</button>` ).join( '' );
 		return `
-			<div class="shop-checkout__crypto-grid">${ chips }</div>
-			<div class="shop-checkout__note">QR code generated after confirmation. ~10–15 min for network settlement.</div>`;
+			<div class="counter-checkout__crypto-grid">${ chips }</div>
+			<div class="counter-checkout__note">QR code generated after confirmation. ~10–15 min for network settlement.</div>`;
 	}
 
 	function p2pPanel( m ) {
 		const rows = methods.filter( x => x.group === 'p2p' )
-			.map( x => `<button class="shop-checkout__p2p shop-checkout__p2p--${ x.id }" data-method="${ x.id }" type="button">${ escapeHtml( x.label ) }</button>` )
+			.map( x => `<button class="counter-checkout__p2p counter-checkout__p2p--${ x.id }" data-method="${ x.id }" type="button">${ escapeHtml( x.label ) }</button>` )
 			.join( '' );
-		return `<div class="shop-checkout__p2p-grid">${ rows }</div>`;
+		return `<div class="counter-checkout__p2p-grid">${ rows }</div>`;
 	}
 
 	function bindPanel( id ) {
@@ -182,7 +182,7 @@
 	}
 
 	function updatePayLabel() {
-		const totalEl = root.querySelector( '[data-shop-total]' );
+		const totalEl = root.querySelector( '[data-counter-total]' );
 		const total = totalEl ? totalEl.textContent.trim() : '';
 		const m = methods.find( x => x.id === active );
 		const labels = {
@@ -209,7 +209,7 @@
 	}
 
 	// ── Submit — create the intent through Studio Pay and route ──────
-	root.querySelector( '#shop-checkout-form' ).addEventListener( 'submit', e => {
+	root.querySelector( '#counter-checkout-form' ).addEventListener( 'submit', e => {
 		e.preventDefault();
 		payBtn.disabled = true;
 		payBtn.textContent = 'Processing…';
@@ -222,10 +222,10 @@
 				if ( res.client_secret ) {
 					// Card path — hand off to Stripe Elements if loaded.
 					if ( window.Stripe ) {
-						window.Stripe( window.ShopStripePk ).confirmCardPayment( res.client_secret, {
+						window.Stripe( window.CounterStripePk ).confirmCardPayment( res.client_secret, {
 							payment_method: {
-								card: { number: document.getElementById('shop-card-num').value },
-								billing_details: { name: document.getElementById('shop-card-name').value },
+								card: { number: document.getElementById('counter-card-num').value },
+								billing_details: { name: document.getElementById('counter-card-name').value },
 							},
 						} ).then( r => {
 							if ( r.error ) throw new Error( r.error.message );

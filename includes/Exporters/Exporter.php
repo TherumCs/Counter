@@ -1,12 +1,12 @@
 <?php
 /**
- * Shop by Therum — Exporter contract.
+ * Counter by Therum — Exporter contract.
  *
  * One impl per output format. Two consumer paths share this surface:
  *
  *   1. Admin export wizard / WP-CLI: pick format → ExportQuery → stream
  *      ExportResult to the browser or stdout.
- *   2. Feed endpoints: /shop/v1/feeds/{provider}.{ext} — Google
+ *   2. Feed endpoints: /counter/v1/feeds/{provider}.{ext} — Google
  *      Shopping, Meta Catalog, TikTok hit these on a schedule. Same
  *      Exporter, no auth, served as a public file.
  *
@@ -19,7 +19,7 @@
  * by default.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

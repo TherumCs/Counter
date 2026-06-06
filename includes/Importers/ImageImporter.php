@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Single-image importer (vision-model backed).
+ * Counter by Therum — Single-image importer (vision-model backed).
  *
  * Flow:
  *
@@ -17,11 +17,11 @@
  * confirm the extracted details, save.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\AI\ClaudeClient;
-use Shop\AI\ProductExtractionTool;
-use Shop\Money;
+use Counter\AI\ClaudeClient;
+use Counter\AI\ProductExtractionTool;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -137,7 +137,7 @@ final class ImageImporter implements Importer {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 
-		$tmp = tempnam( sys_get_temp_dir(), 'shop-img-' ) . '.' . pathinfo( $path, PATHINFO_EXTENSION );
+		$tmp = tempnam( sys_get_temp_dir(), 'counter-img-' ) . '.' . pathinfo( $path, PATHINFO_EXTENSION );
 		if ( ! @copy( $path, $tmp ) ) return null;
 
 		$attachment = wp_handle_sideload(

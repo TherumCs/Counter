@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — OrderService.
+ * Counter by Therum — OrderService.
  *
  * Order state transitions + event emission. The only thing that should
  * flip an order's status. Channels (REST, webhook, admin) call into here.
@@ -9,15 +9,15 @@
  * with milestones #5 (refunds) and #2 (fulfillment routing).
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\DB;
-use Shop\Events\EventBus;
-use Shop\Events\OrderCreated;
-use Shop\Events\OrderPaid;
-use Shop\Models\Cart;
-use Shop\Models\Order;
-use Shop\Repositories\OrderRepository;
+use Counter\DB;
+use Counter\Events\EventBus;
+use Counter\Events\OrderCreated;
+use Counter\Events\OrderPaid;
+use Counter\Models\Cart;
+use Counter\Models\Order;
+use Counter\Repositories\OrderRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

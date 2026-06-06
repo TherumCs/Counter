@@ -1,27 +1,27 @@
 <?php
 /**
- * Shop by Therum — REST: grid views.
+ * Counter by Therum — REST: grid views.
  *
  * Saved view = a named bundle of { columns, filters, sort } scoped to
  * one grid ("products" / "orders") and one user. Stored in user_meta
  * under `shop_grid_views_{grid}` as a JSON-encoded array.
  *
- *   GET    /shop/v1/admin/grid-views/{grid}        list this user's views
- *   POST   /shop/v1/admin/grid-views/{grid}        save new view
- *   PUT    /shop/v1/admin/grid-views/{grid}/{id}   update
- *   DELETE /shop/v1/admin/grid-views/{grid}/{id}   delete
+ *   GET    /counter/v1/admin/grid-views/{grid}        list this user's views
+ *   POST   /counter/v1/admin/grid-views/{grid}        save new view
+ *   PUT    /counter/v1/admin/grid-views/{grid}/{id}   update
+ *   DELETE /counter/v1/admin/grid-views/{grid}/{id}   delete
  *
  * The id is a per-user incrementing int stored on the array itself —
  * keeps views local to user_meta without needing a new SQLite table.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class GridViewsController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function register(): void {
 		$auth = fn(): bool => current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' );
@@ -85,14 +85,14 @@ final class GridViewsController {
 
 	/** @return array<int, array<string,mixed>> */
 	private function readAll( string $grid ): array {
-		$raw = get_user_meta( get_current_user_id(), 'shop_grid_views_' . $this->safe( $grid ), true );
+		$raw = get_user_meta( get_current_user_id(), 'counter_grid_views_' . $this->safe( $grid ), true );
 		$arr = $raw ? json_decode( (string) $raw, true ) : [];
 		return is_array( $arr ) ? $arr : [];
 	}
 
 	/** @param array<int, array<string,mixed>> $views */
 	private function writeAll( string $grid, array $views ): void {
-		update_user_meta( get_current_user_id(), 'shop_grid_views_' . $this->safe( $grid ), wp_json_encode( $views ) );
+		update_user_meta( get_current_user_id(), 'counter_grid_views_' . $this->safe( $grid ), wp_json_encode( $views ) );
 	}
 
 	private function safe( string $grid ): string {

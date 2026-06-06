@@ -1,5 +1,5 @@
 /**
- * Shop by Therum — Pure page builder (Preact MVP).
+ * Counter by Therum — Pure page builder (Preact MVP).
  *
  * Phases shipped:
  *   - palette / canvas / inspector / autosave + live preview (0.14)
@@ -22,7 +22,7 @@ import { animate, spring } from 'https://esm.sh/motion@10.18.0';
 
 const html = htm.bind( h );
 
-const root = document.getElementById( 'shop-builder-root' );
+const root = document.getElementById( 'counter-builder-root' );
 if ( root ) {
 	const pageId = parseInt( root.getAttribute( 'data-page-id' ), 10 );
 	const REST   = root.getAttribute( 'data-rest' ) + 'shop/v1/';
@@ -164,13 +164,13 @@ if ( root ) {
 			if ( ! selectedSet.size ) return;
 			const nodes = [ ...selectedSet ].map( id => findNode( tree, id ) ).filter( Boolean );
 			try {
-				window.localStorage.setItem( 'shop:builder:clipboard', JSON.stringify( nodes ) );
+				window.localStorage.setItem( 'counter:builder:clipboard', JSON.stringify( nodes ) );
 			} catch ( _ ) {}
 		}, [ selectedSet, tree ] );
 
 		const pasteClipboard = useCallback( () => {
 			let nodes = [];
-			try { nodes = JSON.parse( window.localStorage.getItem( 'shop:builder:clipboard' ) || '[]' ); }
+			try { nodes = JSON.parse( window.localStorage.getItem( 'counter:builder:clipboard' ) || '[]' ); }
 			catch ( _ ) { return; }
 			if ( ! Array.isArray( nodes ) || ! nodes.length ) return;
 			const cloned = nodes.map( n => reId( n, uuid ) );
@@ -178,18 +178,18 @@ if ( root ) {
 			setSelectedSet( new Set( cloned.map( n => n.id ) ) );
 		}, [ applyTree ] );
 
-		// Click-in-preview — delegate clicks on .shop-ed wrappers inside
+		// Click-in-preview — delegate clicks on .counter-ed wrappers inside
 		// the preview div to select the matching tree node. Modifier keys
 		// route to the same multi-select handlers.
 		useEffect( () => {
 			const root = previewRef.current;
 			if ( ! root ) return;
 			const onClick = ( e ) => {
-				const wrap = e.target.closest( '.shop-ed[data-shop-node-id]' );
+				const wrap = e.target.closest( '.counter-ed[data-counter-node-id]' );
 				if ( ! wrap ) return;
 				e.preventDefault();
 				e.stopPropagation();
-				const id = wrap.getAttribute( 'data-shop-node-id' );
+				const id = wrap.getAttribute( 'data-counter-node-id' );
 				if ( e.metaKey || e.ctrlKey ) toggleSelect( id );
 				else if ( e.shiftKey )         extendSelect( id );
 				else                           setSelected( id );
@@ -203,12 +203,12 @@ if ( root ) {
 		// guide lines into the overlay.
 		useEffect( () => {
 			if ( ! previewRef.current || ! selected ) { setGuides( [] ); return; }
-			const el = previewRef.current.querySelector( '[data-shop-node-id="' + cssEscape( selected ) + '"]' );
+			const el = previewRef.current.querySelector( '[data-counter-node-id="' + cssEscape( selected ) + '"]' );
 			if ( ! el ) { setGuides( [] ); return; }
 			const rootRect = previewRef.current.getBoundingClientRect();
 			const elRect   = el.getBoundingClientRect();
 			const sibs     = Array.from( el.parentElement?.children || [] )
-				.filter( c => c !== el && c.classList.contains( 'shop-ed' ) );
+				.filter( c => c !== el && c.classList.contains( 'counter-ed' ) );
 			const next = [];
 			sibs.forEach( s => {
 				const sr = s.getBoundingClientRect();
@@ -314,7 +314,7 @@ if ( root ) {
 		const [ paletteErr,  setPaletteErr  ] = useState( '' );
 
 		// Preview viewport — desktop / tablet / mobile. The canvas
-		// constrains the .shop-builder__preview width so admins can see
+		// constrains the .counter-builder__preview width so admins can see
 		// how their tree responds without resizing the browser.
 		const [ viewport, setViewport ] = useState( 'desktop' );
 
@@ -360,49 +360,49 @@ if ( root ) {
 		const selectedElement = selectedNode ? elements.find( e => e.id === selectedNode.type ) : null;
 
 		if ( ! page ) {
-			return html`<div class="shop-builder-boot"><div class="shop-builder-boot__title">Loading…</div></div>`;
+			return html`<div class="counter-builder-boot"><div class="counter-builder-boot__title">Loading…</div></div>`;
 		}
 
 		return html`
-			<div class="shop-builder">
-				<header class="shop-builder__header">
-					<div class="shop-builder__mark">T</div>
+			<div class="counter-builder">
+				<header class="counter-builder__header">
+					<div class="counter-builder__mark">T</div>
 					<input
-						class="shop-builder__title-input"
+						class="counter-builder__title-input"
 						value=${ page.title }
 						onInput=${ e => {
 							setPage( { ...page, title: e.target.value } );
 							api( 'admin/pages/' + page.id, { method: 'PUT', body: JSON.stringify( { title: e.target.value } ) } );
 						} }
 					/>
-					<button class="shop-builder__icon-btn" title="Undo (⌘Z)" disabled=${ ! past.current.length } onClick=${ undo }>↶</button>
-					<button class="shop-builder__icon-btn" title="Redo (⌘⇧Z)" disabled=${ ! future.current.length } onClick=${ redo }>↷</button>
-					<button class="shop-builder__icon-btn shop-builder__icon-btn--ai" title="AI command (⌘K)" onClick=${ () => setPaletteOpen( true ) }>✨</button>
-					<div class="shop-builder__viewport">
-						<button class=${ "shop-builder__vp" + ( viewport === 'desktop' ? ' is-active' : '' ) } title="Desktop"  onClick=${ () => setViewport( 'desktop' ) }>▭</button>
-						<button class=${ "shop-builder__vp" + ( viewport === 'tablet'  ? ' is-active' : '' ) } title="Tablet"   onClick=${ () => setViewport( 'tablet' ) }>▯</button>
-						<button class=${ "shop-builder__vp" + ( viewport === 'mobile'  ? ' is-active' : '' ) } title="Mobile"   onClick=${ () => setViewport( 'mobile' ) }>▫</button>
+					<button class="counter-builder__icon-btn" title="Undo (⌘Z)" disabled=${ ! past.current.length } onClick=${ undo }>↶</button>
+					<button class="counter-builder__icon-btn" title="Redo (⌘⇧Z)" disabled=${ ! future.current.length } onClick=${ redo }>↷</button>
+					<button class="counter-builder__icon-btn counter-builder__icon-btn--ai" title="AI command (⌘K)" onClick=${ () => setPaletteOpen( true ) }>✨</button>
+					<div class="counter-builder__viewport">
+						<button class=${ "counter-builder__vp" + ( viewport === 'desktop' ? ' is-active' : '' ) } title="Desktop"  onClick=${ () => setViewport( 'desktop' ) }>▭</button>
+						<button class=${ "counter-builder__vp" + ( viewport === 'tablet'  ? ' is-active' : '' ) } title="Tablet"   onClick=${ () => setViewport( 'tablet' ) }>▯</button>
+						<button class=${ "counter-builder__vp" + ( viewport === 'mobile'  ? ' is-active' : '' ) } title="Mobile"   onClick=${ () => setViewport( 'mobile' ) }>▫</button>
 					</div>
 					${ selectedSet.size > 1 ? html`
-						<div class="shop-builder__bulk">
-							<span class="shop-builder__bulk-count">${ selectedSet.size } selected</span>
-							<button class="shop-builder__bulk-btn" onClick=${ duplicateSelected } title="Duplicate (⌘D)">Duplicate</button>
-							<button class="shop-builder__bulk-btn shop-builder__bulk-btn--danger" onClick=${ removeSelected } title="Delete">Delete</button>
-							<button class="shop-builder__bulk-btn" onClick=${ () => setSelectedSet( new Set() ) } title="Clear">Clear</button>
+						<div class="counter-builder__bulk">
+							<span class="counter-builder__bulk-count">${ selectedSet.size } selected</span>
+							<button class="counter-builder__bulk-btn" onClick=${ duplicateSelected } title="Duplicate (⌘D)">Duplicate</button>
+							<button class="counter-builder__bulk-btn counter-builder__bulk-btn--danger" onClick=${ removeSelected } title="Delete">Delete</button>
+							<button class="counter-builder__bulk-btn" onClick=${ () => setSelectedSet( new Set() ) } title="Clear">Clear</button>
 						</div>
 					` : null }
-					<div class="shop-builder__status">${ saving ? 'Saving…' : 'Saved' }</div>
-					<a class="shop-builder__exit" href="${ window.location.search.replace(/[?&]page_id=\d+/, '').replace(/&action=edit/, '') || 'admin.php?page=shop-pages' }">Back to pages</a>
+					<div class="counter-builder__status">${ saving ? 'Saving…' : 'Saved' }</div>
+					<a class="counter-builder__exit" href="${ window.location.search.replace(/[?&]page_id=\d+/, '').replace(/&action=edit/, '') || 'admin.php?page=counter-pages' }">Back to pages</a>
 				</header>
 
-				<div class="shop-builder__body">
-					<aside class="shop-builder__palette">
+				<div class="counter-builder__body">
+					<aside class="counter-builder__palette">
 						<h3>Add element</h3>
 						${ groupByCategory( elements ).map( ( [ cat, list ] ) => html`
-							<div class="shop-builder__palette-group" key=${ cat }>
-								<div class="shop-builder__palette-group-label">${ cat }</div>
+							<div class="counter-builder__palette-group" key=${ cat }>
+								<div class="counter-builder__palette-group-label">${ cat }</div>
 								${ list.map( el => html`
-									<button class="shop-builder__palette-item" onClick=${ () => addElement( el.id ) } key=${ el.id }>
+									<button class="counter-builder__palette-item" onClick=${ () => addElement( el.id ) } key=${ el.id }>
 										${ el.name }
 									</button>
 								` ) }
@@ -410,18 +410,18 @@ if ( root ) {
 						` ) }
 					</aside>
 
-					<main class=${ "shop-builder__canvas shop-builder__canvas--vp-" + viewport }>
-						<div class="shop-builder__preview-frame">
-							<div class="shop-builder__preview" ref=${ previewRef } dangerouslySetInnerHTML=${ { __html: preview } } />
-							<div class="shop-builder__guides">
+					<main class=${ "counter-builder__canvas counter-builder__canvas--vp-" + viewport }>
+						<div class="counter-builder__preview-frame">
+							<div class="counter-builder__preview" ref=${ previewRef } dangerouslySetInnerHTML=${ { __html: preview } } />
+							<div class="counter-builder__guides">
 								${ guides.map( ( g, i ) => g.axis === 'v'
-									? html`<div key=${ 'gv'+i } class="shop-builder__guide shop-builder__guide--v" style=${ 'left:' + g.x + 'px;top:' + g.y1 + 'px;height:' + ( g.y2 - g.y1 ) + 'px;' } />`
-									: html`<div key=${ 'gh'+i } class="shop-builder__guide shop-builder__guide--h" style=${ 'top:'  + g.y + 'px;left:' + g.x1 + 'px;width:'  + ( g.x2 - g.x1 ) + 'px;' } />`
+									? html`<div key=${ 'gv'+i } class="counter-builder__guide counter-builder__guide--v" style=${ 'left:' + g.x + 'px;top:' + g.y1 + 'px;height:' + ( g.y2 - g.y1 ) + 'px;' } />`
+									: html`<div key=${ 'gh'+i } class="counter-builder__guide counter-builder__guide--h" style=${ 'top:'  + g.y + 'px;left:' + g.x1 + 'px;width:'  + ( g.x2 - g.x1 ) + 'px;' } />`
 								) }
 							</div>
 						</div>
 						<div
-							class="shop-builder__overlay"
+							class="counter-builder__overlay"
 							onDragOver=${ ( e ) => {
 								if ( ! dragId ) return;
 								e.preventDefault();
@@ -463,15 +463,15 @@ if ( root ) {
 								/>
 							` ) }
 							${ dropIndex === tree.length
-								? html`<div class="shop-builder__drop-line shop-builder__drop-line--tail" />`
+								? html`<div class="counter-builder__drop-line counter-builder__drop-line--tail" />`
 								: null }
 						</div>
 					</main>
 
-					<aside class="shop-builder__inspector">
+					<aside class="counter-builder__inspector">
 						${ selectedNode && selectedElement
 							? html`<${ Inspector } element=${ selectedElement } node=${ selectedNode } onChange=${ ( s ) => updateSettings( selectedNode.id, s ) } />`
-							: html`<p class="shop-builder__inspector-empty">Select an element to edit.</p>`
+							: html`<p class="counter-builder__inspector-empty">Select an element to edit.</p>`
 						}
 					</aside>
 				</div>
@@ -502,29 +502,29 @@ if ( root ) {
 		];
 
 		return html`
-			<div class="shop-builder__palette-bg" onClick=${ onClose }>
-				<div class="shop-builder__palette-modal" onClick=${ e => e.stopPropagation() }>
+			<div class="counter-builder__palette-bg" onClick=${ onClose }>
+				<div class="counter-builder__palette-modal" onClick=${ e => e.stopPropagation() }>
 					<form onSubmit=${ ( e ) => { e.preventDefault(); if ( value.trim() ) onSubmit( value.trim() ); } }>
-						<div class="shop-builder__palette-bar">
-							<span class="shop-builder__palette-icon">✨</span>
+						<div class="counter-builder__palette-bar">
+							<span class="counter-builder__palette-icon">✨</span>
 							<input
 								ref=${ inputRef }
-								class="shop-builder__palette-input"
+								class="counter-builder__palette-input"
 								type="text"
 								value=${ value }
 								disabled=${ busy }
 								onInput=${ e => setValue( e.target.value ) }
 								placeholder="Describe the change — e.g. add a hero section"
 							/>
-							<span class="shop-builder__palette-kbd">${ busy ? 'Thinking…' : 'Enter' }</span>
+							<span class="counter-builder__palette-kbd">${ busy ? 'Thinking…' : 'Enter' }</span>
 						</div>
 					</form>
 					${ err
-						? html`<div class="shop-builder__palette-err">${ err }</div>`
+						? html`<div class="counter-builder__palette-err">${ err }</div>`
 						: html`
-							<div class="shop-builder__palette-sugg-label">Try</div>
+							<div class="counter-builder__palette-sugg-label">Try</div>
 							${ SUGGESTIONS.map( s => html`
-								<button class="shop-builder__palette-sugg" onClick=${ () => { setValue( s ); onSubmit( s ); } } disabled=${ busy }>
+								<button class="counter-builder__palette-sugg" onClick=${ () => { setValue( s ); onSubmit( s ); } } disabled=${ busy }>
 									${ s }
 								</button>
 							` ) }
@@ -559,12 +559,12 @@ if ( root ) {
 		}, [] );
 
 		return html`
-			${ showDropBefore ? html`<div class="shop-builder__drop-line" />` : null }
+			${ showDropBefore ? html`<div class="counter-builder__drop-line" />` : null }
 			<div
 				ref=${ rowRef }
 				draggable=${ true }
 				data-node-id=${ node.id }
-				class=${ "shop-builder__node"
+				class=${ "counter-builder__node"
 					+ ( selected   ? " is-selected" : "" )
 					+ ( isDragging ? " is-dragging" : "" ) }
 				onClick=${ ( e ) => { e.stopPropagation(); onSelect( e ); } }
@@ -582,12 +582,12 @@ if ( root ) {
 					onDragOverRow( ( e.clientY - rect.top ) < rect.height / 2 );
 				} }
 			>
-				<div class="shop-builder__node-label">
-					<span class="shop-builder__drag-grip" title="Drag to reorder">⋮⋮</span>
-					<span class="shop-builder__node-type">${ name }</span>
+				<div class="counter-builder__node-label">
+					<span class="counter-builder__drag-grip" title="Drag to reorder">⋮⋮</span>
+					<span class="counter-builder__node-type">${ name }</span>
 					${ inlineKey
 						? html`<input
-							class="shop-builder__node-inline"
+							class="counter-builder__node-inline"
 							value=${ inlineVal }
 							placeholder=${ name }
 							onClick=${ e => e.stopPropagation() }
@@ -596,7 +596,7 @@ if ( root ) {
 						/>`
 						: null
 					}
-					<div class="shop-builder__node-actions">
+					<div class="counter-builder__node-actions">
 						<button title="Move up"   disabled=${ index === 0 }         onClick=${ e => { e.stopPropagation(); onMoveUp(); } }>↑</button>
 						<button title="Move down" disabled=${ index === count - 1 } onClick=${ e => { e.stopPropagation(); onMoveDown(); } }>↓</button>
 						<button title="Duplicate"                                   onClick=${ e => { e.stopPropagation(); onDuplicate(); } }>⎘</button>
@@ -628,13 +628,13 @@ if ( root ) {
 	function Inspector( { element, node, onChange } ) {
 		const groups = groupControls( element.controls );
 		return html`
-			<div class="shop-builder__inspector-head">
+			<div class="counter-builder__inspector-head">
 				<h3>${ element.name }</h3>
-				<div class="shop-builder__inspector-sub">${ element.category }</div>
+				<div class="counter-builder__inspector-sub">${ element.category }</div>
 			</div>
 			${ Object.entries( groups ).map( ( [ groupLabel, controls ] ) => html`
-				<div class="shop-builder__inspector-group" key=${ groupLabel }>
-					${ groupLabel ? html`<div class="shop-builder__inspector-group-label">${ groupLabel }</div>` : null }
+				<div class="counter-builder__inspector-group" key=${ groupLabel }>
+					${ groupLabel ? html`<div class="counter-builder__inspector-group-label">${ groupLabel }</div>` : null }
 					${ controls.map( c => html`<${ Control } control=${ c } value=${ node.settings[ c.id ] ?? c.default } onChange=${ ( v ) => onChange( { [ c.id ]: v } ) } />` ) }
 				</div>
 			` ) }
@@ -643,26 +643,26 @@ if ( root ) {
 
 	function Control( { control, value, onChange } ) {
 		const id = 'c-' + control.id;
-		const label = html`<label class="shop-builder__control-label" for=${ id }>${ control.label }</label>`;
+		const label = html`<label class="counter-builder__control-label" for=${ id }>${ control.label }</label>`;
 
 		switch ( control.type ) {
 			case 'text':
-				return html`<div class="shop-builder__control">${ label }<input id=${ id } class="shop-builder__input" type="text" value=${ value || '' } onInput=${ e => onChange( e.target.value ) } /></div>`;
+				return html`<div class="counter-builder__control">${ label }<input id=${ id } class="counter-builder__input" type="text" value=${ value || '' } onInput=${ e => onChange( e.target.value ) } /></div>`;
 			case 'textarea':
-				return html`<div class="shop-builder__control">${ label }<textarea id=${ id } class="shop-builder__input shop-builder__input--ta" onInput=${ e => onChange( e.target.value ) }>${ value || '' }</textarea></div>`;
+				return html`<div class="counter-builder__control">${ label }<textarea id=${ id } class="counter-builder__input counter-builder__input--ta" onInput=${ e => onChange( e.target.value ) }>${ value || '' }</textarea></div>`;
 			case 'number':
-				return html`<div class="shop-builder__control">${ label }<input id=${ id } class="shop-builder__input" type="number" value=${ value ?? 0 } onInput=${ e => onChange( parseFloat( e.target.value ) || 0 ) } /></div>`;
+				return html`<div class="counter-builder__control">${ label }<input id=${ id } class="counter-builder__input" type="number" value=${ value ?? 0 } onInput=${ e => onChange( parseFloat( e.target.value ) || 0 ) } /></div>`;
 			case 'toggle':
-				return html`<div class="shop-builder__control shop-builder__control--toggle"><label><input type="checkbox" checked=${ !! value } onChange=${ e => onChange( e.target.checked ) } /> ${ control.label }</label></div>`;
+				return html`<div class="counter-builder__control counter-builder__control--toggle"><label><input type="checkbox" checked=${ !! value } onChange=${ e => onChange( e.target.checked ) } /> ${ control.label }</label></div>`;
 			case 'color':
-				return html`<div class="shop-builder__control">${ label }<input id=${ id } class="shop-builder__input shop-builder__input--color" type="color" value=${ value || '#000000' } onInput=${ e => onChange( e.target.value ) } /></div>`;
+				return html`<div class="counter-builder__control">${ label }<input id=${ id } class="counter-builder__input counter-builder__input--color" type="color" value=${ value || '#000000' } onInput=${ e => onChange( e.target.value ) } /></div>`;
 			case 'select':
 			case 'alignment':
-				return html`<div class="shop-builder__control">${ label }<select id=${ id } class="shop-builder__input" onChange=${ e => onChange( e.target.value ) }>${ Object.entries( control.options || {} ).map( ( [ v, l ] ) => html`<option value=${ v } selected=${ v === value }>${ l }</option>` ) }</select></div>`;
+				return html`<div class="counter-builder__control">${ label }<select id=${ id } class="counter-builder__input" onChange=${ e => onChange( e.target.value ) }>${ Object.entries( control.options || {} ).map( ( [ v, l ] ) => html`<option value=${ v } selected=${ v === value }>${ l }</option>` ) }</select></div>`;
 			case 'image':
-				return html`<div class="shop-builder__control">${ label }<button class="shop-builder__input" onClick=${ () => openMediaPicker( onChange ) }>${ value ? 'Image #' + value : 'Choose image' }</button></div>`;
+				return html`<div class="counter-builder__control">${ label }<button class="counter-builder__input" onClick=${ () => openMediaPicker( onChange ) }>${ value ? 'Image #' + value : 'Choose image' }</button></div>`;
 			default:
-				return html`<div class="shop-builder__control">${ label }<input id=${ id } class="shop-builder__input" type="text" value=${ value ?? '' } onInput=${ e => onChange( e.target.value ) } /></div>`;
+				return html`<div class="counter-builder__control">${ label }<input id=${ id } class="counter-builder__input" type="text" value=${ value ?? '' } onInput=${ e => onChange( e.target.value ) } /></div>`;
 		}
 	}
 

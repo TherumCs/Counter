@@ -1,9 +1,9 @@
 <?php
 /**
- * Shop by Therum — uninstall cleanup.
+ * Counter by Therum — uninstall cleanup.
  *
  * Destructive: deletes the SQLite database file and the wp-content/uploads/
- * therum-shop directory. Only fires on explicit plugin deletion via the
+ * counter directory. Only fires on explicit plugin deletion via the
  * WordPress admin (not on deactivation), so the user is opting in.
  *
  * If you want to deactivate without losing data, do NOT click "Delete" — just
@@ -21,7 +21,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
 // ──────────────────────────────────────────────────────────────────────────
 
 $uploads = wp_upload_dir();
-$dir     = trailingslashit( $uploads['basedir'] ) . 'therum-shop';
+$dir     = trailingslashit( $uploads['basedir'] ) . 'counter';
 
 if ( is_dir( $dir ) ) {
 	$files = [
@@ -76,9 +76,9 @@ foreach ( $legacy_tables as $tbl ) {
 }
 
 // Settings cleanup.
-delete_option( 'shop_db_version' );
-delete_option( 'shop_cart_presentation' );
-delete_option( 'shop_checkout_presentation' );
-delete_option( 'shop_cart_button_position' );
-delete_option( 'shop_cart_default_mode' );      // legacy 0.2.x key
-delete_option( 'shop_product_source' );
+delete_option( 'counter_db_version' );
+delete_option( 'counter_cart_presentation' );
+delete_option( 'counter_checkout_presentation' );
+delete_option( 'counter_cart_button_position' );
+delete_option( 'counter_cart_default_mode' );      // legacy 0.2.x key
+delete_option( 'counter_product_source' );

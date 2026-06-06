@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — WebhookReceiver.
+ * Counter by Therum — WebhookReceiver.
  *
  * The single entry point for PSP webhooks. Flow:
  *
@@ -22,12 +22,12 @@
  * fulfillment plumbing hiccuped.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\DB;
-use Shop\Payments\WebhookEvent;
-use Shop\Repositories\OrderRepository;
-use Shop\Repositories\PaymentGatewayRegistry;
+use Counter\DB;
+use Counter\Payments\WebhookEvent;
+use Counter\Repositories\OrderRepository;
+use Counter\Repositories\PaymentGatewayRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — cart totals pipeline.
+ * Counter by Therum — cart totals pipeline.
  *
  * Composes an ordered list of CartStep instances. Each step mutates the
  * shared CartTotalsContext. The pipeline is the only thing that computes
@@ -19,7 +19,7 @@
  * their owning milestone (#2, #4) lands.
  */
 
-namespace Shop\Pipelines;
+namespace Counter\Pipelines;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -63,12 +63,12 @@ final class CartTotalsPipeline {
 	 *
 	 * @return CartStep[]
 	 */
-	public static function resolveDefault( \Shop\Container $c ): array {
+	public static function resolveDefault( \Counter\Container $c ): array {
 		return [
 			new Steps\SubtotalStep(),
 			new Steps\CouponStep(
-				$c->get( \Shop\Services\CouponService::class ),
-				$c->get( \Shop\Repositories\ProductRepository::class ),
+				$c->get( \Counter\Services\CouponService::class ),
+				$c->get( \Counter\Repositories\ProductRepository::class ),
 			),
 			new Steps\RoundingStep(),
 		];

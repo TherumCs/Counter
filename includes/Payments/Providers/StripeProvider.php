@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — StripeProvider.
+ * Counter by Therum — StripeProvider.
  *
  * Wraps Stripe via raw HTTP — no SDK. Saves ~600KB of vendor code and
  * means upgrades are a config bump, not a Composer dance.
@@ -19,12 +19,12 @@
  * set we're in Connect mode, else BYO.
  */
 
-namespace Shop\Payments\Providers;
+namespace Counter\Payments\Providers;
 
-use Shop\Models\Order;
-use Shop\Money;
-use Shop\Payments\PaymentIntent;
-use Shop\Payments\WebhookEvent;
+use Counter\Models\Order;
+use Counter\Money;
+use Counter\Payments\PaymentIntent;
+use Counter\Payments\WebhookEvent;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -45,7 +45,7 @@ final class StripeProvider implements PaymentProvider {
 		'apple_pay'    => 'card',          // wallet via PaymentRequest
 		'google_pay'   => 'card',          // wallet via PaymentRequest
 		'link'         => 'link',
-		'shop_pay'     => 'link',          // SPC fallback to Link
+		'counter_pay'     => 'link',          // SPC fallback to Link
 		'klarna'       => 'klarna',
 		'affirm'       => 'affirm',
 		'afterpay'     => 'afterpay_clearpay',
@@ -116,7 +116,7 @@ final class StripeProvider implements PaymentProvider {
 	public function verifyWebhook( string $rawBody, array $headers ): ?array {
 		$sig = $headers['stripe-signature'] ?? $headers['Stripe-Signature'] ?? '';
 		if ( $sig === '' ) return null;
-		$secret = (string) get_option( 'shop_studio_pay_stripe_webhook_secret', '' );
+		$secret = (string) get_option( 'counter_studio_pay_stripe_webhook_secret', '' );
 		if ( $secret === '' ) return null;
 
 		// Parse "t=...,v1=..." format
@@ -167,14 +167,14 @@ final class StripeProvider implements PaymentProvider {
 		// Studio Pay Connect mode — secret is our platform key, the
 		// connected account is targeted via the Stripe-Account header.
 		if ( $this->connectAccountId() !== '' ) {
-			return (string) get_option( 'shop_studio_pay_platform_secret', '' );
+			return (string) get_option( 'counter_studio_pay_platform_secret', '' );
 		}
 		// BYO mode — merchant's own secret.
-		return (string) get_option( 'shop_stripe_secret_key', '' );
+		return (string) get_option( 'counter_stripe_secret_key', '' );
 	}
 
 	private function connectAccountId(): string {
-		return (string) get_option( 'shop_studio_pay_stripe_account_id', '' );
+		return (string) get_option( 'counter_studio_pay_stripe_account_id', '' );
 	}
 
 	/**

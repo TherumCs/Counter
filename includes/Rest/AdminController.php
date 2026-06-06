@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — REST: admin-scoped product + order endpoints.
+ * Counter by Therum — REST: admin-scoped product + order endpoints.
  *
  * Powers the spreadsheet-style manager. All routes require manage_woocommerce.
  *
@@ -23,11 +23,11 @@
  * primitive — sale price, stock, vendor, etc.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\DB;
-use Shop\Repositories\OrderRepository;
-use Shop\Services\RefundService;
+use Counter\DB;
+use Counter\Repositories\OrderRepository;
+use Counter\Services\RefundService;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -38,7 +38,7 @@ final class AdminController {
 		private readonly RefundService $refunds,
 	) {}
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	/** Fields safe to inline-edit via PATCH (whitelist). */
 	private const EDITABLE = [
@@ -164,7 +164,7 @@ final class AdminController {
 		// Unlocked mode — products live in Woo, not our SQLite table.
 		// Bridge through `wc_get_products()` so the same admin grid
 		// works without a forced migration.
-		if ( \Shop\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_products' ) ) {
+		if ( \Counter\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_products' ) ) {
 			return $this->listProductsFromWoo( $page, $per, $q, $status, $sort, $order );
 		}
 
@@ -460,7 +460,7 @@ final class AdminController {
 	public function getProduct( \WP_REST_Request $req ): \WP_REST_Response {
 		$id = (int) $req->get_param( 'id' );
 
-		if ( \Shop\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
+		if ( \Counter\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
 			$wc = wc_get_product( $id );
 			if ( ! $wc instanceof \WC_Product ) {
 				return new \WP_REST_Response( [ 'error' => [ 'message' => 'Product not found.' ] ], 404 );
@@ -635,7 +635,7 @@ final class AdminController {
 		}
 		// Unlocked mode — patch through Woo so we don't silently UPDATE
 		// the empty SQLite products table.
-		if ( \Shop\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
+		if ( \Counter\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
 			return $this->patchWooProduct( $id, $body );
 		}
 
@@ -666,7 +666,7 @@ final class AdminController {
 		}
 
 		// Unlocked mode — route bulk through Woo.
-		if ( \Shop\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
+		if ( \Counter\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
 			return $this->bulkWooProducts( $action, $ids, $body );
 		}
 

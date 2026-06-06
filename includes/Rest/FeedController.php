@@ -1,32 +1,32 @@
 <?php
 /**
- * Shop by Therum — REST: feed + export endpoints.
+ * Counter by Therum — REST: feed + export endpoints.
  *
  * Public feed routes (no auth — these are crawled by Google / Meta / TikTok):
  *
- *   GET /shop/v1/feeds/google-shopping.xml
- *   GET /shop/v1/feeds/meta-catalog.csv
- *   GET /shop/v1/feeds/tiktok-feed.csv
+ *   GET /counter/v1/feeds/google-shopping.xml
+ *   GET /counter/v1/feeds/meta-catalog.csv
+ *   GET /counter/v1/feeds/tiktok-feed.csv
  *
  * Cached for 15 minutes via WP transient. Feed providers don't need
  * second-by-second freshness; the catalog moves once a day for most stores.
  *
  * Admin export routes (auth gated):
  *
- *   POST /shop/v1/admin/export     — { format, status?, podProvider?, ids? }
- *   GET  /shop/v1/admin/exporters  — list available formats
+ *   POST /counter/v1/admin/export     — { format, status?, podProvider?, ids? }
+ *   GET  /counter/v1/admin/exporters  — list available formats
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Exporters\ExportQuery;
-use Shop\Services\ExporterRegistry;
+use Counter\Exporters\ExportQuery;
+use Counter\Services\ExporterRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class FeedController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 	private const CACHE_TTL = 15 * MINUTE_IN_SECONDS;
 
 	public function __construct(
@@ -70,7 +70,7 @@ final class FeedController {
 			return new \WP_REST_Response( [ 'error' => 'extension mismatch' ], 400 );
 		}
 
-		$cache_key = 'shop_feed_' . $id;
+		$cache_key = 'counter_feed_' . $id;
 		$cached    = get_transient( $cache_key );
 		if ( is_string( $cached ) && $cached !== '' ) {
 			return $this->raw( $cached, $exporter->mimeType() );

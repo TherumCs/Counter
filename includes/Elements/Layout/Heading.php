@@ -6,11 +6,11 @@
  * the current product). Used for arbitrary section titles.
  */
 
-namespace Shop\Elements\Layout;
+namespace Counter\Elements\Layout;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -46,7 +46,7 @@ final class Heading implements Element {
 
 		$style = $color !== '' ? sprintf( ' style="color:%s"', esc_attr( $color ) ) : '';
 		$class = sprintf(
-			'shop-el shop-el-heading shop-el-heading--%s shop-el--align-%s',
+			'counter-el counter-el-heading counter-el-heading--%s counter-el--align-%s',
 			esc_attr( $size ),
 			esc_attr( $alignment ),
 		);
@@ -61,7 +61,7 @@ final class Heading implements Element {
 		if ( $context->productId === null ) return $text;
 		if ( ! str_contains( $text, '{shop_product_' ) ) return $text;
 
-		$products = \Shop\Container::instance()->get( \Shop\Repositories\ProductRepository::class );
+		$products = \Counter\Container::instance()->get( \Counter\Repositories\ProductRepository::class );
 		$product  = $products->findById( $context->productId );
 		if ( $product === null ) return $text;
 

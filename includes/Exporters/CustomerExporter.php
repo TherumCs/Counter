@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Customer exporter.
+ * Counter by Therum — Customer exporter.
  *
  * Streams every customer to CSV (default) or JSON, matching the column
  * order most CRMs expect. The CSV is plain RFC-4180 with a UTF-8 BOM
@@ -12,10 +12,10 @@
  * product / order exporters.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
-use Shop\Models\Customer;
-use Shop\Repositories\CustomerRepository;
+use Counter\Models\Customer;
+use Counter\Repositories\CustomerRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

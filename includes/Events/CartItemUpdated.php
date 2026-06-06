@@ -3,7 +3,7 @@
  * Fired (sync) after a line's quantity changes.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

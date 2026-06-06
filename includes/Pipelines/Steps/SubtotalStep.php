@@ -7,11 +7,11 @@
  * in case the line_total was stale — single source of truth.
  */
 
-namespace Shop\Pipelines\Steps;
+namespace Counter\Pipelines\Steps;
 
-use Shop\Money;
-use Shop\Pipelines\CartStep;
-use Shop\Pipelines\CartTotalsContext;
+use Counter\Money;
+use Counter\Pipelines\CartStep;
+use Counter\Pipelines\CartTotalsContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

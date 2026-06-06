@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Shop control schema → Elementor controls.
+ * Counter by Therum — Shop control schema → Elementor controls.
  *
  * Returns a PHP-source string that, when eval'd inside an Elementor
  * widget's `register_controls()`, registers the equivalent controls.
@@ -16,7 +16,7 @@
  *   alignment  → Controls_Manager::CHOOSE (icon row)
  */
 
-namespace Shop\Builders\Elementor;
+namespace Counter\Builders\Elementor;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

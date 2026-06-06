@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ImporterRegistry.
+ * Counter by Therum — ImporterRegistry.
  *
  * Holds the configured Importer implementations. Two dispatch modes:
  *
@@ -12,10 +12,10 @@
  * generic fallbacks don't shadow them.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Importers\Importer;
-use Shop\Importers\ImportSource;
+use Counter\Importers\Importer;
+use Counter\Importers\ImportSource;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

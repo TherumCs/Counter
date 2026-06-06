@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CustomerRepository.
+ * Counter by Therum — CustomerRepository.
  *
  * The CRUD surface for the customers table. Designed for two consumers:
  *
@@ -16,10 +16,10 @@
  * UNIQUE-constraint exceptions.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\Customer;
+use Counter\DB;
+use Counter\Models\Customer;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

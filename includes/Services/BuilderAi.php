@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — BuilderAi.
+ * Counter by Therum — BuilderAi.
  *
  * Translates a natural-language command from the Pure builder's ⌘K
  * palette into a list of tree-mutation ops. The frontend applies the
@@ -25,10 +25,10 @@
  * JSON-schema'd `ops` array, then read the tool_use input.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\AI\ClaudeClient;
-use Shop\Elements\ElementRegistry;
+use Counter\AI\ClaudeClient;
+use Counter\Elements\ElementRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

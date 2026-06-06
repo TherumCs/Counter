@@ -9,7 +9,7 @@
  * sends) so the webhook handler returns 200 fast.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CheckoutService.
+ * Counter by Therum — CheckoutService.
  *
  * Orchestrates the cart → checkout → payment-intent → order handoff. Sits
  * above CartService and OrderService.
@@ -20,15 +20,15 @@
  * pipeline produces zero for both. Real quotes plug in at milestone #2.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\DB;
-use Shop\Models\Cart;
-use Shop\Models\Order;
-use Shop\Payments\PSPGateway;
-use Shop\Payments\PaymentIntent;
-use Shop\Repositories\OrderRepository;
-use Shop\Repositories\PaymentGatewayRegistry;
+use Counter\DB;
+use Counter\Models\Cart;
+use Counter\Models\Order;
+use Counter\Payments\PSPGateway;
+use Counter\Payments\PaymentIntent;
+use Counter\Repositories\OrderRepository;
+use Counter\Repositories\PaymentGatewayRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

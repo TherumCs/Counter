@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Product DTO.
+ * Counter by Therum — Product DTO.
  *
  * Immutable read view of a `products` row. Returned by ProductRepository.
  * No magic, no lazy loading. If you need variants/images/attrs on this
@@ -10,9 +10,9 @@
  * is_digital/is_pod/track_inventory.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

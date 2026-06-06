@@ -9,10 +9,10 @@
  * Switzerland's 5-rappen rounding) when we need them.
  */
 
-namespace Shop\Pipelines\Steps;
+namespace Counter\Pipelines\Steps;
 
-use Shop\Pipelines\CartStep;
-use Shop\Pipelines\CartTotalsContext;
+use Counter\Pipelines\CartStep;
+use Counter\Pipelines\CartTotalsContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,13 +1,13 @@
 <?php
 /**
- * Shop by Therum — REST: importer endpoints.
+ * Counter by Therum — REST: importer endpoints.
  *
  * Routes (namespace shop/v1):
  *
- *   POST /shop/v1/import/preview  — upload file OR send URL, returns
+ *   POST /counter/v1/import/preview  — upload file OR send URL, returns
  *                                   preview products (no DB writes)
- *   POST /shop/v1/import/commit   — confirm a preview, writes to SQLite
- *   GET  /shop/v1/import/options  — list registered importers
+ *   POST /counter/v1/import/commit   — confirm a preview, writes to SQLite
+ *   GET  /counter/v1/import/options  — list registered importers
  *
  * Auth: capability `manage_woocommerce` (or `manage_options` fallback)
  * — only admins can import.
@@ -18,20 +18,20 @@
  * nothing has to time out — they re-submit and we re-insert.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Importers\ImportSource;
-use Shop\Importers\PreviewProduct;
-use Shop\Importers\PreviewVariant;
-use Shop\Money;
-use Shop\Services\ImporterRegistry;
-use Shop\Services\ProductWriter;
+use Counter\Importers\ImportSource;
+use Counter\Importers\PreviewProduct;
+use Counter\Importers\PreviewVariant;
+use Counter\Money;
+use Counter\Services\ImporterRegistry;
+use Counter\Services\ProductWriter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class ImporterController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly ImporterRegistry $registry,

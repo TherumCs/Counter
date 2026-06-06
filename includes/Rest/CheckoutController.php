@@ -1,35 +1,35 @@
 <?php
 /**
- * Shop by Therum — REST: checkout endpoints.
+ * Counter by Therum — REST: checkout endpoints.
  *
  * Routes (namespace shop/v1):
  *
- *   POST   /shop/v1/checkout/email      — set customer email
- *   POST   /shop/v1/checkout/address    — set ship/bill address
- *   POST   /shop/v1/checkout/gateway    — choose payment provider + method
- *   POST   /shop/v1/checkout/start      — create order + payment intent
+ *   POST   /counter/v1/checkout/email      — set customer email
+ *   POST   /counter/v1/checkout/address    — set ship/bill address
+ *   POST   /counter/v1/checkout/gateway    — choose payment provider + method
+ *   POST   /counter/v1/checkout/start      — create order + payment intent
  *
- *   (dev-only) POST /shop/v1/mock/succeed/{intent_id}
- *              POST /shop/v1/mock/fail/{intent_id}
+ *   (dev-only) POST /counter/v1/mock/succeed/{intent_id}
+ *              POST /counter/v1/mock/fail/{intent_id}
  *
  * Identity: shop_cart_token cookie (same as cart endpoints).
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Models\Order;
-use Shop\Models\OrderItem;
-use Shop\Payments\MockGateway;
-use Shop\Payments\PaymentIntent;
-use Shop\Services\CartTokenManager;
-use Shop\Services\CheckoutService;
-use Shop\Services\WebhookReceiver;
+use Counter\Models\Order;
+use Counter\Models\OrderItem;
+use Counter\Payments\MockGateway;
+use Counter\Payments\PaymentIntent;
+use Counter\Services\CartTokenManager;
+use Counter\Services\CheckoutService;
+use Counter\Services\WebhookReceiver;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class CheckoutController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly CheckoutService $checkout,
@@ -150,7 +150,7 @@ final class CheckoutController {
 
 	// ─── Helpers ─────────────────────────────────────────────────────────
 
-	private function cartResponse( \Shop\Models\Cart $cart ): \WP_REST_Response {
+	private function cartResponse( \Counter\Models\Cart $cart ): \WP_REST_Response {
 		return new \WP_REST_Response( [
 			'cart' => [
 				'id'              => $cart->id,

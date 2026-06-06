@@ -1,28 +1,28 @@
 <?php
 /**
- * Shop by Therum — Updater.
+ * Counter by Therum — Updater.
  *
  * Self-update engine. Three input modes, one rollback path:
  *
  *   1. Git pull (`pullFromGit`)
  *      `git fetch origin` + `git reset --hard origin/{branch}` from
- *      inside SHOP_DIR. Treats the working tree as deploy-from-git —
+ *      inside COUNTER_DIR. Treats the working tree as deploy-from-git —
  *      local uncommitted edits are discarded unless `force=false`.
- *      Requires SHOP_DIR to be a git checkout (i.e. you cloned/
+ *      Requires COUNTER_DIR to be a git checkout (i.e. you cloned/
  *      symlinked, not zipped). Returns the new HEAD sha + commit
  *      subject.
  *
  *   2. Zip upload (`installFromZip`)
  *      Extracts a .zip into a temp dir, validates that a top-level
- *      `shop.php` exists, then mirrors the temp tree into SHOP_DIR.
+ *      `shop.php` exists, then mirrors the temp tree into COUNTER_DIR.
  *      Files not in the zip are NOT removed by default — opt-in via
  *      `clean=true` for "exactly replace" semantics.
  *
  *   3. Rollback (`restoreSnapshot`)
- *      Pick a snapshot by id, restore it over SHOP_DIR.
+ *      Pick a snapshot by id, restore it over COUNTER_DIR.
  *
- * Every mode runs `snapshot()` first — tars the current SHOP_DIR
- * (excluding `.git/`) into `wp-content/uploads/shop-by-therum/
+ * Every mode runs `snapshot()` first — tars the current COUNTER_DIR
+ * (excluding `.git/`) into `wp-content/uploads/counter/
  * snapshots/{version}-{ts}.tar.gz`, then prunes to keep only the most
  * recent N (default 10).
  *
@@ -32,13 +32,13 @@
  * lock the system.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class Updater {
 
-	private const LOCK_KEY     = 'shop_updater_locked';
+	private const LOCK_KEY     = 'counter_updater_locked';
 	private const LOCK_TTL_S   = 600; // 10 min
 	private const KEEP_SNAPS   = 10;
 
@@ -52,15 +52,15 @@ final class Updater {
 		if ( ! wp_mkdir_p( $dir ) ) {
 			throw new \RuntimeException( "Updater: snapshot dir unwritable ($dir)." );
 		}
-		$version = defined( 'SHOP_VERSION' ) ? SHOP_VERSION : '0.0.0';
+		$version = defined( 'COUNTER_VERSION' ) ? COUNTER_VERSION : '0.0.0';
 		$ts      = gmdate( 'Ymd-His' );
 		$id      = "v{$version}-{$ts}";
 		$tar     = $dir . '/' . $id . '.tar.gz';
 
 		// `tar cz --exclude=.git -C <parent> <plugin-folder>`. Using -C
 		// + relative path keeps the snapshot extractable into any host.
-		$plugin   = basename( SHOP_DIR );
-		$parent   = dirname( SHOP_DIR );
+		$plugin   = basename( COUNTER_DIR );
+		$parent   = dirname( COUNTER_DIR );
 		$cmd = sprintf(
 			'tar -czf %s --exclude=%s --exclude=%s -C %s %s 2>&1',
 			escapeshellarg( $tar ),
@@ -112,8 +112,8 @@ final class Updater {
 	 * @return array{ before: string, after: string, subject: string }
 	 */
 	public function pullFromGit( string $branch = 'main' ): array {
-		if ( ! is_dir( SHOP_DIR . '.git' ) ) {
-			throw new \RuntimeException( 'Updater: SHOP_DIR is not a git checkout.' );
+		if ( ! is_dir( COUNTER_DIR . '.git' ) ) {
+			throw new \RuntimeException( 'Updater: COUNTER_DIR is not a git checkout.' );
 		}
 		$this->lock();
 		try {
@@ -150,7 +150,7 @@ final class Updater {
 		$this->lock();
 		try {
 			// Stage extract into a temp dir.
-			$stage = trailingslashit( get_temp_dir() ) . 'shop-update-' . wp_generate_password( 8, false );
+			$stage = trailingslashit( get_temp_dir() ) . 'counter-update-' . wp_generate_password( 8, false );
 			if ( ! wp_mkdir_p( $stage ) ) throw new \RuntimeException( 'Updater: temp dir unwritable.' );
 
 			$zip = new \ZipArchive();
@@ -176,10 +176,10 @@ final class Updater {
 				throw new \RuntimeException( 'Updater: zip does not contain shop.php at its root.' );
 			}
 
-			$written = $this->mirror( $src, rtrim( SHOP_DIR, '/\\' ) );
+			$written = $this->mirror( $src, rtrim( COUNTER_DIR, '/\\' ) );
 			$removed = 0;
 			if ( $clean ) {
-				$removed = $this->reapMissing( $src, rtrim( SHOP_DIR, '/\\' ) );
+				$removed = $this->reapMissing( $src, rtrim( COUNTER_DIR, '/\\' ) );
 			}
 			$this->rmrf( $stage );
 			return [ 'files_written' => $written, 'files_removed' => $removed ];
@@ -189,7 +189,7 @@ final class Updater {
 	}
 
 	/**
-	 * Restore a snapshot over SHOP_DIR. The current state is itself
+	 * Restore a snapshot over COUNTER_DIR. The current state is itself
 	 * snapshotted first (under a label like "pre-rollback") so the
 	 * rollback is reversible.
 	 *
@@ -202,8 +202,8 @@ final class Updater {
 		$this->lock();
 		try {
 			$safety = $this->snapshot( 'pre-rollback to ' . $id );
-			$parent = dirname( SHOP_DIR );
-			$plugin = basename( SHOP_DIR );
+			$parent = dirname( COUNTER_DIR );
+			$plugin = basename( COUNTER_DIR );
 
 			// Wipe current plugin dir (except .git so a git checkout
 			// stays a checkout post-rollback) then untar.
@@ -228,7 +228,7 @@ final class Updater {
 
 	/** Current git state for the admin UI ("at commit abc1234 on main, clean / dirty"). */
 	public function gitStatus(): ?array {
-		if ( ! is_dir( SHOP_DIR . '.git' ) ) return null;
+		if ( ! is_dir( COUNTER_DIR . '.git' ) ) return null;
 		try {
 			return [
 				'head'    => trim( $this->git( 'rev-parse --short HEAD' ) ),
@@ -246,7 +246,7 @@ final class Updater {
 
 	private function snapshotsDir(): string {
 		$uploads = wp_upload_dir();
-		return trailingslashit( $uploads['basedir'] ) . 'shop-by-therum/snapshots';
+		return trailingslashit( $uploads['basedir'] ) . 'counter-by-therum/snapshots';
 	}
 
 	private function lock(): void {
@@ -261,7 +261,7 @@ final class Updater {
 	}
 
 	private function git( string $args ): string {
-		$cmd = sprintf( 'cd %s && git %s 2>&1', escapeshellarg( SHOP_DIR ), $args );
+		$cmd = sprintf( 'cd %s && git %s 2>&1', escapeshellarg( COUNTER_DIR ), $args );
 		$out = []; $code = 0;
 		exec( $cmd, $out, $code );
 		$joined = implode( "\n", $out );
@@ -318,11 +318,11 @@ final class Updater {
 	}
 
 	/**
-	 * Remove every file in SHOP_DIR except .git. Used before tar-extract
+	 * Remove every file in COUNTER_DIR except .git. Used before tar-extract
 	 * during rollback so we don't leave orphaned files.
 	 */
 	private function cleanWorkingTree(): void {
-		$dst = rtrim( SHOP_DIR, '/\\' );
+		$dst = rtrim( COUNTER_DIR, '/\\' );
 		$it = new \RecursiveIteratorIterator(
 			new \RecursiveDirectoryIterator( $dst, \FilesystemIterator::SKIP_DOTS ),
 			\RecursiveIteratorIterator::CHILD_FIRST

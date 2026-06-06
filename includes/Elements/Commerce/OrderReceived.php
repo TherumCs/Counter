@@ -7,12 +7,12 @@
  * styling stays unified.
  */
 
-namespace Shop\Elements\Commerce;
+namespace Counter\Elements\Commerce;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Repositories\OrderRepository;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Repositories\OrderRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -37,13 +37,13 @@ final class OrderReceived implements Element {
 		$paths = [
 			get_stylesheet_directory() . '/shop/order-received.php',
 			get_template_directory()   . '/shop/order-received.php',
-			SHOP_DIR . 'templates/order-received.php',
+			COUNTER_DIR . 'templates/order-received.php',
 		];
 		foreach ( $paths as $path ) {
 			if ( is_file( $path ) ) {
 				ob_start();
 				include $path;
-				return '<div class="shop-el shop-el-order-received">' . (string) ob_get_clean() . '</div>';
+				return '<div class="counter-el counter-el-order-received">' . (string) ob_get_clean() . '</div>';
 			}
 		}
 		return '';

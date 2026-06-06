@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ExportResult.
+ * Counter by Therum — ExportResult.
  *
  * What an exporter returns. For text formats (CSV, XML, JSON, MD) the
  * body is a string the caller streams directly. For binary formats
@@ -10,7 +10,7 @@
  * "exported N products" message.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

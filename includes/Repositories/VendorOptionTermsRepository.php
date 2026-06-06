@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — VendorOptionTermsRepository.
+ * Counter by Therum — VendorOptionTermsRepository.
  *
  * The per-vendor "this is what they call it" → "this is what we call it"
  * dictionary. Example rows for the printful vendor:
@@ -16,9 +16,9 @@
  * further prompting.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
+use Counter\DB;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -7,14 +7,14 @@
  * unified with the drawer.
  */
 
-namespace Shop\Elements\Commerce;
+namespace Counter\Elements\Commerce;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Services\CartRenderer;
-use Shop\Services\CartService;
-use Shop\Services\CartTokenManager;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Services\CartRenderer;
+use Counter\Services\CartService;
+use Counter\Services\CartTokenManager;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -38,6 +38,6 @@ final class CartContents implements Element {
 
 	public function render( array $settings, ElementContext $context ): string {
 		$cart = $this->cart->getOrCreate( $this->token->current() );
-		return '<div class="shop-el shop-el-cart-contents">' . $this->renderer->contents( $cart ) . '</div>';
+		return '<div class="counter-el counter-el-cart-contents">' . $this->renderer->contents( $cart ) . '</div>';
 	}
 }

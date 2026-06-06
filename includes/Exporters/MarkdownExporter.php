@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Markdown exporter.
+ * Counter by Therum — Markdown exporter.
  *
  * One `#` heading per product, key:value meta block (SKU, Stock,
  * Vendor), description paragraph, embedded image, and the price as a
@@ -10,9 +10,9 @@
  * lightweight blog-post-style catalog dumps.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
-use Shop\Models\Product;
+use Counter\Models\Product;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Importer contract.
+ * Counter by Therum — Importer contract.
  *
  * One implementation per source format (CSV, Markdown, PDF, Figma, URL,
  * single image). Each takes a payload and produces a list of
@@ -18,7 +18,7 @@
  * registry can dispatch automatically from a MIME type or filename.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,15 +1,15 @@
 <?php
 /**
- * Shop by Therum — Coupon DTO.
+ * Counter by Therum — Coupon DTO.
  *
  * Immutable read view of a `coupons` row. The discount_type / scope /
  * scope_ref triplet defines what gets discounted; the rest controls
  * when it can be used.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

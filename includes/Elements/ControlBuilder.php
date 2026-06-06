@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ControlBuilder.
+ * Counter by Therum — ControlBuilder.
  *
  * Fluent helper for declaring element control schemas. Every control
  * row has at minimum: { id, type, label, default }. Types align with
@@ -16,7 +16,7 @@
  * scrolling panel (no tabs) but groups visually.
  */
 
-namespace Shop\Elements;
+namespace Counter\Elements;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

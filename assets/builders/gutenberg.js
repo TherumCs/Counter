@@ -1,7 +1,7 @@
 /**
- * Shop by Therum — Gutenberg editor registration.
+ * Counter by Therum — Gutenberg editor registration.
  *
- * Reads window.ShopGutenbergElements (emitted by GutenbergAdapter)
+ * Reads window.CounterGutenbergElements (emitted by GutenbergAdapter)
  * and registers each Shop element as a block. Uses ServerSideRender
  * for the editor preview so the editor sees exactly what the
  * frontend will render.
@@ -17,7 +17,7 @@
  */
 
 ( function ( blocks, element, components, serverSideRender ) {
-	const list = window.ShopGutenbergElements || [];
+	const list = window.CounterGutenbergElements || [];
 	if ( ! list.length ) return;
 
 	const el = element.createElement;
@@ -30,7 +30,7 @@
 	list.forEach( spec => {
 		blocks.registerBlockType( 'shop/' + spec.id, {
 			title:      spec.name,
-			category:   'shop-by-therum',
+			category:   'counter-by-therum',
 			icon:       'store',
 			attributes: spec.attributes,
 			edit: function ( props ) {
@@ -53,10 +53,10 @@
 
 	// Register the category once.
 	const cats = wp.blocks.getCategories ? wp.blocks.getCategories() : [];
-	if ( ! cats.find( c => c.slug === 'shop-by-therum' ) ) {
+	if ( ! cats.find( c => c.slug === 'counter-by-therum' ) ) {
 		wp.blocks.setCategories( cats.concat( [ {
-			slug:  'shop-by-therum',
-			title: 'Shop by Therum',
+			slug:  'counter-by-therum',
+			title: 'Counter by Therum',
 			icon:  'store',
 		} ] ) );
 	}

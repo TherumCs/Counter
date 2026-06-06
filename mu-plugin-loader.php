@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — MU plugin loader.
+ * Counter by Therum — MU plugin loader.
  *
  * ============================================================================
  *  INSTALLATION
@@ -8,7 +8,7 @@
  *
  * Copy or symlink THIS FILE to:
  *
- *     wp-content/mu-plugins/shop-loader.php
+ *     wp-content/mu-plugins/counter-loader.php
  *
  * And place (or symlink) the plugin directory at:
  *
@@ -17,7 +17,7 @@
  * Final layout:
  *
  *     wp-content/mu-plugins/
- *         shop-loader.php     ← this file (loaded automatically by WP)
+ *         counter-loader.php     ← this file (loaded automatically by WP)
  *         shop/               ← the plugin directory
  *             shop.php
  *             includes/
@@ -33,7 +33,7 @@
  * For local dev you can symlink instead of copying:
  *
  *     cd wp-content/mu-plugins
- *     ln -s ../../path/to/source/shop/mu-plugin-loader.php shop-loader.php
+ *     ln -s ../../path/to/source/shop/mu-plugin-loader.php counter-loader.php
  *     ln -s ../../path/to/source/shop shop
  *
  * ============================================================================

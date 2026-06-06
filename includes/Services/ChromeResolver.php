@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ChromeResolver.
+ * Counter by Therum — ChromeResolver.
  *
  * Picks which header / footer to render around every Pure page. Rules:
  *
@@ -17,10 +17,10 @@
  * DB twice (header during the prefix, footer during the suffix).
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Models\Page;
-use Shop\Repositories\PageRepository;
+use Counter\Models\Page;
+use Counter\Repositories\PageRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -36,13 +36,13 @@ final class ChromeResolver {
 	public function activeHeader(): ?Page {
 		if ( $this->headerLooked ) return $this->headerCache;
 		$this->headerLooked = true;
-		return $this->headerCache = $this->resolveKind( Page::KIND_HEADER, 'shop_active_header_id' );
+		return $this->headerCache = $this->resolveKind( Page::KIND_HEADER, 'counter_active_header_id' );
 	}
 
 	public function activeFooter(): ?Page {
 		if ( $this->footerLooked ) return $this->footerCache;
 		$this->footerLooked = true;
-		return $this->footerCache = $this->resolveKind( Page::KIND_FOOTER, 'shop_active_footer_id' );
+		return $this->footerCache = $this->resolveKind( Page::KIND_FOOTER, 'counter_active_footer_id' );
 	}
 
 	private function resolveKind( string $kind, string $option ): ?Page {

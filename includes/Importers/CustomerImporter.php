@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Customer importer.
+ * Counter by Therum — Customer importer.
  *
  * Reads a CSV (or any RFC-4180-ish delimited blob) and upserts every
  * row through `CustomerRepository::upsertByEmail()`. Field mapping is
@@ -17,9 +17,9 @@
  * everyone needs login access.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\Repositories\CustomerRepository;
+use Counter\Repositories\CustomerRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

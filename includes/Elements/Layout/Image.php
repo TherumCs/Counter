@@ -5,11 +5,11 @@
  * Static image (not product gallery). Picker selects from media library.
  */
 
-namespace Shop\Elements\Layout;
+namespace Counter\Elements\Layout;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -62,10 +62,10 @@ final class Image implements Element {
 		if ( $url === '' ) return '';
 
 		$styles = [
-			'--shop-fit: '    . $fit,
-			'--shop-radius: ' . $radius . 'px',
+			'--counter-fit: '    . $fit,
+			'--counter-radius: ' . $radius . 'px',
 		];
-		if ( $aspect !== 'auto' ) $styles[] = '--shop-aspect: ' . $aspect;
+		if ( $aspect !== 'auto' ) $styles[] = '--counter-aspect: ' . $aspect;
 
 		$img = sprintf(
 			'<img src="%s" alt="%s" loading="lazy" />',
@@ -78,7 +78,7 @@ final class Image implements Element {
 		}
 
 		return sprintf(
-			'<figure class="shop-el shop-el-image shop-el--align-%s" style="%s">%s</figure>',
+			'<figure class="counter-el counter-el-image counter-el--align-%s" style="%s">%s</figure>',
 			esc_attr( $align ),
 			esc_attr( implode( '; ', $styles ) ),
 			$img,

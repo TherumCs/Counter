@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Order importer.
+ * Counter by Therum — Order importer.
  *
  * Accepts the flat-per-item CSV that OrderExporter produces (or any
  * upstream tool's WebToffee-flavored format) and reconstructs orders +
@@ -20,10 +20,10 @@
  * importer doesn't paginate the input itself.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\DB;
-use Shop\Repositories\OrderRepository;
+use Counter\DB;
+use Counter\Repositories\OrderRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

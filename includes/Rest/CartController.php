@@ -1,14 +1,14 @@
 <?php
 /**
- * Shop by Therum — REST: cart endpoints.
+ * Counter by Therum — REST: cart endpoints.
  *
  * Routes (namespace shop/v1):
  *
- *   GET    /shop/v1/cart           — full cart + rendered HTML
- *   GET    /shop/v1/cart/count     — { count } — header-badge cheap path
- *   POST   /shop/v1/cart/items     — add item       (product_id, variant_id?, quantity)
- *   PATCH  /shop/v1/cart/items/{id} — set quantity   (quantity)
- *   DELETE /shop/v1/cart/items/{id} — remove
+ *   GET    /counter/v1/cart           — full cart + rendered HTML
+ *   GET    /counter/v1/cart/count     — { count } — header-badge cheap path
+ *   POST   /counter/v1/cart/items     — add item       (product_id, variant_id?, quantity)
+ *   PATCH  /counter/v1/cart/items/{id} — set quantity   (quantity)
+ *   DELETE /counter/v1/cart/items/{id} — remove
  *
  * Every cart-mutating response carries the full updated cart payload AND
  * the rendered contents.php HTML, so the client morphs the DOM in one
@@ -24,25 +24,25 @@
  * JS reads `wpApiSettings.nonce` from the page boot.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Models\Cart;
-use Shop\Models\CartItem;
-use Shop\Services\CartRenderer;
-use Shop\Services\CartService;
-use Shop\Services\CartTokenManager;
+use Counter\Models\Cart;
+use Counter\Models\CartItem;
+use Counter\Services\CartRenderer;
+use Counter\Services\CartService;
+use Counter\Services\CartTokenManager;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class CartController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly CartService $cart,
 		private readonly CartRenderer $renderer,
 		private readonly CartTokenManager $token,
-		private readonly \Shop\Services\CouponService $coupons,
+		private readonly \Counter\Services\CouponService $coupons,
 	) {}
 
 	public function register(): void {
@@ -116,7 +116,7 @@ final class CartController {
 		if ( $product_id <= 0 || ! $options ) {
 			return new \WP_REST_Response( [ 'variant_id' => null ], 200 );
 		}
-		$attributes = \Shop\Container::instance()->get( \Shop\Repositories\AttributeRepository::class );
+		$attributes = \Counter\Container::instance()->get( \Counter\Repositories\AttributeRepository::class );
 		$variant_id = $attributes->matchVariant( $product_id, array_map( 'strval', $options ) );
 		return new \WP_REST_Response( [ 'variant_id' => $variant_id ], 200 );
 	}

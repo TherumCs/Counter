@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CSV / TSV / XLSX importer.
+ * Counter by Therum — CSV / TSV / XLSX importer.
  *
  * Accepts CSV (comma), TSV (tab), and an XLSX file converted to CSV by a
  * future helper (XLSX path is stubbed below — admin uploads a CSV until
@@ -27,9 +27,9 @@
  * into a single PreviewProduct with PreviewVariants.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

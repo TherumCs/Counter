@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ImportResult.
+ * Counter by Therum — ImportResult.
  *
  * Output of Importer::preview(). Carries the proposed products plus a
  * short importer-level summary the admin sees above the review grid:
@@ -9,7 +9,7 @@
  *    had no title. Best guesses are flagged."
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

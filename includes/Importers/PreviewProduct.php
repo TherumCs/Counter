@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PreviewProduct.
+ * Counter by Therum — PreviewProduct.
  *
  * A draft Product proposed by an importer. Carries the same fields the
  * real Product DTO does, plus detection metadata:
@@ -20,9 +20,9 @@
  *                review card.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

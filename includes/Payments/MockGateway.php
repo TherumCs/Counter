@@ -1,12 +1,12 @@
 <?php
 /**
- * Shop by Therum — Mock payment gateway.
+ * Counter by Therum — Mock payment gateway.
  *
  * Lets us run checkout end-to-end without wiring a real PSP. createIntent()
  * always returns a fresh fake intent. refund() always succeeds.
  *
  * Webhook flow for local dev: there's no actual webhook source, so the
- * MockController exposes a /shop/v1/mock/succeed/{intent_id} REST endpoint
+ * MockController exposes a /counter/v1/mock/succeed/{intent_id} REST endpoint
  * that constructs a synthetic payment.succeeded WebhookEvent and feeds it
  * through the same WebhookReceiver path Square would use. That way, the
  * whole post-payment chain (status flip, OrderPaid event, fulfillment
@@ -16,10 +16,10 @@
  * SquareGateway in the container based on settings.
  */
 
-namespace Shop\Payments;
+namespace Counter\Payments;
 
-use Shop\Models\Order;
-use Shop\Money;
+use Counter\Models\Order;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -44,7 +44,7 @@ final class MockGateway implements PSPGateway {
 			status:       'requires_action',
 			clientSecret: 'mock_cs_' . bin2hex( random_bytes( 8 ) ),
 			extra:        [
-				'note' => 'Mock gateway — call POST /shop/v1/mock/succeed/' . $intentId . ' to simulate payment.succeeded webhook.',
+				'note' => 'Mock gateway — call POST /counter/v1/mock/succeed/' . $intentId . ' to simulate payment.succeeded webhook.',
 			],
 		);
 	}

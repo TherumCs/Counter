@@ -9,12 +9,12 @@
  * than the active price.
  */
 
-namespace Shop\Elements\Catalog;
+namespace Counter\Elements\Catalog;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Repositories\ProductRepository;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -65,17 +65,17 @@ final class ProductPrice implements Element {
 		$show_compare = ! empty( $settings['show_compare'] ) && $compare !== null && $compare->greaterThan( $price );
 
 		$class = sprintf(
-			'shop-el shop-el-product-price shop-el--align-%s shop-el-price--%s%s',
+			'counter-el counter-el-product-price counter-el--align-%s counter-el-price--%s%s',
 			esc_attr( $alignment ),
 			esc_attr( $size ),
-			$mono ? ' shop-el-price--mono' : '',
+			$mono ? ' counter-el-price--mono' : '',
 		);
 		$style = $color !== '' ? sprintf( ' style="color:%s"', esc_attr( $color ) ) : '';
 
 		$out = '<div class="' . $class . '"' . $style . '>';
-		$out .= '<span class="shop-el-price__amount" data-shop-product-price="' . esc_attr( (string) $product->id ) . '">' . esc_html( $price->format() ) . '</span>';
+		$out .= '<span class="counter-el-price__amount" data-counter-product-price="' . esc_attr( (string) $product->id ) . '">' . esc_html( $price->format() ) . '</span>';
 		if ( $show_compare ) {
-			$out .= ' <span class="shop-el-price__compare">' . esc_html( $compare->format() ) . '</span>';
+			$out .= ' <span class="counter-el-price__compare">' . esc_html( $compare->format() ) . '</span>';
 		}
 		$out .= '</div>';
 		return $out;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CartService.
+ * Counter by Therum — CartService.
  *
  * The public API for cart operations. Every channel (REST routes, Bricks
  * elements, PHP templates, future MCP/CLI surfaces) calls into here. The
@@ -11,18 +11,18 @@
  * Channels wrap, never re-implement.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\DB;
-use Shop\Events\CartItemAdded;
-use Shop\Events\CartItemRemoved;
-use Shop\Events\CartItemUpdated;
-use Shop\Events\EventBus;
-use Shop\Models\Cart;
-use Shop\Pipelines\CartTotalsContext;
-use Shop\Pipelines\CartTotalsPipeline;
-use Shop\Repositories\CartRepository;
-use Shop\Repositories\ProductRepository;
+use Counter\DB;
+use Counter\Events\CartItemAdded;
+use Counter\Events\CartItemRemoved;
+use Counter\Events\CartItemUpdated;
+use Counter\Events\EventBus;
+use Counter\Models\Cart;
+use Counter\Pipelines\CartTotalsContext;
+use Counter\Pipelines\CartTotalsPipeline;
+use Counter\Repositories\CartRepository;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

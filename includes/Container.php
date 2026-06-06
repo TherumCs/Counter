@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — service container.
+ * Counter by Therum — service container.
  *
  * Small, deliberate DI container. Two kinds of bindings:
  *
@@ -11,7 +11,7 @@
  *                             return the cached instance. Use for stateless
  *                             services (the common case).
  *
- * Identifiers are class-or-interface names — e.g. Shop\Services\CartService::class.
+ * Identifiers are class-or-interface names — e.g. Counter\Services\CartService::class.
  * Bindings can return any object; the type is up to the caller. Resolution is
  * O(1); no reflection magic, no auto-wiring. Explicit beats clever.
  *
@@ -21,7 +21,7 @@
  *   - Reading the bootstrap tells you exactly what's wired.
  */
 
-namespace Shop;
+namespace Counter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

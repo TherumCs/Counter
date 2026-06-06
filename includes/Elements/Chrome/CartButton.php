@@ -7,11 +7,11 @@
  * stays live without a page reload.
  */
 
-namespace Shop\Elements\Chrome;
+namespace Counter\Elements\Chrome;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -38,16 +38,16 @@ final class CartButton implements Element {
 
 		$inner = '';
 		if ( $style !== 'text' ) {
-			$inner .= '<span class="shop-el-cartbtn__icon" aria-hidden="true">🛍</span>';
+			$inner .= '<span class="counter-el-cartbtn__icon" aria-hidden="true">🛍</span>';
 		}
 		if ( $style !== 'icon' ) {
-			$inner .= '<span class="shop-el-cartbtn__label">' . esc_html( $label ) . '</span>';
+			$inner .= '<span class="counter-el-cartbtn__label">' . esc_html( $label ) . '</span>';
 		}
 		if ( $badge ) {
-			$inner .= '<span class="shop-el-cartbtn__count" data-shop-cart-count>0</span>';
+			$inner .= '<span class="counter-el-cartbtn__count" data-counter-cart-count>0</span>';
 		}
 
-		return '<button type="button" class="shop-el shop-el-cartbtn shop-el-cartbtn--' . esc_attr( $style ) . '" data-shop-cart-open>'
+		return '<button type="button" class="counter-el counter-el-cartbtn counter-el-cartbtn--' . esc_attr( $style ) . '" data-counter-cart-open>'
 			. $inner
 			. '</button>';
 	}

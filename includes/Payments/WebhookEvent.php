@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — canonical webhook event.
+ * Counter by Therum — canonical webhook event.
  *
  * Provider-neutral shape after gateway-specific parsing. The webhook
  * receiver routes off `kind` to internal handlers.
@@ -11,7 +11,7 @@
  *   dispute.opened      dispute.lost     dispute.won
  */
 
-namespace Shop\Payments;
+namespace Counter\Payments;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

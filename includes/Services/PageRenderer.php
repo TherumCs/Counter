@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PageRenderer.
+ * Counter by Therum — PageRenderer.
  *
  * Walks a Page's element tree and produces HTML. Each node:
  *
@@ -16,10 +16,10 @@
  * static elements ship zero JS.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Elements\ElementContext;
-use Shop\Elements\ElementRegistry;
+use Counter\Elements\ElementContext;
+use Counter\Elements\ElementRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -38,7 +38,7 @@ final class PageRenderer {
 	 */
 	/**
 	 * When true, every rendered node is wrapped in a tiny
-	 * `<div class="shop-ed" data-shop-node-id="…">…</div>` envelope so
+	 * `<div class="counter-ed" data-counter-node-id="…">…</div>` envelope so
 	 * the editor can hit-test clicks in the preview iframe back to the
 	 * tree. Off in production — there's no class added.
 	 */
@@ -91,7 +91,7 @@ final class PageRenderer {
 			$id   = (string) ( $node['id'] ?? '' );
 			$type = (string) ( $node['type'] ?? '' );
 			if ( $id !== '' ) {
-				$html = '<div class="shop-ed" data-shop-node-id="' . esc_attr( $id ) . '" data-shop-node-type="' . esc_attr( $type ) . '">' . $html . '</div>';
+				$html = '<div class="counter-ed" data-counter-node-id="' . esc_attr( $id ) . '" data-counter-node-type="' . esc_attr( $type ) . '">' . $html . '</div>';
 			}
 		}
 		return $html;

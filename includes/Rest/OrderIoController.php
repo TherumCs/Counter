@@ -1,24 +1,24 @@
 <?php
 /**
- * Shop by Therum — REST: order import + export.
+ * Counter by Therum — REST: order import + export.
  *
- *   POST  /shop/v1/admin/orders/import   CSV/JSON body → bulk upsert
- *   GET   /shop/v1/admin/orders/export   ?format=csv|json[&status=…&from=…&to=…]
+ *   POST  /counter/v1/admin/orders/import   CSV/JSON body → bulk upsert
+ *   GET   /counter/v1/admin/orders/export   ?format=csv|json[&status=…&from=…&to=…]
  *
  * Auth-only. Separate controller from `AdminController` so the IO surface
  * is easy to find; it's a self-contained feature.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Exporters\OrderExporter;
-use Shop\Importers\OrderImporter;
+use Counter\Exporters\OrderExporter;
+use Counter\Importers\OrderImporter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class OrderIoController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly OrderImporter $importer,

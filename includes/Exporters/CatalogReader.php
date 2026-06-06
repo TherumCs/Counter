@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CatalogReader.
+ * Counter by Therum — CatalogReader.
  *
  * Shared product walker used by every exporter. Hides the SQL/Woo
  * difference behind a single generator — exporters iterate over
@@ -10,11 +10,11 @@
  * memory for big stores.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
-use Shop\DB;
-use Shop\Models\Product;
-use Shop\Repositories\ProductRepository;
+use Counter\DB;
+use Counter\Models\Product;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

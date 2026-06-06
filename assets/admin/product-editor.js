@@ -1,5 +1,5 @@
 /**
- * Shop by Therum — Product editor drawer.
+ * Counter by Therum — Product editor drawer.
  *
  * Preact-based side drawer (720px from the right) that mounts onto
  * the products grid. Listens for a custom event
@@ -18,7 +18,7 @@
  *
  * Preact + htm from esm.sh, no build step.
  *
- * Mount point: `<div id="shop-product-editor-root"></div>` added to
+ * Mount point: `<div id="counter-product-editor-root"></div>` added to
  * the products page via PHP. The script auto-creates it if missing.
  */
 
@@ -28,7 +28,7 @@ import { useState, useEffect, useRef, useCallback, useMemo }      from 'https://
 
 const html = htm.bind( h );
 
-const cfg  = window.ShopAdminGridConfig || {};
+const cfg  = window.CounterAdminGridConfig || {};
 const REST = ( cfg.rest || '/wp-json/' ) + 'shop/v1/admin/';
 const NONCE = cfg.nonce || '';
 
@@ -90,8 +90,8 @@ function Drawer() {
 				else setProduct( p );
 			} );
 		};
-		document.addEventListener( 'shop:open-product', onOpen );
-		return () => document.removeEventListener( 'shop:open-product', onOpen );
+		document.addEventListener( 'counter:open-product', onOpen );
+		return () => document.removeEventListener( 'counter:open-product', onOpen );
 	}, [] );
 
 	// Esc / overlay click closes
@@ -152,46 +152,46 @@ function Drawer() {
 	if ( ! openId ) return null;
 
 	return html`
-		<div class="shop-pe-overlay" onClick=${ close } />
-		<aside class="shop-pe" onClick=${ e => e.stopPropagation() }>
-			<header class="shop-pe__head">
-				<div class="shop-pe__head-l">
-					<button class="shop-pe__close" onClick=${ close } title="Close (Esc)">✕</button>
+		<div class="counter-pe-overlay" onClick=${ close } />
+		<aside class="counter-pe" onClick=${ e => e.stopPropagation() }>
+			<header class="counter-pe__head">
+				<div class="counter-pe__head-l">
+					<button class="counter-pe__close" onClick=${ close } title="Close (Esc)">✕</button>
 					<div>
-						<div class="shop-pe__title">
+						<div class="counter-pe__title">
 							${ product?.title || ( error ? 'Error' : 'Loading…' ) }
 						</div>
-						<div class="shop-pe__sub">
+						<div class="counter-pe__sub">
 							${ product ? html`
-								<span class="shop-pe__chip shop-pe__chip--${ product.status }">${ product.status }</span>
-								<span class="shop-pe__chip shop-pe__chip--ghost">${ product.type }</span>
-								<span class="shop-pe__chip shop-pe__chip--ghost">#${ product.id }</span>
+								<span class="counter-pe__chip counter-pe__chip--${ product.status }">${ product.status }</span>
+								<span class="counter-pe__chip counter-pe__chip--ghost">${ product.type }</span>
+								<span class="counter-pe__chip counter-pe__chip--ghost">#${ product.id }</span>
 							` : '' }
 						</div>
 					</div>
 				</div>
-				<div class="shop-pe__head-r">
-					${ error ? html`<span class="shop-pe__pill shop-pe__pill--err">${ error }</span>` : null }
-					${ saving ? html`<span class="shop-pe__pill">Saving…</span>`
-						: savedAt ? html`<span class="shop-pe__pill shop-pe__pill--ok">Saved ${ fmtAgo( savedAt ) }</span>`
+				<div class="counter-pe__head-r">
+					${ error ? html`<span class="counter-pe__pill counter-pe__pill--err">${ error }</span>` : null }
+					${ saving ? html`<span class="counter-pe__pill">Saving…</span>`
+						: savedAt ? html`<span class="counter-pe__pill counter-pe__pill--ok">Saved ${ fmtAgo( savedAt ) }</span>`
 						: null }
-					${ product?.urls?.edit_in_woo ? html`<a class="shop-pe__woo" href=${ product.urls.edit_in_woo } target="_blank">Edit in Woo ↗</a>` : '' }
-					${ product?.urls?.view ? html`<a class="shop-pe__view" href=${ product.urls.view } target="_blank">View ↗</a>` : '' }
+					${ product?.urls?.edit_in_woo ? html`<a class="counter-pe__woo" href=${ product.urls.edit_in_woo } target="_blank">Edit in Woo ↗</a>` : '' }
+					${ product?.urls?.view ? html`<a class="counter-pe__view" href=${ product.urls.view } target="_blank">View ↗</a>` : '' }
 				</div>
 			</header>
 
-			<nav class="shop-pe__tabs">
+			<nav class="counter-pe__tabs">
 				${ TABS.map( t => html`
 					<button
 						key=${ t.id }
-						class=${ "shop-pe__tab" + ( tab === t.id ? " is-active" : "" ) }
+						class=${ "counter-pe__tab" + ( tab === t.id ? " is-active" : "" ) }
 						onClick=${ () => setTab( t.id ) }
 					>${ t.label }</button>
 				` ) }
 			</nav>
 
-			<div class="shop-pe__body">
-				${ product ? renderTab( tab, product, update ) : html`<div class="shop-pe__loading">Loading…</div>` }
+			<div class="counter-pe__body">
+				${ product ? renderTab( tab, product, update ) : html`<div class="counter-pe__loading">Loading…</div>` }
 			</div>
 		</aside>
 	`;
@@ -213,17 +213,17 @@ function renderTab( tab, p, update ) {
 // ─── Form primitives ────────────────────────────────────────────────────
 function Field( { label, hint, children, span } ) {
 	return html`
-		<div class=${ "shop-pe-f" + ( span ? " shop-pe-f--" + span : "" ) }>
-			${ label ? html`<label class="shop-pe-f__l">${ label }</label>` : null }
+		<div class=${ "counter-pe-f" + ( span ? " counter-pe-f--" + span : "" ) }>
+			${ label ? html`<label class="counter-pe-f__l">${ label }</label>` : null }
 			${ children }
-			${ hint ? html`<div class="shop-pe-f__hint">${ hint }</div>` : null }
+			${ hint ? html`<div class="counter-pe-f__hint">${ hint }</div>` : null }
 		</div>
 	`;
 }
 
 function Input( { value, onInput, type='text', placeholder, mono } ) {
 	return html`<input
-		class=${ "shop-pe-in" + ( mono ? " shop-pe-in--mono" : "" ) }
+		class=${ "counter-pe-in" + ( mono ? " counter-pe-in--mono" : "" ) }
 		type=${ type }
 		placeholder=${ placeholder || '' }
 		value=${ value ?? '' }
@@ -233,22 +233,22 @@ function Input( { value, onInput, type='text', placeholder, mono } ) {
 
 function Textarea( { value, onInput, rows=6 } ) {
 	return html`<textarea
-		class="shop-pe-in shop-pe-in--ta"
+		class="counter-pe-in counter-pe-in--ta"
 		rows=${ rows }
 		onInput=${ e => onInput( e.target.value ) }
 	>${ value ?? '' }</textarea>`;
 }
 
 function Select( { value, onInput, options } ) {
-	return html`<select class="shop-pe-in" onChange=${ e => onInput( e.target.value ) }>
+	return html`<select class="counter-pe-in" onChange=${ e => onInput( e.target.value ) }>
 		${ Object.entries( options ).map( ( [ v, l ] ) => html`<option value=${ v } selected=${ v === String( value ) }>${ l }</option>` ) }
 	</select>`;
 }
 
 function Toggle( { value, onInput, label } ) {
-	return html`<label class="shop-pe-tog">
+	return html`<label class="counter-pe-tog">
 		<input type="checkbox" checked=${ !! value } onChange=${ e => onInput( e.target.checked ) } />
-		<span class="shop-pe-tog__sw"></span>
+		<span class="counter-pe-tog__sw"></span>
 		<span>${ label }</span>
 	</label>`;
 }
@@ -257,10 +257,10 @@ function Toggle( { value, onInput, label } ) {
 function MoneyInput( { cents, onInput, placeholder } ) {
 	const display = ( cents == null || cents === '' ) ? '' : ( cents / 100 ).toFixed( 2 );
 	return html`
-		<div class="shop-pe-money">
-			<span class="shop-pe-money__sym">$</span>
+		<div class="counter-pe-money">
+			<span class="counter-pe-money__sym">$</span>
 			<input
-				class="shop-pe-in shop-pe-in--mono"
+				class="counter-pe-in counter-pe-in--mono"
 				type="text"
 				inputmode="decimal"
 				placeholder=${ placeholder || '0.00' }
@@ -279,7 +279,7 @@ function MoneyInput( { cents, onInput, placeholder } ) {
 // ─── Tabs ───────────────────────────────────────────────────────────────
 function Tab_General( { p, update } ) {
 	return html`
-		<div class="shop-pe-rows">
+		<div class="counter-pe-rows">
 			<${ Field } label="Title">
 				<${ Input } value=${ p.title } onInput=${ v => update( 'title', v ) } />
 			</Field>
@@ -306,7 +306,7 @@ function Tab_General( { p, update } ) {
 
 function Tab_Pricing( { p, update } ) {
 	return html`
-		<div class="shop-pe-rows">
+		<div class="counter-pe-rows">
 			<${ Field } label="Regular price">
 				<${ MoneyInput } cents=${ p.price.regular } onInput=${ v => update( 'price.regular', v ) } />
 			</Field>
@@ -322,7 +322,7 @@ function Tab_Pricing( { p, update } ) {
 
 function Tab_Inventory( { p, update } ) {
 	return html`
-		<div class="shop-pe-rows">
+		<div class="counter-pe-rows">
 			<${ Field } label="SKU">
 				<${ Input } mono=${ true } value=${ p.inventory.sku } onInput=${ v => update( 'inventory.sku', v ) } />
 			</Field>
@@ -357,7 +357,7 @@ function Tab_Inventory( { p, update } ) {
 
 function ComingSoon( { label, fields } ) {
 	return html`
-		<div class="shop-pe-coming">
+		<div class="counter-pe-coming">
 			<h3>${ label }</h3>
 			<p>This tab's editor isn't wired up yet — it'll land in the next pass. Until then you can edit these fields in Woo.</p>
 			<ul>${ fields.map( f => html`<li>${ f }</li>` ) }</ul>
@@ -367,12 +367,12 @@ function ComingSoon( { label, fields } ) {
 
 function Tab_Variants ( { p } ) {
 	if ( p.type !== 'variable' ) {
-		return html`<div class="shop-pe-coming"><p>This is a <strong>${ p.type }</strong> product — it has no variants.</p></div>`;
+		return html`<div class="counter-pe-coming"><p>This is a <strong>${ p.type }</strong> product — it has no variants.</p></div>`;
 	}
 	return html`
-		<div class="shop-pe-rows">
-			<p class="shop-pe-coming-hint">${ p.variants.length } variant${ p.variants.length === 1 ? '' : 's' }. Inline edit + bulk-apply lands in the next pass.</p>
-			<table class="shop-pe-vt">
+		<div class="counter-pe-rows">
+			<p class="counter-pe-coming-hint">${ p.variants.length } variant${ p.variants.length === 1 ? '' : 's' }. Inline edit + bulk-apply lands in the next pass.</p>
+			<table class="counter-pe-vt">
 				<thead><tr><th>SKU</th><th>Attributes</th><th>Price</th><th>Sale</th><th>Stock</th></tr></thead>
 				<tbody>
 					${ p.variants.map( v => html`
@@ -392,7 +392,7 @@ function Tab_Variants ( { p } ) {
 
 function Tab_Shipping ( { p, update } ) {
 	return html`
-		<div class="shop-pe-rows">
+		<div class="counter-pe-rows">
 			<${ Field }>
 				<${ Toggle } label="Virtual (no shipping)"   value=${ p.shipping.virtual }      onInput=${ v => update( 'shipping.virtual', v ) } />
 			</Field>
@@ -403,7 +403,7 @@ function Tab_Shipping ( { p, update } ) {
 				<${ Field } label="Weight">
 					<${ Input } mono=${ true } value=${ p.shipping.weight } onInput=${ v => update( 'shipping.weight', v ) } placeholder="0.5" />
 				</Field>
-				<div class="shop-pe-grid3">
+				<div class="counter-pe-grid3">
 					<${ Field } label="Length">
 						<${ Input } mono=${ true } value=${ p.shipping.length } onInput=${ v => update( 'shipping.length', v ) } />
 					</Field>
@@ -421,12 +421,12 @@ function Tab_Shipping ( { p, update } ) {
 
 function Tab_Media( { p } ) {
 	return html`
-		<div class="shop-pe-rows">
+		<div class="counter-pe-rows">
 			${ p.images.primary ? html`
-				<img class="shop-pe-img" src=${ p.images.primary.url } alt="" />
-			` : html`<div class="shop-pe-coming"><p>No primary image set.</p></div>` }
+				<img class="counter-pe-img" src=${ p.images.primary.url } alt="" />
+			` : html`<div class="counter-pe-coming"><p>No primary image set.</p></div>` }
 			${ p.images.gallery.length ? html`
-				<div class="shop-pe-gallery">
+				<div class="counter-pe-gallery">
 					${ p.images.gallery.map( g => html`<img key=${ g.id } src=${ g.url } alt="" />` ) }
 				</div>
 			` : null }
@@ -437,7 +437,7 @@ function Tab_Media( { p } ) {
 
 function Tab_SEO( { p, update } ) {
 	return html`
-		<div class="shop-pe-rows">
+		<div class="counter-pe-rows">
 			<${ Field } label="Meta title" hint="Shown in search engine results">
 				<${ Input } value=${ p.seo.meta_title } onInput=${ v => update( 'seo.meta_title', v ) } />
 			</Field>
@@ -449,10 +449,10 @@ function Tab_SEO( { p, update } ) {
 }
 
 // ─── Mount ──────────────────────────────────────────────────────────────
-let root = document.getElementById( 'shop-product-editor-root' );
+let root = document.getElementById( 'counter-product-editor-root' );
 if ( ! root ) {
 	root = document.createElement( 'div' );
-	root.id = 'shop-product-editor-root';
+	root.id = 'counter-product-editor-root';
 	document.body.appendChild( root );
 }
 render( h( Drawer ), root );

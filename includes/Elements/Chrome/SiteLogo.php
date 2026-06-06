@@ -8,11 +8,11 @@
  *   3. Otherwise render the site name as text.
  */
 
-namespace Shop\Elements\Chrome;
+namespace Counter\Elements\Chrome;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -50,9 +50,9 @@ final class SiteLogo implements Element {
 			}
 		}
 		if ( $inner === '' ) {
-			$inner = '<span class="shop-el-logo__text">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
+			$inner = '<span class="counter-el-logo__text">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
 		}
 
-		return '<a href="' . esc_url( $link ) . '" class="shop-el shop-el-logo">' . $inner . '</a>';
+		return '<a href="' . esc_url( $link ) . '" class="counter-el counter-el-logo">' . $inner . '</a>';
 	}
 }

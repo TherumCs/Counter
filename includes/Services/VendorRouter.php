@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — VendorRouter.
+ * Counter by Therum — VendorRouter.
  *
  * On OrderPaid, queues one ShipmentReadyToRoute per shipment. Vendor
  * plugins / Nexus / WooOrderMirror subscribe to ShipmentReadyToRoute
@@ -15,12 +15,12 @@
  * filter by provider in their handler.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Events\EventBus;
-use Shop\Events\OrderPaid;
-use Shop\Events\ShipmentReadyToRoute;
-use Shop\Repositories\OrderShipmentRepository;
+use Counter\Events\EventBus;
+use Counter\Events\OrderPaid;
+use Counter\Events\ShipmentReadyToRoute;
+use Counter\Repositories\OrderShipmentRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

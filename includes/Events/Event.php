@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Event base.
+ * Counter by Therum — Event base.
  *
  * Marker interface. Every event class implements this. Carries typed
  * properties — subscribers read them off the instance, no array digging.
@@ -10,7 +10,7 @@
  * be a `final readonly class` with the cleanest constructor possible.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

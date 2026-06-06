@@ -1,14 +1,14 @@
 <?php
 /**
- * Shop by Therum — ExporterRegistry.
+ * Counter by Therum — ExporterRegistry.
  *
  * Mirror of ImporterRegistry. Holds Exporter implementations addressable
  * by id. Filterable via `shop_register_exporters` action.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Exporters\Exporter;
+use Counter\Exporters\Exporter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

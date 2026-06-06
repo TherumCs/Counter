@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Customer DTO.
+ * Counter by Therum — Customer DTO.
  *
  * The store-side identity layer. Optionally linked to a WP user row
  * (`wp_user_id`) but doesn't require one — Studio merchants want to
@@ -16,7 +16,7 @@
  * the address used at checkout (addresses change; orders shouldn't).
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

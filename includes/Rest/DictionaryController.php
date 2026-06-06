@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — REST: vendor dictionary admin endpoints.
+ * Counter by Therum — REST: vendor dictionary admin endpoints.
  *
  * Routes (namespace shop/v1):
  *
@@ -13,16 +13,16 @@
  * Gated on manage_woocommerce / manage_options.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Repositories\VendorOptionTermsRepository;
-use Shop\Services\VendorDictionaryService;
+use Counter\Repositories\VendorOptionTermsRepository;
+use Counter\Services\VendorDictionaryService;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class DictionaryController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly VendorDictionaryService $dictionary,

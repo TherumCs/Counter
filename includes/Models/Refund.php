@@ -1,11 +1,11 @@
 <?php
 /**
- * Shop by Therum — Refund DTO.
+ * Counter by Therum — Refund DTO.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

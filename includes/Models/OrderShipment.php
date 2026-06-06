@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — OrderShipment DTO.
+ * Counter by Therum — OrderShipment DTO.
  *
  * One sub-shipment of an order, scoped to a vendor. Multi-vendor orders
  * carry multiple shipments — each one routes independently. Carries its
@@ -8,9 +8,9 @@
  * status timeline (pending → shipped → delivered).
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

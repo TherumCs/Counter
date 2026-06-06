@@ -7,11 +7,11 @@
  * works out-of-the-box without anyone touching Appearance → Menus.
  */
 
-namespace Shop\Elements\Chrome;
+namespace Counter\Elements\Chrome;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -55,11 +55,11 @@ final class SiteNav implements Element {
 				if ( $line === '' ) continue;
 				[ $label, $url ] = array_pad( array_map( 'trim', explode( '|', $line, 2 ) ), 2, '' );
 				if ( $label === '' ) continue;
-				$items_html .= '<a class="shop-el-nav__link" href="' . esc_url( $url ?: '#' ) . '">' . esc_html( $label ) . '</a>';
+				$items_html .= '<a class="counter-el-nav__link" href="' . esc_url( $url ?: '#' ) . '">' . esc_html( $label ) . '</a>';
 			}
 		}
 
 		$style = 'gap:' . $gap . 'px;justify-content:' . ( $align === 'start' ? 'flex-start' : ( $align === 'center' ? 'center' : 'flex-end' ) ) . ';';
-		return '<nav class="shop-el shop-el-nav" style="' . esc_attr( $style ) . '">' . $items_html . '</nav>';
+		return '<nav class="counter-el counter-el-nav" style="' . esc_attr( $style ) . '">' . $items_html . '</nav>';
 	}
 }

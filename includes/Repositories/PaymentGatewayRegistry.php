@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PaymentGatewayRegistry.
+ * Counter by Therum — PaymentGatewayRegistry.
  *
  * Keeps the set of available PSP gateways. Bootstrap registers each one
  * (Mock in v1; Square in #8). CheckoutService and WebhookReceiver resolve
@@ -12,9 +12,9 @@
  * classes.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\Payments\PSPGateway;
+use Counter\Payments\PSPGateway;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

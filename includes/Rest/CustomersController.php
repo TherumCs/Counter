@@ -1,30 +1,30 @@
 <?php
 /**
- * Shop by Therum — REST: customers.
+ * Counter by Therum — REST: customers.
  *
- *   GET    /shop/v1/admin/customers              list (search, paginate)
- *   POST   /shop/v1/admin/customers              create
- *   GET    /shop/v1/admin/customers/{id}         get one
- *   PUT    /shop/v1/admin/customers/{id}         update
- *   DELETE /shop/v1/admin/customers/{id}         delete
+ *   GET    /counter/v1/admin/customers              list (search, paginate)
+ *   POST   /counter/v1/admin/customers              create
+ *   GET    /counter/v1/admin/customers/{id}         get one
+ *   PUT    /counter/v1/admin/customers/{id}         update
+ *   DELETE /counter/v1/admin/customers/{id}         delete
  *
- *   POST   /shop/v1/admin/customers/import       CSV/JSON in body → upsert
- *   GET    /shop/v1/admin/customers/export       returns CSV or JSON
+ *   POST   /counter/v1/admin/customers/import       CSV/JSON in body → upsert
+ *   GET    /counter/v1/admin/customers/export       returns CSV or JSON
  *
  * Auth-only — no public read. PII never leaks to the storefront.
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Exporters\CustomerExporter;
-use Shop\Importers\CustomerImporter;
-use Shop\Repositories\CustomerRepository;
+use Counter\Exporters\CustomerExporter;
+use Counter\Importers\CustomerImporter;
+use Counter\Repositories\CustomerRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class CustomersController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly CustomerRepository $customers,
@@ -121,7 +121,7 @@ final class CustomersController {
 	}
 
 	/** @return array<string,mixed> */
-	private function serialize( \Shop\Models\Customer $c ): array {
+	private function serialize( \Counter\Models\Customer $c ): array {
 		return [
 			'id'                => $c->id,
 			'uuid'              => $c->uuid,

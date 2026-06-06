@@ -1,12 +1,12 @@
 <?php
 /**
- * Shop by Therum — PageRepository.
+ * Counter by Therum — PageRepository.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\Page;
+use Counter\DB;
+use Counter\Models\Page;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

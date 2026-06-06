@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — WooProductRepository.
+ * Counter by Therum — WooProductRepository.
  *
  * Read-in-place adapter for WooCommerce. Returns Product / Variant DTOs
  * sourced from Woo's APIs (wp_posts + postmeta, accessed via wc_get_product()).
@@ -38,11 +38,11 @@
  * plugins fulfill exactly as they always have.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\Models\Product;
-use Shop\Models\Variant;
-use Shop\Money;
+use Counter\Models\Product;
+use Counter\Models\Variant;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -80,7 +80,7 @@ final class WooProductRepository implements ProductRepository {
 			[ 'slug' => 'tapstitch',  'meta_product' => '_tapstitch_product_id',  'meta_variant' => '_tapstitch_variant_id' ],
 			[ 'slug' => 'podpluser',  'meta_product' => '_podpluser_product_id',  'meta_variant' => '_podpluser_variant_id' ],
 		];
-		return (array) apply_filters( 'shop_woo_pod_providers', $defaults );
+		return (array) apply_filters( 'counter_woo_pod_providers', $defaults );
 	}
 
 	public function findById( int $id, string $currency = 'USD' ): ?Product {

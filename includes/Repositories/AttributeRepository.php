@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — AttributeRepository.
+ * Counter by Therum — AttributeRepository.
  *
  * Reads the attribute system: global attributes (Color, Size), their
  * values, and per-product / per-variant linkages.
@@ -14,9 +14,9 @@
  * catalog.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
+use Counter\DB;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

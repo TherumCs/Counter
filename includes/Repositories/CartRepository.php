@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CartRepository.
+ * Counter by Therum — CartRepository.
  *
  * Owns all SQL for cart/session reads and writes. CartService talks to this
  * repository — it never touches PDO directly. This is the only place
@@ -12,11 +12,11 @@
  * class.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\Cart;
-use Shop\Models\CartItem;
+use Counter\DB;
+use Counter\Models\Cart;
+use Counter\Models\CartItem;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

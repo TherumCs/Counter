@@ -1,12 +1,12 @@
 <?php
 /**
- * Shop by Therum — ExportQuery.
+ * Counter by Therum — ExportQuery.
  *
  * Filter spec for an export. All fields optional — empty query exports
  * the whole catalog.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

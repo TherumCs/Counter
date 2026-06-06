@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — URL importer.
+ * Counter by Therum — URL importer.
  *
  * Fetches a public URL and extracts products. Two strategies, tried in
  * order:
@@ -24,9 +24,9 @@
  * detected Product schema block. The whole collection comes through.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

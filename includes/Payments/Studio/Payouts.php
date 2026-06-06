@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Studio Pay payouts.
+ * Counter by Therum — Studio Pay payouts.
  *
  * Three cadences:
  *   - daily    — provider auto-handles; we do nothing
@@ -16,10 +16,10 @@
  * retry inside the same minute can't double-pay.
  */
 
-namespace Shop\Payments\Studio;
+namespace Counter\Payments\Studio;
 
-use Shop\Models\Order;
-use Shop\Money;
+use Counter\Models\Order;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -28,14 +28,14 @@ final class Payouts {
 	public function __construct( private readonly StudioPay $studio ) {}
 
 	public function cadence(): string {
-		return (string) get_option( 'shop_studio_pay_payout_cadence', 'daily' );
+		return (string) get_option( 'counter_studio_pay_payout_cadence', 'daily' );
 	}
 
 	public function setCadence( string $value ): void {
 		if ( ! in_array( $value, [ 'daily', 'instant', 'manual' ], true ) ) {
 			throw new \InvalidArgumentException( "Unknown cadence '$value'." );
 		}
-		update_option( 'shop_studio_pay_payout_cadence', $value );
+		update_option( 'counter_studio_pay_payout_cadence', $value );
 	}
 
 	/**

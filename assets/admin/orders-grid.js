@@ -1,5 +1,5 @@
 /**
- * Shop by Therum — orders grid (admin).
+ * Counter by Therum — orders grid (admin).
  *
  * Mirror of products-grid.js with order-specific render + edit config.
  * Orders are mostly immutable — only `status` is inline-editable. Bulk
@@ -9,11 +9,11 @@
 ( function () {
 	'use strict';
 
-	var cfg   = window.ShopAdminGridConfig || {};
+	var cfg   = window.CounterAdminGridConfig || {};
 	var REST  = ( cfg.rest || '/wp-json/' ) + 'shop/v1/admin/';
 	var NONCE = cfg.nonce || '';
 
-	var root = document.querySelector( '[data-shop-grid="orders"]' );
+	var root = document.querySelector( '[data-counter-grid="orders"]' );
 	if ( ! root ) return;
 
 	var state = {
@@ -30,19 +30,19 @@
 		] },
 	};
 
-	var tbody     = root.querySelector( '[data-shop-grid-tbody]' );
-	var qInput    = root.querySelector( '[data-shop-grid-q]' );
-	var statusSel = root.querySelector( '[data-shop-grid-status]' );
-	var totalEl   = root.querySelector( '[data-shop-grid-total]' );
-	var pageEl    = root.querySelector( '[data-shop-grid-page]' );
-	var pagesEl   = root.querySelector( '[data-shop-grid-pages]' );
-	var prevBtn   = root.querySelector( '[data-shop-grid-prev]' );
-	var nextBtn   = root.querySelector( '[data-shop-grid-next]' );
-	var toggleAll = root.querySelector( '[data-shop-grid-toggle-all]' );
-	var bulkBar   = root.querySelector( '[data-shop-grid-bulk]' );
-	var selCount  = root.querySelector( '[data-shop-grid-selected]' );
-	var bulkAct   = root.querySelector( '[data-shop-grid-bulk-action]' );
-	var bulkRun   = root.querySelector( '[data-shop-grid-bulk-run]' );
+	var tbody     = root.querySelector( '[data-counter-grid-tbody]' );
+	var qInput    = root.querySelector( '[data-counter-grid-q]' );
+	var statusSel = root.querySelector( '[data-counter-grid-status]' );
+	var totalEl   = root.querySelector( '[data-counter-grid-total]' );
+	var pageEl    = root.querySelector( '[data-counter-grid-page]' );
+	var pagesEl   = root.querySelector( '[data-counter-grid-pages]' );
+	var prevBtn   = root.querySelector( '[data-counter-grid-prev]' );
+	var nextBtn   = root.querySelector( '[data-counter-grid-next]' );
+	var toggleAll = root.querySelector( '[data-counter-grid-toggle-all]' );
+	var bulkBar   = root.querySelector( '[data-counter-grid-bulk]' );
+	var selCount  = root.querySelector( '[data-counter-grid-selected]' );
+	var bulkAct   = root.querySelector( '[data-counter-grid-bulk-action]' );
+	var bulkRun   = root.querySelector( '[data-counter-grid-bulk-run]' );
 
 	function load() {
 		var params = new URLSearchParams( {
@@ -67,7 +67,7 @@
 		pagesEl.textContent = Math.max( 1, Math.ceil( state.total / state.perPage ) );
 
 		if ( state.rows.length === 0 ) {
-			tbody.innerHTML = '<tr class="shop-grid__empty"><td colspan="9">No orders yet. Test the checkout to seed one.</td></tr>';
+			tbody.innerHTML = '<tr class="counter-grid__empty"><td colspan="9">No orders yet. Test the checkout to seed one.</td></tr>';
 			return;
 		}
 
@@ -77,23 +77,23 @@
 			var refunded = r.refunded_total > 0 ? ' (−$' + ( r.refunded_total / 100 ).toFixed( 2 ) + ')' : '';
 			var payment = r.payment_provider
 				? esc( r.payment_provider ) + ( r.payment_method ? ' · ' + esc( r.payment_method ) : '' )
-				: '<span class="shop-grid__td--meta">unpaid</span>';
+				: '<span class="counter-grid__td--meta">unpaid</span>';
 
 			return (
 				'<tr data-id="' + r.id + '" class="' + ( isSel ? 'is-selected' : '' ) + '">' +
-					'<td class="shop-grid__td shop-grid__td--check">' +
+					'<td class="counter-grid__td counter-grid__td--check">' +
 						'<input type="checkbox" data-toggle="' + r.id + '" ' + ( isSel ? 'checked' : '' ) + ' />' +
 					'</td>' +
-					'<td class="shop-grid__td"><strong>' + esc( r.number || '' ) + '</strong></td>' +
-					'<td class="shop-grid__td shop-grid__td--meta">' + ago( r.created_at ) + '</td>' +
-					'<td class="shop-grid__td">' + esc( r.email || '—' ) + '</td>' +
+					'<td class="counter-grid__td"><strong>' + esc( r.number || '' ) + '</strong></td>' +
+					'<td class="counter-grid__td counter-grid__td--meta">' + ago( r.created_at ) + '</td>' +
+					'<td class="counter-grid__td">' + esc( r.email || '—' ) + '</td>' +
 					cellEditable( 'status', statusPill( r.status ), r ) +
-					'<td class="shop-grid__td"><span class="shop-grid__tag">' + ( r.item_count || 0 ) + '</span></td>' +
-					'<td class="shop-grid__td"><strong>' + esc( total ) + '</strong>' +
-						( refunded ? '<span class="shop-grid__td--meta">' + esc( refunded ) + '</span>' : '' ) +
+					'<td class="counter-grid__td"><span class="counter-grid__tag">' + ( r.item_count || 0 ) + '</span></td>' +
+					'<td class="counter-grid__td"><strong>' + esc( total ) + '</strong>' +
+						( refunded ? '<span class="counter-grid__td--meta">' + esc( refunded ) + '</span>' : '' ) +
 					'</td>' +
-					'<td class="shop-grid__td">' + payment + '</td>' +
-					'<td class="shop-grid__td shop-grid__td--meta">' + ( r.paid_at ? ago( r.paid_at ) : '—' ) + '</td>' +
+					'<td class="counter-grid__td">' + payment + '</td>' +
+					'<td class="counter-grid__td counter-grid__td--meta">' + ( r.paid_at ? ago( r.paid_at ) : '—' ) + '</td>' +
 				'</tr>'
 			);
 		} ).join( '' );
@@ -104,8 +104,8 @@
 	}
 
 	function cellEditable( field, display, row ) {
-		return '<td class="shop-grid__td shop-grid__td--editable" data-field="' + field + '" data-id="' + row.id + '" tabindex="0">' +
-			'<span class="shop-grid__cell-display">' + display + '</span>' +
+		return '<td class="counter-grid__td counter-grid__td--editable" data-field="' + field + '" data-id="' + row.id + '" tabindex="0">' +
+			'<span class="counter-grid__cell-display">' + display + '</span>' +
 		'</td>';
 	}
 
@@ -127,7 +127,7 @@
 			'refunded':   'archived',
 			'failed':     'archived',
 		};
-		return '<span class="shop-grid__pill shop-grid__pill--' + esc( classMap[ s2 ] || 'draft' ) + '">' +
+		return '<span class="counter-grid__pill counter-grid__pill--' + esc( classMap[ s2 ] || 'draft' ) + '">' +
 			esc( labels[ s2 ] || s2 ) +
 		'</span>';
 	}
@@ -175,8 +175,8 @@
 				state.sort  = key;
 				state.order = 'desc';
 			}
-			root.querySelectorAll( 'th[data-sort] .shop-grid__sort-arrow' ).forEach( function ( a ) { a.textContent = ''; } );
-			th.querySelector( '.shop-grid__sort-arrow' ).textContent = state.order === 'asc' ? '▲' : '▼';
+			root.querySelectorAll( 'th[data-sort] .counter-grid__sort-arrow' ).forEach( function ( a ) { a.textContent = ''; } );
+			th.querySelector( '.counter-grid__sort-arrow' ).textContent = state.order === 'asc' ? '▲' : '▼';
 			load();
 		} );
 	} );
@@ -245,12 +245,12 @@
 
 	// ─── Inline edit (status only on orders) ────────────────────────────────
 	tbody.addEventListener( 'dblclick', function ( e ) {
-		var td = e.target.closest( 'td.shop-grid__td--editable' );
+		var td = e.target.closest( 'td.counter-grid__td--editable' );
 		if ( td ) startEdit( td );
 	} );
 
 	tbody.addEventListener( 'keydown', function ( e ) {
-		var td = e.target.closest( 'td.shop-grid__td--editable' );
+		var td = e.target.closest( 'td.counter-grid__td--editable' );
 		if ( ! td ) return;
 		if ( e.key === 'Enter' || e.key === 'F2' ) {
 			e.preventDefault();
@@ -277,14 +277,14 @@
 			editor.appendChild( opt );
 		} );
 
-		var prev = td.querySelector( '.shop-grid__cell-display' ).innerHTML;
+		var prev = td.querySelector( '.counter-grid__cell-display' ).innerHTML;
 		td.innerHTML = '';
 		td.appendChild( editor );
 		editor.focus();
 
 		function commit() {
 			var newVal = editor.value;
-			td.innerHTML = '<span class="shop-grid__cell-display">' + prev + '</span>';
+			td.innerHTML = '<span class="counter-grid__cell-display">' + prev + '</span>';
 			td.classList.add( 'is-saving' );
 
 			var body = {}; body[ field ] = newVal;
@@ -307,7 +307,7 @@
 		}
 
 		function cancel() {
-			td.innerHTML = '<span class="shop-grid__cell-display">' + prev + '</span>';
+			td.innerHTML = '<span class="counter-grid__cell-display">' + prev + '</span>';
 		}
 
 		editor.addEventListener( 'blur', commit );

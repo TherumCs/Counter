@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Figma importer.
+ * Counter by Therum — Figma importer.
  *
  * Flow:
  *
@@ -22,11 +22,11 @@
  *   define( 'SHOP_FIGMA_API_TOKEN', 'figd_...' );
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\AI\ClaudeClient;
-use Shop\AI\ProductExtractionTool;
-use Shop\Money;
+use Counter\AI\ClaudeClient;
+use Counter\AI\ProductExtractionTool;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -90,7 +90,7 @@ final class FigmaImporter implements Importer {
 		}
 
 		// Cap to bound cost
-		$max = (int) apply_filters( 'shop_figma_max_frames', 50 );
+		$max = (int) apply_filters( 'counter_figma_max_frames', 50 );
 		$candidates = array_slice( $candidates, 0, $max );
 		$ids = implode( ',', array_map( fn( array $c ): string => (string) $c['id'], $candidates ) );
 
@@ -109,7 +109,7 @@ final class FigmaImporter implements Importer {
 			$bytes = wp_remote_retrieve_body( wp_remote_get( $png_url, [ 'timeout' => 30 ] ) );
 			if ( ! is_string( $bytes ) || $bytes === '' ) continue;
 
-			$tmp = tempnam( sys_get_temp_dir(), 'shop-figma-' ) . '.png';
+			$tmp = tempnam( sys_get_temp_dir(), 'counter-figma-' ) . '.png';
 			file_put_contents( $tmp, $bytes );
 
 			try {
@@ -202,7 +202,7 @@ final class FigmaImporter implements Importer {
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 
 		$attachment_id = null;
-		$copy = tempnam( sys_get_temp_dir(), 'shop-figma-keep-' ) . '.png';
+		$copy = tempnam( sys_get_temp_dir(), 'counter-figma-keep-' ) . '.png';
 		if ( @copy( $imagePath, $copy ) ) {
 			$attachment = wp_handle_sideload(
 				[ 'name' => basename( $copy ), 'tmp_name' => $copy ],

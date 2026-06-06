@@ -3,49 +3,49 @@
  * Studio cart — drawer shell.
  *
  * Slide-in drawer. Houses a single panel that can transition between cart
- * view and in-drawer checkout stages (added in v0.4 via `data-shop-stage`).
+ * view and in-drawer checkout stages (added in v0.4 via `data-counter-stage`).
  *
  * Variables in scope:
- *   $cart     : Shop\Models\Cart
+ *   $cart     : Counter\Models\Cart
  *   $contents : string  (pre-rendered contents.php HTML)
  *
  * Override: copy to <theme>/shop/cart/studio/shell.php
  */
 
-/** @var \Shop\Models\Cart $cart */
+/** @var \Counter\Models\Cart $cart */
 /** @var string $contents */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
 <div
-	class="shop-studio-drawer"
-	data-shop-cart-shell="drawer"
-	data-shop-cart-state="closed"
-	data-shop-stage="cart"
+	class="counter-studio-drawer"
+	data-counter-cart-shell="drawer"
+	data-counter-cart-state="closed"
+	data-counter-stage="cart"
 	role="dialog"
 	aria-modal="true"
-	aria-labelledby="shop-studio-drawer-title"
+	aria-labelledby="counter-studio-drawer-title"
 	aria-hidden="true"
 >
-	<div class="shop-studio-drawer__backdrop" data-shop-cart-close></div>
+	<div class="counter-studio-drawer__backdrop" data-counter-cart-close></div>
 
-	<aside class="shop-studio-drawer__panel" role="document">
-		<header class="shop-studio-drawer__header">
-			<h2 id="shop-studio-drawer-title" class="shop-studio-drawer__title">
-				<?php esc_html_e( 'Your Cart', 'shop' ); ?>
-				<span class="shop-studio-drawer__count" data-shop-cart-count-label>
+	<aside class="counter-studio-drawer__panel" role="document">
+		<header class="counter-studio-drawer__header">
+			<h2 id="counter-studio-drawer-title" class="counter-studio-drawer__title">
+				<?php esc_html_e( 'Your Cart', 'counter' ); ?>
+				<span class="counter-studio-drawer__count" data-counter-cart-count-label>
 					<?php echo esc_html( (string) $cart->itemCount() ); ?>
 				</span>
 			</h2>
 			<button
 				type="button"
-				class="shop-studio-drawer__close"
-				data-shop-cart-close
-				aria-label="<?php esc_attr_e( 'Close cart', 'shop' ); ?>"
+				class="counter-studio-drawer__close"
+				data-counter-cart-close
+				aria-label="<?php esc_attr_e( 'Close cart', 'counter' ); ?>"
 			>&times;</button>
 		</header>
 
-		<div class="shop-studio-drawer__body" data-shop-cart-mount>
+		<div class="counter-studio-drawer__body" data-counter-cart-mount>
 			<?php echo $contents; // phpcs:ignore — pre-rendered, escaped at source ?>
 		</div>
 	</aside>

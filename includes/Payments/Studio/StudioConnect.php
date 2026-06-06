@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Studio Connect.
+ * Counter by Therum — Studio Connect.
  *
  * The OAuth-style connect flow merchants see when wiring up Studio
  * Pay. One button per provider; everything else is hidden:
@@ -23,7 +23,7 @@
  * swapped between providers mid-flight.
  */
 
-namespace Shop\Payments\Studio;
+namespace Counter\Payments\Studio;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -75,7 +75,7 @@ final class StudioConnect {
 	private function stripeAuthorizeUrl(): string {
 		// Standard Stripe Connect OAuth — works for both Standard and
 		// Express accounts. Studio platform's client_id is required.
-		$clientId = (string) get_option( 'shop_studio_pay_stripe_platform_client_id', '' );
+		$clientId = (string) get_option( 'counter_studio_pay_stripe_platform_client_id', '' );
 		if ( $clientId === '' ) {
 			throw new \RuntimeException( 'Stripe Connect not yet configured. Studio Pay platform client_id missing.' );
 		}
@@ -89,7 +89,7 @@ final class StudioConnect {
 	}
 
 	private function squareAuthorizeUrl(): string {
-		$appId = (string) get_option( 'shop_studio_pay_square_app_id', '' );
+		$appId = (string) get_option( 'counter_studio_pay_square_app_id', '' );
 		if ( $appId === '' ) throw new \RuntimeException( 'Square OAuth not configured.' );
 		return 'https://connect.squareup.com/oauth2/authorize?' . http_build_query( [
 			'client_id'    => $appId,
@@ -100,7 +100,7 @@ final class StudioConnect {
 	}
 
 	private function paypalAuthorizeUrl(): string {
-		$clientId = (string) get_option( 'shop_studio_pay_paypal_platform_client_id', '' );
+		$clientId = (string) get_option( 'counter_studio_pay_paypal_platform_client_id', '' );
 		if ( $clientId === '' ) throw new \RuntimeException( 'PayPal Partner not configured.' );
 		// PayPal Partner Referral — generates a one-shot signup link.
 		// Real implementation calls /v2/customer/partner-referrals to
@@ -119,7 +119,7 @@ final class StudioConnect {
 		// Plaid doesn't use redirect OAuth for merchant onboarding —
 		// it's a client-side Link flow. The /admin/studio-pay/connect
 		// page detects 'plaid' and renders the Link button inline.
-		return admin_url( 'admin.php?page=shop-studio-pay&plaid=link' );
+		return admin_url( 'admin.php?page=counter-studio-pay&plaid=link' );
 	}
 
 	// ─── Finishers ───────────────────────────────────────────────────────
@@ -131,7 +131,7 @@ final class StudioConnect {
 		$res = wp_remote_post( 'https://connect.stripe.com/oauth/token', [
 			'timeout' => 20,
 			'body' => [
-				'client_secret' => (string) get_option( 'shop_studio_pay_platform_secret', '' ),
+				'client_secret' => (string) get_option( 'counter_studio_pay_platform_secret', '' ),
 				'code'          => $code,
 				'grant_type'    => 'authorization_code',
 			],
@@ -141,7 +141,7 @@ final class StudioConnect {
 		if ( ! is_array( $body ) || empty( $body['stripe_user_id'] ) ) {
 			throw new \RuntimeException( 'Stripe: bad token response.' );
 		}
-		update_option( 'shop_studio_pay_stripe_account_id', (string) $body['stripe_user_id'] );
+		update_option( 'counter_studio_pay_stripe_account_id', (string) $body['stripe_user_id'] );
 
 		// Auto-register the webhook endpoint on the connected account.
 		$this->registerStripeWebhook( (string) $body['stripe_user_id'] );
@@ -153,7 +153,7 @@ final class StudioConnect {
 		$res = wp_remote_post( 'https://api.stripe.com/v1/webhook_endpoints', [
 			'timeout' => 20,
 			'headers' => [
-				'Authorization'  => 'Bearer ' . (string) get_option( 'shop_studio_pay_platform_secret', '' ),
+				'Authorization'  => 'Bearer ' . (string) get_option( 'counter_studio_pay_platform_secret', '' ),
 				'Stripe-Account' => $accountId,
 				'Content-Type'   => 'application/x-www-form-urlencoded',
 			],
@@ -169,7 +169,7 @@ final class StudioConnect {
 		if ( is_wp_error( $res ) ) return;
 		$body = json_decode( (string) wp_remote_retrieve_body( $res ), true );
 		if ( is_array( $body ) && ! empty( $body['secret'] ) ) {
-			update_option( 'shop_studio_pay_stripe_webhook_secret', (string) $body['secret'] );
+			update_option( 'counter_studio_pay_stripe_webhook_secret', (string) $body['secret'] );
 		}
 	}
 
@@ -181,8 +181,8 @@ final class StudioConnect {
 			'timeout' => 20,
 			'headers' => [ 'Content-Type' => 'application/json' ],
 			'body' => wp_json_encode( [
-				'client_id'     => (string) get_option( 'shop_studio_pay_square_app_id', '' ),
-				'client_secret' => (string) get_option( 'shop_studio_pay_square_app_secret', '' ),
+				'client_id'     => (string) get_option( 'counter_studio_pay_square_app_id', '' ),
+				'client_secret' => (string) get_option( 'counter_studio_pay_square_app_secret', '' ),
 				'code'          => $code,
 				'grant_type'    => 'authorization_code',
 			] ),
@@ -192,9 +192,9 @@ final class StudioConnect {
 		if ( ! is_array( $body ) || empty( $body['access_token'] ) ) {
 			throw new \RuntimeException( 'Square: bad token response.' );
 		}
-		update_option( 'shop_studio_pay_square_token', (string) $body['access_token'] );
+		update_option( 'counter_studio_pay_square_token', (string) $body['access_token'] );
 		if ( ! empty( $body['merchant_id'] ) ) {
-			update_option( 'shop_studio_pay_square_merchant_id', (string) $body['merchant_id'] );
+			update_option( 'counter_studio_pay_square_merchant_id', (string) $body['merchant_id'] );
 		}
 		return 'square';
 	}
@@ -204,7 +204,7 @@ final class StudioConnect {
 		// callback query as `merchantId` / `merchantIdInPayPal`.
 		$merchantId = (string) ( $q['merchantIdInPayPal'] ?? $q['merchantId'] ?? '' );
 		if ( $merchantId === '' ) throw new \RuntimeException( 'PayPal: missing merchant id.' );
-		update_option( 'shop_studio_pay_paypal_merchant_id', $merchantId );
+		update_option( 'counter_studio_pay_paypal_merchant_id', $merchantId );
 		return 'paypal';
 	}
 
@@ -212,7 +212,7 @@ final class StudioConnect {
 		$pubToken = (string) ( $q['public_token'] ?? '' );
 		if ( $pubToken === '' ) throw new \RuntimeException( 'Plaid: missing public_token.' );
 
-		$base = match ( (string) get_option( 'shop_plaid_environment', 'sandbox' ) ) {
+		$base = match ( (string) get_option( 'counter_plaid_environment', 'sandbox' ) ) {
 			'production'  => 'https://production.plaid.com/',
 			'development' => 'https://development.plaid.com/',
 			default       => 'https://sandbox.plaid.com/',
@@ -221,8 +221,8 @@ final class StudioConnect {
 			'timeout' => 20,
 			'headers' => [ 'Content-Type' => 'application/json' ],
 			'body' => wp_json_encode( [
-				'client_id'    => (string) get_option( 'shop_plaid_client_id', '' ) ?: (string) get_option( 'shop_studio_pay_plaid_client_id', '' ),
-				'secret'       => (string) get_option( 'shop_plaid_secret', '' )    ?: (string) get_option( 'shop_studio_pay_plaid_secret', '' ),
+				'client_id'    => (string) get_option( 'counter_plaid_client_id', '' ) ?: (string) get_option( 'counter_studio_pay_plaid_client_id', '' ),
+				'secret'       => (string) get_option( 'counter_plaid_secret', '' )    ?: (string) get_option( 'counter_studio_pay_plaid_secret', '' ),
 				'public_token' => $pubToken,
 			] ),
 		] );
@@ -231,14 +231,14 @@ final class StudioConnect {
 		if ( ! is_array( $body ) || empty( $body['access_token'] ) ) {
 			throw new \RuntimeException( 'Plaid: bad exchange response.' );
 		}
-		update_option( 'shop_plaid_merchant_access_token', (string) $body['access_token'] );
+		update_option( 'counter_plaid_merchant_access_token', (string) $body['access_token'] );
 		return 'plaid';
 	}
 
 	// ─── State signing ───────────────────────────────────────────────────
 
 	private function signedState( string $provider ): string {
-		$nonce = wp_create_nonce( 'shop_studio_connect' );
+		$nonce = wp_create_nonce( 'counter_studio_connect' );
 		$mac   = hash_hmac( 'sha256', $nonce . '|' . $provider, wp_salt() );
 		return $nonce . '.' . $provider . '.' . $mac;
 	}
@@ -259,10 +259,10 @@ final class StudioConnect {
 	/** @return string[] */
 	private function credentialKeys( string $provider ): array {
 		return match ( $provider ) {
-			'stripe' => [ 'shop_studio_pay_stripe_account_id', 'shop_studio_pay_stripe_webhook_secret' ],
-			'square' => [ 'shop_studio_pay_square_token', 'shop_studio_pay_square_merchant_id' ],
-			'paypal' => [ 'shop_studio_pay_paypal_merchant_id' ],
-			'plaid'  => [ 'shop_plaid_merchant_access_token' ],
+			'stripe' => [ 'counter_studio_pay_stripe_account_id', 'counter_studio_pay_stripe_webhook_secret' ],
+			'square' => [ 'counter_studio_pay_square_token', 'counter_studio_pay_square_merchant_id' ],
+			'paypal' => [ 'counter_studio_pay_paypal_merchant_id' ],
+			'plaid'  => [ 'counter_plaid_merchant_access_token' ],
 			default  => [],
 		};
 	}

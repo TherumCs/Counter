@@ -1,11 +1,11 @@
 <?php
 /**
- * Shop by Therum — ProductWriter.
+ * Counter by Therum — ProductWriter.
  *
  * Inserts PreviewProducts into our SQLite as real Products. Used by:
  *
  *   - Importer confirmation flow (admin reviews preview → bulk commits)
- *   - Future: Nexus push (`POST /shop/v1/sync/product`) — converts a
+ *   - Future: Nexus push (`POST /counter/v1/sync/product`) — converts a
  *     Nexus product payload into a PreviewProduct, then writes here
  *
  * Always writes to our SQLite, regardless of `shop_product_source`.
@@ -20,11 +20,11 @@
  * product as primaryImageId + galleryImageIds.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\DB;
-use Shop\Importers\PreviewProduct;
-use Shop\Importers\PreviewVariant;
+use Counter\DB;
+use Counter\Importers\PreviewProduct;
+use Counter\Importers\PreviewVariant;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -106,7 +106,7 @@ final class ProductWriter {
 			try {
 				$ids[] = $this->insert( $p );
 			} catch ( \Throwable $e ) {
-				error_log( 'Shop\ProductWriter::bulk failed on "' . $p->title . '": ' . $e->getMessage() );
+				error_log( 'Counter\ProductWriter::bulk failed on "' . $p->title . '": ' . $e->getMessage() );
 				$ids[] = 0;
 			}
 		}

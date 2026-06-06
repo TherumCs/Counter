@@ -3,7 +3,7 @@
  * Fired (sync) when an order row is first persisted, before payment.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

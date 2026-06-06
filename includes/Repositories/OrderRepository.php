@@ -1,18 +1,18 @@
 <?php
 /**
- * Shop by Therum — OrderRepository.
+ * Counter by Therum — OrderRepository.
  *
  * Owns the SQL for orders, order_items, order_shipments. OrderService is the
  * only caller in v1. Webhook handler reaches in via findByPaymentIntent() to
  * resolve a PSP event to an order.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\Cart;
-use Shop\Models\Order;
-use Shop\Models\OrderItem;
+use Counter\DB;
+use Counter\Models\Cart;
+use Counter\Models\Order;
+use Counter\Models\OrderItem;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

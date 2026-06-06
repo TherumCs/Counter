@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PlaidProvider.
+ * Counter by Therum — PlaidProvider.
  *
  * Plaid handles two things for us inside Studio Pay:
  *
@@ -28,12 +28,12 @@
  *   Environment   — `shop_plaid_environment` ∈ {sandbox, development, production}
  */
 
-namespace Shop\Payments\Providers;
+namespace Counter\Payments\Providers;
 
-use Shop\Models\Order;
-use Shop\Money;
-use Shop\Payments\PaymentIntent;
-use Shop\Payments\WebhookEvent;
+use Counter\Models\Order;
+use Counter\Money;
+use Counter\Payments\PaymentIntent;
+use Counter\Payments\WebhookEvent;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -149,8 +149,8 @@ final class PlaidProvider implements PaymentProvider {
 		$body = $this->call( 'POST', 'transfer/create', [
 			'client_id'       => $this->clientId(),
 			'secret'          => $this->secret(),
-			'access_token'    => (string) get_option( 'shop_plaid_merchant_access_token', '' ),
-			'account_id'      => (string) get_option( 'shop_plaid_merchant_account_id', '' ),
+			'access_token'    => (string) get_option( 'counter_plaid_merchant_access_token', '' ),
+			'account_id'      => (string) get_option( 'counter_plaid_merchant_account_id', '' ),
 			'type'            => 'credit',  // money to merchant
 			'network'         => $instant ? 'rtp' : 'ach',
 			'amount'          => number_format( $amount->amount / 100, 2, '.', '' ),
@@ -193,7 +193,7 @@ final class PlaidProvider implements PaymentProvider {
 	// ─── Internals ───────────────────────────────────────────────────────
 
 	private function baseUrl(): string {
-		return match ( (string) get_option( 'shop_plaid_environment', 'sandbox' ) ) {
+		return match ( (string) get_option( 'counter_plaid_environment', 'sandbox' ) ) {
 			'production'  => 'https://production.plaid.com/',
 			'development' => 'https://development.plaid.com/',
 			default       => 'https://sandbox.plaid.com/',
@@ -201,13 +201,13 @@ final class PlaidProvider implements PaymentProvider {
 	}
 
 	private function clientId(): string {
-		return (string) get_option( 'shop_studio_pay_plaid_client_id', '' )
-			?: (string) get_option( 'shop_plaid_client_id', '' );
+		return (string) get_option( 'counter_studio_pay_plaid_client_id', '' )
+			?: (string) get_option( 'counter_plaid_client_id', '' );
 	}
 
 	private function secret(): string {
-		return (string) get_option( 'shop_studio_pay_plaid_secret', '' )
-			?: (string) get_option( 'shop_plaid_secret', '' );
+		return (string) get_option( 'counter_studio_pay_plaid_secret', '' )
+			?: (string) get_option( 'counter_plaid_secret', '' );
 	}
 
 	/**

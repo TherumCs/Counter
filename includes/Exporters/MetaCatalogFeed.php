@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Meta (Facebook + Instagram) Catalog CSV feed.
+ * Counter by Therum — Meta (Facebook + Instagram) Catalog CSV feed.
  *
  * Spec: https://www.facebook.com/business/help/120325381656392
  *
@@ -15,12 +15,12 @@
  * Shopping feed.
  */
 
-namespace Shop\Exporters;
+namespace Counter\Exporters;
 
-use Shop\Models\Product;
-use Shop\Models\Variant;
-use Shop\Repositories\ProductRepository;
-use Shop\Services\VendorDictionaryService;
+use Counter\Models\Product;
+use Counter\Models\Variant;
+use Counter\Repositories\ProductRepository;
+use Counter\Services\VendorDictionaryService;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -118,7 +118,7 @@ final class MetaCatalogFeed implements Exporter {
 
 	/** @return Variant[] */
 	private function variantsOf( Product $product ): array {
-		$pdo = \Shop\DB::pdo();
+		$pdo = \Counter\DB::pdo();
 		$stmt = $pdo->prepare( "SELECT id FROM product_variants WHERE product_id = :p AND enabled = 1 ORDER BY position ASC" );
 		$stmt->execute( [ ':p' => $product->id ] );
 		$out = [];

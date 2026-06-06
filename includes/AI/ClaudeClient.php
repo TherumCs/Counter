@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Claude API client.
+ * Counter by Therum — Claude API client.
  *
  * Minimal HTTP wrapper around Anthropic's Messages API. No SDK
  * dependency — just wp_remote_post + JSON. Supports text + image
@@ -27,7 +27,7 @@
  * what the prompt asked for. Caller pattern-matches.
  */
 
-namespace Shop\AI;
+namespace Counter\AI;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -3,7 +3,7 @@
  * Fired (sync) after a line is removed from a cart.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

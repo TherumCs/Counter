@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Elementor adapter.
+ * Counter by Therum — Elementor adapter.
  *
  * Mirrors the Bricks pattern: when Elementor is active we walk the
  * ElementRegistry once at boot and runtime-generate an Elementor
@@ -9,17 +9,17 @@
  * source of truth.
  *
  * Auto-registers when `ELEMENTOR_VERSION` is defined. Elementor's
- * widget category for Shop elements is "shop-by-therum".
+ * widget category for Shop elements is "counter-by-therum".
  *
  * Controls translate from our schema to Elementor's via
  * `ElementorControlMap`. Same control types (text, number, toggle,
  * select, image, color) map cleanly.
  */
 
-namespace Shop\Builders\Elementor;
+namespace Counter\Builders\Elementor;
 
-use Shop\Elements\ElementContext;
-use Shop\Elements\ElementRegistry;
+use Counter\Elements\ElementContext;
+use Counter\Elements\ElementRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -34,8 +34,8 @@ final class ElementorAdapter {
 	}
 
 	public function category( $elements_manager ): void {
-		$elements_manager->add_category( 'shop-by-therum', [
-			'title' => __( 'Shop by Therum', 'shop' ),
+		$elements_manager->add_category( 'counter-by-therum', [
+			'title' => __( 'Counter by Therum', 'counter' ),
 			'icon'  => 'eicon-store',
 		] );
 	}

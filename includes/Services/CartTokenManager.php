@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CartTokenManager.
+ * Counter by Therum — CartTokenManager.
  *
  * Owns the HTTP-only cookie that ties a browser to its cart session row.
  * Token is a random 32-byte hex string. No identity, no auth — just an
@@ -15,13 +15,13 @@
  * Secure:         yes if site is https
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class CartTokenManager {
 
-	public const COOKIE      = 'shop_cart_token';
+	public const COOKIE      = 'counter_cart_token';
 	public const LIFETIME    = 30 * DAY_IN_SECONDS;
 
 	/**

@@ -7,12 +7,12 @@
  * customer's quantity from a sibling element if present.
  */
 
-namespace Shop\Elements\Catalog;
+namespace Counter\Elements\Catalog;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Repositories\ProductRepository;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -68,37 +68,37 @@ final class AddToCart implements Element {
 		$price = $product->price;
 
 		$styles = [
-			'--shop-radius: ' . $radius . 'px',
+			'--counter-radius: ' . $radius . 'px',
 		];
-		if ( $bg !== '' ) $styles[] = '--shop-btn-bg: ' . $bg;
-		if ( $fg !== '' ) $styles[] = '--shop-btn-fg: ' . $fg;
+		if ( $bg !== '' ) $styles[] = '--counter-btn-bg: ' . $bg;
+		if ( $fg !== '' ) $styles[] = '--counter-btn-fg: ' . $fg;
 		$style_attr = ' style="' . esc_attr( implode( '; ', $styles ) ) . '"';
 
 		$class = sprintf(
-			'shop-el shop-el-add-to-cart shop-el-add-to-cart--%s shop-el-add-to-cart--%s%s',
+			'counter-el counter-el-add-to-cart counter-el-add-to-cart--%s counter-el-add-to-cart--%s%s',
 			esc_attr( $size ),
 			esc_attr( $variant ),
-			$full_width ? ' shop-el-add-to-cart--full' : '',
+			$full_width ? ' counter-el-add-to-cart--full' : '',
 		);
 
-		$out  = '<div class="' . $class . '"' . $style_attr . ' data-shop-add-to-cart>';
+		$out  = '<div class="' . $class . '"' . $style_attr . ' data-counter-add-to-cart>';
 
 		if ( $show_qty ) {
-			$out .= '<div class="shop-el-add-to-cart__qty" data-shop-qty>';
-			$out .= '<button type="button" data-shop-qty-dec aria-label="Decrease">−</button>';
-			$out .= '<input type="number" data-shop-qty-input value="1" min="1" step="1" inputmode="numeric" />';
-			$out .= '<button type="button" data-shop-qty-inc aria-label="Increase">+</button>';
+			$out .= '<div class="counter-el-add-to-cart__qty" data-counter-qty>';
+			$out .= '<button type="button" data-counter-qty-dec aria-label="Decrease">−</button>';
+			$out .= '<input type="number" data-counter-qty-input value="1" min="1" step="1" inputmode="numeric" />';
+			$out .= '<button type="button" data-counter-qty-inc aria-label="Increase">+</button>';
 			$out .= '</div>';
 		}
 
 		$out .= sprintf(
-			'<button type="button" class="shop-el-add-to-cart__btn" data-shop-add-to-cart-btn data-shop-product-id="%d">'
-			. '<span class="shop-el-add-to-cart__label">%s</span>',
+			'<button type="button" class="counter-el-add-to-cart__btn" data-counter-add-to-cart-btn data-counter-product-id="%d">'
+			. '<span class="counter-el-add-to-cart__label">%s</span>',
 			(int) $product->id,
 			esc_html( $label ),
 		);
 		if ( $show_price && $price !== null ) {
-			$out .= '<span class="shop-el-add-to-cart__price">' . esc_html( $price->format() ) . '</span>';
+			$out .= '<span class="counter-el-add-to-cart__price">' . esc_html( $price->format() ) . '</span>';
 		}
 		$out .= '</button>';
 

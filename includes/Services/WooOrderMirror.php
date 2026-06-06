@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — WooOrderMirror.
+ * Counter by Therum — WooOrderMirror.
  *
  * Subscribes to OrderPaid. When `shop_product_source = woo` is active,
  * mirrors the just-paid Therum order into a WC_Order so the Printful /
@@ -22,11 +22,11 @@
  * `wp shop:mirror-order <number>`.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Events\OrderPaid;
-use Shop\Models\Order;
-use Shop\Repositories\OrderRepository;
+use Counter\Events\OrderPaid;
+use Counter\Models\Order;
+use Counter\Repositories\OrderRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -59,7 +59,7 @@ final class WooOrderMirror {
 				content:      sprintf( 'WooCommerce mirror failed: %s', $e->getMessage() ),
 				isSystemNote: true,
 			);
-			error_log( 'Shop\WooOrderMirror failed for order ' . $order->number . ': ' . $e->getMessage() );
+			error_log( 'Counter\WooOrderMirror failed for order ' . $order->number . ': ' . $e->getMessage() );
 		}
 	}
 
@@ -71,7 +71,7 @@ final class WooOrderMirror {
 		$wc_order = wc_create_order( [
 			'customer_id'   => $order->userId ?? 0,
 			'customer_note' => null,
-			'created_via'   => 'shop-by-therum',
+			'created_via'   => 'counter-by-therum',
 			'status'        => 'wc-processing',
 		] );
 
@@ -120,14 +120,14 @@ final class WooOrderMirror {
 		$wc_order->set_total( (float) ( $order->grandTotal->minor / 100 ) );
 
 		// Payment metadata
-		$wc_order->set_payment_method( 'shop_psp' );
+		$wc_order->set_payment_method( 'counter_psp' );
 		$wc_order->set_payment_method_title( $order->paymentProvider ?? 'Shop PSP' );
 		$wc_order->set_transaction_id( (string) ( $order->paymentIntentId ?? '' ) );
 
 		// Provenance — link the two records to each other.
 		$wc_order->add_meta_data( '_shop_order_id',     $order->id,     true );
 		$wc_order->add_meta_data( '_shop_order_number', $order->number, true );
-		$wc_order->add_order_note( sprintf( 'Mirrored from Shop by Therum order %s.', $order->number ) );
+		$wc_order->add_order_note( sprintf( 'Mirrored from Counter by Therum order %s.', $order->number ) );
 		$wc_order->save();
 
 		return (int) $wc_order->get_id();
@@ -156,7 +156,7 @@ final class WooOrderMirror {
 
 	private function shouldMirror(): bool {
 		if ( ! function_exists( 'wc_create_order' ) ) return false;
-		$source = (string) get_option( 'shop_product_source', 'native' );
+		$source = (string) get_option( 'counter_product_source', 'native' );
 		return $source === 'woo';
 	}
 }

@@ -1,9 +1,9 @@
 <?php
 /**
- * Shop by Therum — Gutenberg adapter.
+ * Counter by Therum — Gutenberg adapter.
  *
  * Registers every Shop element as a dynamic block (server-rendered),
- * so they appear in the block inserter under "Shop by Therum".
+ * so they appear in the block inserter under "Counter by Therum".
  *
  * Dynamic blocks let us reuse the Shop element render() pipeline
  * verbatim — Gutenberg passes the attributes to our PHP render
@@ -13,10 +13,10 @@
  * Auto-boots when block editor is available.
  */
 
-namespace Shop\Builders\Gutenberg;
+namespace Counter\Builders\Gutenberg;
 
-use Shop\Elements\ElementContext;
-use Shop\Elements\ElementRegistry;
+use Counter\Elements\ElementContext;
+use Counter\Elements\ElementRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -65,10 +65,10 @@ final class GutenbergAdapter {
 			'before'
 		);
 		wp_enqueue_script(
-			'shop-gutenberg',
-			SHOP_URL . 'assets/builders/gutenberg.js',
+			'counter-gutenberg',
+			COUNTER_URL . 'assets/builders/gutenberg.js',
 			[ 'wp-blocks', 'wp-element', 'wp-components', 'wp-server-side-render' ],
-			SHOP_VERSION,
+			COUNTER_VERSION,
 			true
 		);
 	}

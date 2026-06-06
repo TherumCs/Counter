@@ -6,11 +6,11 @@
  * containers — every page typically starts with sections.
  */
 
-namespace Shop\Elements\Layout;
+namespace Counter\Elements\Layout;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -54,30 +54,30 @@ final class Section implements Element {
 		$overlay   = ! empty( $settings['background_overlay'] );
 
 		$styles = [
-			'--shop-pad-y: ' . $pad_y . 'px',
-			'--shop-pad-x: ' . $pad_x . 'px',
-			'--shop-gap: '   . $gap   . 'px',
+			'--counter-pad-y: ' . $pad_y . 'px',
+			'--counter-pad-x: ' . $pad_x . 'px',
+			'--counter-gap: '   . $gap   . 'px',
 		];
-		if ( $bg !== '' ) $styles[] = '--shop-bg: ' . $bg;
-		if ( $fg !== '' ) $styles[] = '--shop-fg: ' . $fg;
+		if ( $bg !== '' ) $styles[] = '--counter-bg: ' . $bg;
+		if ( $fg !== '' ) $styles[] = '--counter-fg: ' . $fg;
 		if ( $bg_image > 0 ) {
 			$url = (string) wp_get_attachment_image_url( $bg_image, 'full' );
-			if ( $url ) $styles[] = '--shop-bg-image: url(' . $url . ')';
+			if ( $url ) $styles[] = '--counter-bg-image: url(' . $url . ')';
 		}
 
 		$class = sprintf(
-			'shop-el shop-el-section shop-el-section--%s%s%s',
+			'counter-el counter-el-section counter-el-section--%s%s%s',
 			esc_attr( $inner_max ),
-			$bg_image > 0 ? ' shop-el-section--has-bg' : '',
-			$overlay      ? ' shop-el-section--overlay' : '',
+			$bg_image > 0 ? ' counter-el-section--has-bg' : '',
+			$overlay      ? ' counter-el-section--overlay' : '',
 		);
 
-		// In a real builder, children render inside `data-shop-children`.
+		// In a real builder, children render inside `data-counter-children`.
 		// Pure passes pre-rendered child HTML via $context->extras['children'].
 		$children = (string) ( $context->extras['children'] ?? '' );
 
 		return sprintf(
-			'<section class="%s" style="%s"><div class="shop-el-section__inner" data-shop-children>%s</div></section>',
+			'<section class="%s" style="%s"><div class="counter-el-section__inner" data-counter-children>%s</div></section>',
 			$class,
 			esc_attr( implode( '; ', $styles ) ),
 			$children,

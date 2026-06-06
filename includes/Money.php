@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Money value object.
+ * Counter by Therum — Money value object.
  *
  * Every monetary amount in Shop is an instance of this class. Internally it
  * stores integer minor units (cents for USD, yen for JPY, etc.) and a 3-letter
@@ -21,7 +21,7 @@
  * USD and EUR throws. This is intentional.
  */
 
-namespace Shop;
+namespace Counter;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

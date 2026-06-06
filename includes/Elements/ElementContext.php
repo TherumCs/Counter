@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — ElementContext.
+ * Counter by Therum — ElementContext.
  *
  * Render-time data passed to every element. Carries:
  *
@@ -18,9 +18,9 @@
  * up-front.
  */
 
-namespace Shop\Elements;
+namespace Counter\Elements;
 
-use Shop\Models\Cart;
+use Counter\Models\Cart;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

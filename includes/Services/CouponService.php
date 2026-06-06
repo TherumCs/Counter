@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — CouponService.
+ * Counter by Therum — CouponService.
  *
  * Apply, validate, and release coupons. The cart stores applied
  * coupon IDs in its `meta.coupons` JSON; the CouponStep pipeline reads
@@ -26,14 +26,14 @@
  * permanently burn a slot on a refunded order.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\DB;
-use Shop\Models\Cart;
-use Shop\Models\Coupon;
-use Shop\Models\Order;
-use Shop\Repositories\CartRepository;
-use Shop\Repositories\CouponRepository;
+use Counter\DB;
+use Counter\Models\Cart;
+use Counter\Models\Coupon;
+use Counter\Models\Order;
+use Counter\Repositories\CartRepository;
+use Counter\Repositories\CouponRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,13 +1,13 @@
 <?php
 /**
- * Shop by Therum — PreviewVariant.
+ * Counter by Therum — PreviewVariant.
  *
  * Variant proposal attached to a PreviewProduct.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

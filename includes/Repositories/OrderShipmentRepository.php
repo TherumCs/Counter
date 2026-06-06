@@ -1,16 +1,16 @@
 <?php
 /**
- * Shop by Therum — OrderShipmentRepository.
+ * Counter by Therum — OrderShipmentRepository.
  *
  * Read + mutate order_shipments. Created by OrderRepository::createFromCart;
  * later mutated by ShippingStep (when real per-vendor quotes wire up) and
  * by fulfillment webhooks (vendor shipped → tracking + status change).
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\OrderShipment;
+use Counter\DB;
+use Counter\Models\OrderShipment;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

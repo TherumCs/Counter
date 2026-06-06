@@ -1,108 +1,108 @@
 <?php
 /**
- * Shop by Therum — cart contents (inner template).
+ * Counter by Therum — cart contents (inner template).
  *
  * The ONLY template that knows how to render line items + totals + actions.
  * Every shell wraps this; every REST response returns the output of this
  * for client-side morph updates.
  *
  * Variables in scope:
- *   $cart : Shop\Models\Cart
+ *   $cart : Counter\Models\Cart
  *
  * Override:
  *   Copy to <theme>/shop/cart/contents.php
  *
  * Markup notes:
- *   - Every interactive surface has a `data-shop-*` attribute that cart.js
+ *   - Every interactive surface has a `data-counter-*` attribute that cart.js
  *     listens for. Bricks (or any styling layer) can change classes, layout,
  *     and structure freely as long as the data attributes survive.
  *   - No inline event handlers. cart.js binds via delegation on the root.
  */
 
-/** @var \Shop\Models\Cart $cart */
+/** @var \Counter\Models\Cart $cart */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
 <div
-	class="shop-cart"
-	data-shop-cart
-	data-shop-cart-token="<?php echo esc_attr( $cart->token ); ?>"
-	data-shop-cart-currency="<?php echo esc_attr( $cart->currency ); ?>"
-	data-shop-cart-count="<?php echo esc_attr( (string) $cart->itemCount() ); ?>"
+	class="counter-cart"
+	data-counter-cart
+	data-counter-cart-token="<?php echo esc_attr( $cart->token ); ?>"
+	data-counter-cart-currency="<?php echo esc_attr( $cart->currency ); ?>"
+	data-counter-cart-count="<?php echo esc_attr( (string) $cart->itemCount() ); ?>"
 >
 
 	<?php if ( $cart->isEmpty() ) : ?>
 
-		<div class="shop-cart__empty" data-shop-cart-empty>
-			<p class="shop-cart__empty-title"><?php esc_html_e( 'Your cart is empty.', 'shop' ); ?></p>
-			<p class="shop-cart__empty-sub"><?php esc_html_e( 'Add something to get started.', 'shop' ); ?></p>
+		<div class="counter-cart__empty" data-counter-cart-empty>
+			<p class="counter-cart__empty-title"><?php esc_html_e( 'Your cart is empty.', 'counter' ); ?></p>
+			<p class="counter-cart__empty-sub"><?php esc_html_e( 'Add something to get started.', 'counter' ); ?></p>
 		</div>
 
 	<?php else : ?>
 
-		<ul class="shop-cart__items" data-shop-cart-items>
+		<ul class="counter-cart__items" data-counter-cart-items>
 			<?php foreach ( $cart->items as $item ) : ?>
 				<li
-					class="shop-cart__item"
-					data-shop-cart-item
-					data-shop-cart-item-id="<?php echo esc_attr( (string) $item->id ); ?>"
+					class="counter-cart__item"
+					data-counter-cart-item
+					data-counter-cart-item-id="<?php echo esc_attr( (string) $item->id ); ?>"
 				>
-					<div class="shop-cart__item-info">
-						<div class="shop-cart__item-title">
+					<div class="counter-cart__item-info">
+						<div class="counter-cart__item-title">
 							<?php /* Title lookup comes when ProductRepository is exposed to templates;
 							        for v1 the line carries no title yet — admin UI milestone supplies it. */ ?>
 							<?php echo esc_html( sprintf(
 								/* translators: %d = product ID */
-								__( 'Product #%d', 'shop' ),
+								__( 'Product #%d', 'counter' ),
 								$item->productId
 							) ); ?>
 							<?php if ( $item->variantId !== null ) : ?>
-								<span class="shop-cart__item-variant">
-									<?php echo esc_html( sprintf( __( 'Variant #%d', 'shop' ), $item->variantId ) ); ?>
+								<span class="counter-cart__item-variant">
+									<?php echo esc_html( sprintf( __( 'Variant #%d', 'counter' ), $item->variantId ) ); ?>
 								</span>
 							<?php endif; ?>
 						</div>
-						<div class="shop-cart__item-price">
+						<div class="counter-cart__item-price">
 							<?php echo esc_html( $item->unitPrice->format() ); ?>
 						</div>
 					</div>
 
-					<div class="shop-cart__item-controls">
-						<div class="shop-cart__qty" role="group" aria-label="<?php esc_attr_e( 'Quantity', 'shop' ); ?>">
+					<div class="counter-cart__item-controls">
+						<div class="counter-cart__qty" role="group" aria-label="<?php esc_attr_e( 'Quantity', 'counter' ); ?>">
 							<button
 								type="button"
-								class="shop-cart__qty-btn shop-cart__qty-dec"
-								data-shop-cart-decrement
-								aria-label="<?php esc_attr_e( 'Decrease quantity', 'shop' ); ?>"
+								class="counter-cart__qty-btn counter-cart__qty-dec"
+								data-counter-cart-decrement
+								aria-label="<?php esc_attr_e( 'Decrease quantity', 'counter' ); ?>"
 							>−</button>
 							<input
 								type="number"
-								class="shop-cart__qty-input"
-								data-shop-cart-qty
+								class="counter-cart__qty-input"
+								data-counter-cart-qty
 								value="<?php echo esc_attr( (string) $item->quantity ); ?>"
 								min="0"
 								step="1"
 								inputmode="numeric"
-								aria-label="<?php esc_attr_e( 'Quantity', 'shop' ); ?>"
+								aria-label="<?php esc_attr_e( 'Quantity', 'counter' ); ?>"
 							/>
 							<button
 								type="button"
-								class="shop-cart__qty-btn shop-cart__qty-inc"
-								data-shop-cart-increment
-								aria-label="<?php esc_attr_e( 'Increase quantity', 'shop' ); ?>"
+								class="counter-cart__qty-btn counter-cart__qty-inc"
+								data-counter-cart-increment
+								aria-label="<?php esc_attr_e( 'Increase quantity', 'counter' ); ?>"
 							>+</button>
 						</div>
 
 						<button
 							type="button"
-							class="shop-cart__remove"
-							data-shop-cart-remove
-							aria-label="<?php esc_attr_e( 'Remove item', 'shop' ); ?>"
+							class="counter-cart__remove"
+							data-counter-cart-remove
+							aria-label="<?php esc_attr_e( 'Remove item', 'counter' ); ?>"
 						>
-							<?php esc_html_e( 'Remove', 'shop' ); ?>
+							<?php esc_html_e( 'Remove', 'counter' ); ?>
 						</button>
 
-						<div class="shop-cart__line-total">
+						<div class="counter-cart__line-total">
 							<?php echo esc_html( $item->lineTotal->format() ); ?>
 						</div>
 					</div>
@@ -110,47 +110,47 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			<?php endforeach; ?>
 		</ul>
 
-		<div class="shop-cart__summary" data-shop-cart-summary>
-			<div class="shop-cart__row">
-				<span><?php esc_html_e( 'Subtotal', 'shop' ); ?></span>
-				<span data-shop-cart-subtotal><?php echo esc_html( $cart->subtotal->format() ); ?></span>
+		<div class="counter-cart__summary" data-counter-cart-summary>
+			<div class="counter-cart__row">
+				<span><?php esc_html_e( 'Subtotal', 'counter' ); ?></span>
+				<span data-counter-cart-subtotal><?php echo esc_html( $cart->subtotal->format() ); ?></span>
 			</div>
 
 			<?php if ( ! $cart->discountTotal->isZero() ) : ?>
-				<div class="shop-cart__row shop-cart__row--discount">
-					<span><?php esc_html_e( 'Discount', 'shop' ); ?></span>
+				<div class="counter-cart__row counter-cart__row--discount">
+					<span><?php esc_html_e( 'Discount', 'counter' ); ?></span>
 					<span>−<?php echo esc_html( $cart->discountTotal->format() ); ?></span>
 				</div>
 			<?php endif; ?>
 
 			<?php if ( ! $cart->shippingTotal->isZero() ) : ?>
-				<div class="shop-cart__row">
-					<span><?php esc_html_e( 'Shipping', 'shop' ); ?></span>
+				<div class="counter-cart__row">
+					<span><?php esc_html_e( 'Shipping', 'counter' ); ?></span>
 					<span><?php echo esc_html( $cart->shippingTotal->format() ); ?></span>
 				</div>
 			<?php endif; ?>
 
 			<?php if ( ! $cart->taxTotal->isZero() ) : ?>
-				<div class="shop-cart__row">
-					<span><?php esc_html_e( 'Tax', 'shop' ); ?></span>
+				<div class="counter-cart__row">
+					<span><?php esc_html_e( 'Tax', 'counter' ); ?></span>
 					<span><?php echo esc_html( $cart->taxTotal->format() ); ?></span>
 				</div>
 			<?php endif; ?>
 
-			<div class="shop-cart__row shop-cart__row--total">
-				<span><?php esc_html_e( 'Total', 'shop' ); ?></span>
-				<span data-shop-cart-grand><?php echo esc_html( $cart->grandTotal->format() ); ?></span>
+			<div class="counter-cart__row counter-cart__row--total">
+				<span><?php esc_html_e( 'Total', 'counter' ); ?></span>
+				<span data-counter-cart-grand><?php echo esc_html( $cart->grandTotal->format() ); ?></span>
 			</div>
 		</div>
 
-		<div class="shop-cart__actions">
+		<div class="counter-cart__actions">
 			<a
-				class="shop-cart__checkout"
+				class="counter-cart__checkout"
 				href="<?php echo esc_url( home_url( '/checkout/' ) ); ?>"
-				data-shop-cart-checkout
+				data-counter-cart-checkout
 			>
-				<?php esc_html_e( 'Checkout', 'shop' ); ?>
-				<span class="shop-cart__checkout-total"><?php echo esc_html( $cart->grandTotal->format() ); ?></span>
+				<?php esc_html_e( 'Checkout', 'counter' ); ?>
+				<span class="counter-cart__checkout-total"><?php echo esc_html( $cart->grandTotal->format() ); ?></span>
 			</a>
 		</div>
 

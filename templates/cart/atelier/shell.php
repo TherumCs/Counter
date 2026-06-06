@@ -3,12 +3,12 @@
  * Atelier cart — split page shell (stub). Full port from preview/atelier.html
  * lands next chunk.
  *
- * @var \Shop\Models\Cart $cart
+ * @var \Counter\Models\Cart $cart
  * @var string $contents
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
-<section class="shop-atelier" data-shop-cart-shell="page" data-shop-cart-mount>
+<section class="counter-atelier" data-counter-cart-shell="page" data-counter-cart-mount>
 	<?php echo $contents; // phpcs:ignore ?>
 </section>

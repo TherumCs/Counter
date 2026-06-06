@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — VendorDictionaryService.
+ * Counter by Therum — VendorDictionaryService.
  *
  * Three operations:
  *
@@ -29,9 +29,9 @@
  * mapping should be a rare exception.
  */
 
-namespace Shop\Services;
+namespace Counter\Services;
 
-use Shop\Repositories\VendorOptionTermsRepository;
+use Counter\Repositories\VendorOptionTermsRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

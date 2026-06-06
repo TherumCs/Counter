@@ -1,9 +1,9 @@
 /**
- * Shop by Therum — products grid (admin).
+ * Counter by Therum — products grid (admin).
  *
  * Vanilla, no framework. Drives the spreadsheet-style product manager:
  *
- *   - Fetch + render rows from /shop/v1/admin/products
+ *   - Fetch + render rows from /counter/v1/admin/products
  *   - Debounced search
  *   - Status filter
  *   - Column sort (click header)
@@ -20,11 +20,11 @@
 ( function () {
 	'use strict';
 
-	var cfg   = window.ShopAdminGridConfig || {};
+	var cfg   = window.CounterAdminGridConfig || {};
 	var REST  = ( cfg.rest || '/wp-json/' ) + 'shop/v1/admin/';
 	var NONCE = cfg.nonce || '';
 
-	var root = document.querySelector( '[data-shop-grid="products"]' );
+	var root = document.querySelector( '[data-counter-grid="products"]' );
 	if ( ! root ) return;
 
 	// ─── State ──────────────────────────────────────────────────────────────
@@ -51,19 +51,19 @@
 	};
 
 	// ─── DOM refs ───────────────────────────────────────────────────────────
-	var tbody       = root.querySelector( '[data-shop-grid-tbody]' );
-	var qInput      = root.querySelector( '[data-shop-grid-q]' );
-	var statusSel   = root.querySelector( '[data-shop-grid-status]' );
-	var totalEl     = root.querySelector( '[data-shop-grid-total]' );
-	var pageEl      = root.querySelector( '[data-shop-grid-page]' );
-	var pagesEl     = root.querySelector( '[data-shop-grid-pages]' );
-	var prevBtn     = root.querySelector( '[data-shop-grid-prev]' );
-	var nextBtn     = root.querySelector( '[data-shop-grid-next]' );
-	var toggleAll   = root.querySelector( '[data-shop-grid-toggle-all]' );
-	var bulkBar     = root.querySelector( '[data-shop-grid-bulk]' );
-	var selCountEl  = root.querySelector( '[data-shop-grid-selected]' );
-	var bulkAct     = root.querySelector( '[data-shop-grid-bulk-action]' );
-	var bulkRun     = root.querySelector( '[data-shop-grid-bulk-run]' );
+	var tbody       = root.querySelector( '[data-counter-grid-tbody]' );
+	var qInput      = root.querySelector( '[data-counter-grid-q]' );
+	var statusSel   = root.querySelector( '[data-counter-grid-status]' );
+	var totalEl     = root.querySelector( '[data-counter-grid-total]' );
+	var pageEl      = root.querySelector( '[data-counter-grid-page]' );
+	var pagesEl     = root.querySelector( '[data-counter-grid-pages]' );
+	var prevBtn     = root.querySelector( '[data-counter-grid-prev]' );
+	var nextBtn     = root.querySelector( '[data-counter-grid-next]' );
+	var toggleAll   = root.querySelector( '[data-counter-grid-toggle-all]' );
+	var bulkBar     = root.querySelector( '[data-counter-grid-bulk]' );
+	var selCountEl  = root.querySelector( '[data-counter-grid-selected]' );
+	var bulkAct     = root.querySelector( '[data-counter-grid-bulk-action]' );
+	var bulkRun     = root.querySelector( '[data-counter-grid-bulk-run]' );
 
 	// ─── Fetch + render ─────────────────────────────────────────────────────
 	function load() {
@@ -93,7 +93,7 @@
 		pagesEl.textContent = Math.max( 1, Math.ceil( state.total / state.perPage ) );
 
 		if ( state.rows.length === 0 ) {
-			tbody.innerHTML = '<tr class="shop-grid__empty"><td colspan="10">No products. <a href="?page=shop-import">Import some.</a></td></tr>';
+			tbody.innerHTML = '<tr class="counter-grid__empty"><td colspan="10">No products. <a href="?page=counter-import">Import some.</a></td></tr>';
 			return;
 		}
 
@@ -103,22 +103,22 @@
 			var stock = r.stock_qty !== null && r.stock_qty !== undefined ? r.stock_qty : '—';
 			var img   = r.image_url
 				? '<img src="' + esc( r.image_url ) + '" alt="" />'
-				: '<div class="shop-grid__no-img"></div>';
+				: '<div class="counter-grid__no-img"></div>';
 			var type  = typeBadges( r );
 			return (
 				'<tr data-id="' + r.id + '" class="' + ( isSel ? 'is-selected' : '' ) + '">' +
-					'<td class="shop-grid__td shop-grid__td--check">' +
+					'<td class="counter-grid__td counter-grid__td--check">' +
 						'<input type="checkbox" data-toggle="' + r.id + '" ' + ( isSel ? 'checked' : '' ) + ' />' +
 					'</td>' +
-					'<td class="shop-grid__td shop-grid__td--img" data-shop-open-product="' + r.id + '" title="Open editor">' + img + '</td>' +
+					'<td class="counter-grid__td counter-grid__td--img" data-counter-open-product="' + r.id + '" title="Open editor">' + img + '</td>' +
 					cellEditable( 'title',    esc( r.title || '' ),    r ) +
 					cellEditable( 'status',   statusPill( r.status ),  r ) +
 					cellEditable( 'price',    esc( price ),            r ) +
 					cellEditable( 'stock_qty',esc( String( stock ) ),  r ) +
 					cellEditable( 'sku',      esc( r.sku || '' ),      r ) +
-					'<td class="shop-grid__td">' + type + '</td>' +
-					'<td class="shop-grid__td shop-grid__td--meta">' + ago( r.updated_at ) + '</td>' +
-					'<td class="shop-grid__td shop-grid__td--action"><button class="button button-small" data-shop-open-product="' + r.id + '">Open</button></td>' +
+					'<td class="counter-grid__td">' + type + '</td>' +
+					'<td class="counter-grid__td counter-grid__td--meta">' + ago( r.updated_at ) + '</td>' +
+					'<td class="counter-grid__td counter-grid__td--action"><button class="button button-small" data-counter-open-product="' + r.id + '">Open</button></td>' +
 				'</tr>'
 			);
 		} ).join( '' );
@@ -131,14 +131,14 @@
 	}
 
 	function cellEditable( field, display, row ) {
-		return '<td class="shop-grid__td shop-grid__td--editable" data-field="' + field + '" data-id="' + row.id + '" tabindex="0">' +
-			'<span class="shop-grid__cell-display">' + display + '</span>' +
+		return '<td class="counter-grid__td counter-grid__td--editable" data-field="' + field + '" data-id="' + row.id + '" tabindex="0">' +
+			'<span class="counter-grid__cell-display">' + display + '</span>' +
 		'</td>';
 	}
 
 	function statusPill( s ) {
 		var label = s === 'active' ? 'Active' : ( s === 'archived' ? 'Archived' : 'Draft' );
-		return '<span class="shop-grid__pill shop-grid__pill--' + esc( s || 'draft' ) + '">' + esc( label ) + '</span>';
+		return '<span class="counter-grid__pill counter-grid__pill--' + esc( s || 'draft' ) + '">' + esc( label ) + '</span>';
 	}
 
 	function typeBadges( r ) {
@@ -148,7 +148,7 @@
 		if ( r.is_digital )   out.push( 'Digital' );
 		if ( ! r.is_shippable && ! r.is_digital ) out.push( 'Service' );
 		if ( out.length === 0 ) out.push( 'Simple' );
-		return out.map( function ( s ) { return '<span class="shop-grid__tag">' + esc( s ) + '</span>'; } ).join( '' );
+		return out.map( function ( s ) { return '<span class="counter-grid__tag">' + esc( s ) + '</span>'; } ).join( '' );
 	}
 
 	function ago( ts ) {
@@ -194,8 +194,8 @@
 				state.sort  = key;
 				state.order = 'asc';
 			}
-			root.querySelectorAll( 'th[data-sort] .shop-grid__sort-arrow' ).forEach( function ( a ) { a.textContent = ''; } );
-			th.querySelector( '.shop-grid__sort-arrow' ).textContent = state.order === 'asc' ? '▲' : '▼';
+			root.querySelectorAll( 'th[data-sort] .counter-grid__sort-arrow' ).forEach( function ( a ) { a.textContent = ''; } );
+			th.querySelector( '.counter-grid__sort-arrow' ).textContent = state.order === 'asc' ? '▲' : '▼';
 			load();
 		} );
 	} );
@@ -209,11 +209,11 @@
 	// Delegated to the table so newly-rendered rows pick it up automatically.
 	// The product editor module listens for `shop:open-product` on document.
 	tbody.addEventListener( 'click', function ( e ) {
-		var btn = e.target.closest( '[data-shop-open-product]' );
+		var btn = e.target.closest( '[data-counter-open-product]' );
 		if ( ! btn ) return;
-		var id = parseInt( btn.getAttribute( 'data-shop-open-product' ), 10 );
+		var id = parseInt( btn.getAttribute( 'data-counter-open-product' ), 10 );
 		if ( ! id ) return;
-		document.dispatchEvent( new CustomEvent( 'shop:open-product', { detail: { id: id } } ) );
+		document.dispatchEvent( new CustomEvent( 'counter:open-product', { detail: { id: id } } ) );
 	} );
 
 	// ─── Selection (with shift-range) ───────────────────────────────────────
@@ -284,12 +284,12 @@
 
 	// ─── Inline cell edit ───────────────────────────────────────────────────
 	tbody.addEventListener( 'dblclick', function ( e ) {
-		var td = e.target.closest( '[data-shop-grid-table] td.shop-grid__td--editable' );
+		var td = e.target.closest( '[data-counter-grid-table] td.counter-grid__td--editable' );
 		if ( td ) startEdit( td );
 	} );
 
 	tbody.addEventListener( 'keydown', function ( e ) {
-		var td = e.target.closest( '[data-shop-grid-table] td.shop-grid__td--editable' );
+		var td = e.target.closest( '[data-counter-grid-table] td.counter-grid__td--editable' );
 		if ( ! td ) return;
 		if ( e.key === 'Enter' || e.key === 'F2' ) {
 			e.preventDefault();
@@ -327,7 +327,7 @@
 			}
 		}
 
-		var display = td.querySelector( '.shop-grid__cell-display' );
+		var display = td.querySelector( '.counter-grid__cell-display' );
 		var prev    = display.innerHTML;
 		td.innerHTML = '';
 		td.appendChild( editor );
@@ -341,7 +341,7 @@
 			else if ( cfg.type === 'int' ) newVal = raw === '' ? null : parseInt( raw, 10 );
 			else newVal = raw;
 
-			td.innerHTML = '<span class="shop-grid__cell-display">' + prev + '</span>';
+			td.innerHTML = '<span class="counter-grid__cell-display">' + prev + '</span>';
 			td.classList.add( 'is-saving' );
 
 			var body = {}; body[ field ] = newVal;
@@ -364,7 +364,7 @@
 		}
 
 		function cancel() {
-			td.innerHTML = '<span class="shop-grid__cell-display">' + prev + '</span>';
+			td.innerHTML = '<span class="counter-grid__cell-display">' + prev + '</span>';
 		}
 
 		editor.addEventListener( 'blur', commit );

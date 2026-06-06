@@ -13,14 +13,14 @@
  * compare-at strikethrough, stock badge, quick add-to-cart.
  */
 
-namespace Shop\Elements\Catalog;
+namespace Counter\Elements\Catalog;
 
-use Shop\DB;
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Mode;
-use Shop\Repositories\ProductRepository;
+use Counter\DB;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Mode;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -85,54 +85,54 @@ final class ProductGrid implements Element {
 
 		$products = $this->fetchProducts( $sort, $limit, $pod_provider, $ids_raw );
 		if ( ! $products ) {
-			return '<div class="shop-el shop-el-grid shop-el-grid--empty"><p>No products yet.</p></div>';
+			return '<div class="counter-el counter-el-grid counter-el-grid--empty"><p>No products yet.</p></div>';
 		}
 
 		$style = sprintf(
-			'--shop-grid-cols:%d; --shop-grid-aspect:%s; --shop-grid-gap:%dpx;',
+			'--counter-grid-cols:%d; --counter-grid-aspect:%s; --counter-grid-gap:%dpx;',
 			$columns, esc_attr( $aspect ), $gap,
 		);
 
-		$out  = '<div class="shop-el shop-el-grid" style="' . $style . '">';
+		$out  = '<div class="counter-el counter-el-grid" style="' . $style . '">';
 		foreach ( $products as $p ) {
 			$image_url = $p->primaryImageId !== null
 				? (string) wp_get_attachment_image_url( $p->primaryImageId, 'medium_large' )
 				: '';
 			$href = $this->productUrl( $p->slug );
 
-			$out .= '<article class="shop-el-grid__card">';
+			$out .= '<article class="counter-el-grid__card">';
 
-			$out .= '<a class="shop-el-grid__image" href="' . esc_url( $href ) . '" aria-label="' . esc_attr( $p->title ) . '">';
+			$out .= '<a class="counter-el-grid__image" href="' . esc_url( $href ) . '" aria-label="' . esc_attr( $p->title ) . '">';
 			$out .= $image_url !== ''
 				? '<img src="' . esc_url( $image_url ) . '" alt="" loading="lazy" />'
-				: '<div class="shop-el-grid__image-placeholder"></div>';
+				: '<div class="counter-el-grid__image-placeholder"></div>';
 			if ( $show_stock && $p->trackInventory && ( $p->stockQty ?? 0 ) <= 0 ) {
-				$out .= '<span class="shop-el-grid__badge shop-el-grid__badge--oos">Sold out</span>';
+				$out .= '<span class="counter-el-grid__badge counter-el-grid__badge--oos">Sold out</span>';
 			}
 			$out .= '</a>';
 
-			$out .= '<div class="shop-el-grid__body">';
-			$out .= '<a class="shop-el-grid__title" href="' . esc_url( $href ) . '">' . esc_html( $p->title ) . '</a>';
+			$out .= '<div class="counter-el-grid__body">';
+			$out .= '<a class="counter-el-grid__title" href="' . esc_url( $href ) . '">' . esc_html( $p->title ) . '</a>';
 
 			if ( $show_vendor ) {
 				// Vendor badge from primary variant — cheap heuristic
 				$badge = $this->vendorBadgeFor( $p->id );
 				if ( $badge ) {
-					$out .= '<span class="shop-el-grid__vendor">' . esc_html( $badge ) . '</span>';
+					$out .= '<span class="counter-el-grid__vendor">' . esc_html( $badge ) . '</span>';
 				}
 			}
 
 			if ( $show_price && $p->price !== null ) {
-				$out .= '<div class="shop-el-grid__price">';
-				$out .= '<span class="shop-el-grid__price-amount">' . esc_html( $p->price->format() ) . '</span>';
+				$out .= '<div class="counter-el-grid__price">';
+				$out .= '<span class="counter-el-grid__price-amount">' . esc_html( $p->price->format() ) . '</span>';
 				if ( $show_compare && $p->compareAtPrice !== null && $p->compareAtPrice->greaterThan( $p->price ) ) {
-					$out .= ' <span class="shop-el-grid__price-compare">' . esc_html( $p->compareAtPrice->format() ) . '</span>';
+					$out .= ' <span class="counter-el-grid__price-compare">' . esc_html( $p->compareAtPrice->format() ) . '</span>';
 				}
 				$out .= '</div>';
 			}
 
 			if ( $show_quick ) {
-				$out .= '<button class="shop-el-grid__quick-add" data-shop-add-to-cart-btn data-shop-product-id="' . esc_attr( (string) $p->id ) . '">Add</button>';
+				$out .= '<button class="counter-el-grid__quick-add" data-counter-add-to-cart-btn data-counter-product-id="' . esc_attr( (string) $p->id ) . '">Add</button>';
 			}
 
 			$out .= '</div></article>';
@@ -142,7 +142,7 @@ final class ProductGrid implements Element {
 	}
 
 	/**
-	 * @return \Shop\Models\Product[]
+	 * @return \Counter\Models\Product[]
 	 */
 	private function fetchProducts( string $sort, int $limit, string $pod_provider, string $ids_raw ): array {
 		// Explicit ID list short-circuits everything else.

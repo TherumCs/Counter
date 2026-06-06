@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Order DTO.
+ * Counter by Therum — Order DTO.
  *
  * Read view of an `orders` row + its items. Immutable. Returned by
  * OrderRepository. State transitions go through OrderService, which
@@ -16,9 +16,9 @@
  *   failed       — payment failed
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

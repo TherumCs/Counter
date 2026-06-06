@@ -1,32 +1,32 @@
 <?php
 /**
- * Shop by Therum — Studio Pay REST.
+ * Counter by Therum — Studio Pay REST.
  *
- *   GET  /shop/v1/studio-pay/methods         public  — available methods
+ *   GET  /counter/v1/studio-pay/methods         public  — available methods
  *                                                     for the checkout strip
- *   GET  /shop/v1/admin/studio-pay/status    auth    — connect status per
+ *   GET  /counter/v1/admin/studio-pay/status    auth    — connect status per
  *                                                     provider
- *   POST /shop/v1/admin/studio-pay/cadence   auth    — set payout cadence
- *   POST /shop/v1/admin/studio-pay/payout    auth    — manual payout
- *   POST /shop/v1/admin/studio-pay/route     auth    — set per-method
+ *   POST /counter/v1/admin/studio-pay/cadence   auth    — set payout cadence
+ *   POST /counter/v1/admin/studio-pay/payout    auth    — manual payout
+ *   POST /counter/v1/admin/studio-pay/route     auth    — set per-method
  *                                                     provider override
  *
  * The /methods route is public because the checkout page calls it
  * before the customer is identified — it's safe (no PII, no money).
  */
 
-namespace Shop\Rest;
+namespace Counter\Rest;
 
-use Shop\Payments\Studio\MethodRegistry;
-use Shop\Payments\Studio\Payouts;
-use Shop\Payments\Studio\StudioConnect;
-use Shop\Payments\Studio\StudioPay;
+use Counter\Payments\Studio\MethodRegistry;
+use Counter\Payments\Studio\Payouts;
+use Counter\Payments\Studio\StudioConnect;
+use Counter\Payments\Studio\StudioPay;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 final class StudioPayController {
 
-	public const NAMESPACE = 'shop/v1';
+	public const NAMESPACE = 'counter/v1';
 
 	public function __construct(
 		private readonly StudioPay     $studio,
@@ -97,7 +97,7 @@ final class StudioPayController {
 		try {
 			$id = $this->connect->finish( (string) $req->get_param( 'provider' ), $req->get_query_params() );
 			// Redirect back to the admin page on success.
-			wp_safe_redirect( admin_url( 'admin.php?page=shop-studio-pay&connected=' . urlencode( $id ) ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=counter-studio-pay&connected=' . urlencode( $id ) ) );
 			exit;
 		} catch ( \Throwable $e ) {
 			return new \WP_REST_Response( [ 'error' => $e->getMessage() ], 400 );
@@ -133,7 +133,7 @@ final class StudioPayController {
 		return new \WP_REST_Response( [
 			'providers' => $out,
 			'cadence'   => $this->payouts->cadence(),
-			'routes'    => (array) get_option( 'shop_studio_pay_method_routes', [] ),
+			'routes'    => (array) get_option( 'counter_studio_pay_method_routes', [] ),
 			'methods'   => MethodRegistry::all(),
 		], 200 );
 	}
@@ -160,13 +160,13 @@ final class StudioPayController {
 		if ( MethodRegistry::find( $method ) === null ) {
 			return new \WP_REST_Response( [ 'error' => "Unknown method '$method'." ], 400 );
 		}
-		$routes = (array) get_option( 'shop_studio_pay_method_routes', [] );
+		$routes = (array) get_option( 'counter_studio_pay_method_routes', [] );
 		if ( $provider === '' || $provider === 'auto' ) {
 			unset( $routes[ $method ] );
 		} else {
 			$routes[ $method ] = $provider;
 		}
-		update_option( 'shop_studio_pay_method_routes', $routes );
+		update_option( 'counter_studio_pay_method_routes', $routes );
 		return new \WP_REST_Response( [ 'ok' => true, 'routes' => $routes ], 200 );
 	}
 }

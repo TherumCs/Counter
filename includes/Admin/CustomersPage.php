@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — admin Customers page.
+ * Counter by Therum — admin Customers page.
  *
  * Vanilla JS hydration over /admin/customers. Two surfaces:
  *   - List view — searchable table with lifetime stats
@@ -12,7 +12,7 @@
  * lookups + bulk import/export.
  */
 
-namespace Shop\Admin;
+namespace Counter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -22,16 +22,16 @@ final class CustomersPage {
 		$tab = isset( $_GET['tab'] ) ? sanitize_key( (string) $_GET['tab'] ) : 'list';
 		if ( ! in_array( $tab, [ 'list', 'io' ], true ) ) $tab = 'list';
 		?>
-		<div class="wrap shop-admin">
-			<h1 class="shop-admin__title">
-				<span class="shop-admin__mark">T</span> Customers
+		<div class="wrap counter-admin">
+			<h1 class="counter-admin__title">
+				<span class="counter-admin__mark">T</span> Customers
 			</h1>
-			<nav class="shop-admin__tabs">
-				<a class="shop-admin__tab <?php echo $tab === 'list' ? 'is-active' : ''; ?>" href="<?php echo esc_url( admin_url( 'admin.php?page=shop-customers' ) ); ?>">List</a>
-				<a class="shop-admin__tab <?php echo $tab === 'io' ? 'is-active' : ''; ?>"   href="<?php echo esc_url( admin_url( 'admin.php?page=shop-customers&tab=io' ) ); ?>">Import / Export</a>
+			<nav class="counter-admin__tabs">
+				<a class="counter-admin__tab <?php echo $tab === 'list' ? 'is-active' : ''; ?>" href="<?php echo esc_url( admin_url( 'admin.php?page=counter-customers' ) ); ?>">List</a>
+				<a class="counter-admin__tab <?php echo $tab === 'io' ? 'is-active' : ''; ?>"   href="<?php echo esc_url( admin_url( 'admin.php?page=counter-customers&tab=io' ) ); ?>">Import / Export</a>
 			</nav>
 			<div
-				id="shop-customers"
+				id="counter-customers"
 				data-rest="<?php echo esc_url( rest_url() ); ?>"
 				data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"
 				data-tab="<?php echo esc_attr( $tab ); ?>"
@@ -39,7 +39,7 @@ final class CustomersPage {
 		</div>
 		<script>
 		( function () {
-			const root = document.getElementById( 'shop-customers' );
+			const root = document.getElementById( 'counter-customers' );
 			if ( ! root ) return;
 			const REST  = root.getAttribute( 'data-rest' ) + 'shop/v1/';
 			const NONCE = root.getAttribute( 'data-nonce' );
@@ -53,19 +53,19 @@ final class CustomersPage {
 
 			if ( TAB === 'io' ) {
 				root.innerHTML = `
-					<div class="shop-sp-card">
-						<div class="shop-sp-card__head"><h3>Export</h3></div>
-						<div class="shop-sp-card__body">
+					<div class="counter-sp-card">
+						<div class="counter-sp-card__head"><h3>Export</h3></div>
+						<div class="counter-sp-card__body">
 							Download every customer as CSV (UTF-8, Excel-ready) or JSON.
 						</div>
-						<div class="shop-sp-card__actions">
+						<div class="counter-sp-card__actions">
 							<a class="button" href="${ REST }admin/customers/export?format=csv&_wpnonce=${ NONCE }" target="_blank">Download CSV</a>
 							<a class="button" href="${ REST }admin/customers/export?format=json&_wpnonce=${ NONCE }" target="_blank">Download JSON</a>
 						</div>
 					</div>
-					<div class="shop-sp-card">
-						<div class="shop-sp-card__head"><h3>Import</h3></div>
-						<div class="shop-sp-card__body">
+					<div class="counter-sp-card">
+						<div class="counter-sp-card__head"><h3>Import</h3></div>
+						<div class="counter-sp-card__body">
 							<p>Paste a CSV. Field names auto-map from common Shopify / codection / WebToffee exports.</p>
 							<textarea id="csv" style="width:100%;height:180px;font-family:JetBrains Mono,monospace;font-size:11px"></textarea>
 							<p>
@@ -80,7 +80,7 @@ final class CustomersPage {
 							</p>
 							<div id="result" style="font-family:JetBrains Mono,monospace;font-size:11px;color:#50575e"></div>
 						</div>
-						<div class="shop-sp-card__actions">
+						<div class="counter-sp-card__actions">
 							<button class="button button-primary" id="run">Run import</button>
 						</div>
 					</div>`;
@@ -103,11 +103,11 @@ final class CustomersPage {
 				api( `admin/customers?q=${ encodeURIComponent( q ) }&limit=${ limit }&offset=${ offset }` ).then( r => {
 					root.innerHTML = `
 						<p><input type="search" id="q" placeholder="Search by email or name" value="${ esc( q ) }" style="width:280px"></p>
-						<table class="wp-list-table widefat striped shop-admin__table">
+						<table class="wp-list-table widefat striped counter-admin__table">
 							<thead><tr><th>Email</th><th>Name</th><th>Orders</th><th>Total spent</th><th>Last order</th><th>Joined</th></tr></thead>
 							<tbody>${ r.customers.map( c => `
 								<tr>
-									<td><strong>${ esc( c.email ) }</strong>${ c.accepts_marketing ? '<div class="shop-admin__sub">✓ marketing opt-in</div>' : '' }</td>
+									<td><strong>${ esc( c.email ) }</strong>${ c.accepts_marketing ? '<div class="counter-admin__sub">✓ marketing opt-in</div>' : '' }</td>
 									<td>${ esc( ( c.first_name || '' ) + ' ' + ( c.last_name || '' ) ) }</td>
 									<td>${ c.orders_count }</td>
 									<td>${ money( c.total_spent_cents ) }</td>
@@ -115,7 +115,7 @@ final class CustomersPage {
 									<td>${ new Date( c.created_at * 1000 ).toLocaleDateString() }</td>
 								</tr>` ).join( '' ) }</tbody>
 						</table>
-						<p class="shop-admin__sub">${ r.total } total</p>`;
+						<p class="counter-admin__sub">${ r.total } total</p>`;
 					document.getElementById( 'q' ).addEventListener( 'input', e => {
 						q = e.target.value; offset = 0;
 						clearTimeout( window._shopCQ );

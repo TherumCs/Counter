@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Bricks element factory.
+ * Counter by Therum — Bricks element factory.
  *
  * Builds Bricks element classes at runtime from Shop element schemas.
  * Each Shop element gets its own subclass of \Bricks\Element wrapping
@@ -12,10 +12,10 @@
  * echo the result.
  */
 
-namespace Shop\Builders\Bricks;
+namespace Counter\Builders\Bricks;
 
-use Shop\Container;
-use Shop\Elements\Element;
+use Counter\Container;
+use Counter\Elements\Element;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -44,7 +44,7 @@ class {$class_name} extends \\Bricks\\Element {
 	public \$category    = 'shop';
 	public \$name        = '{$shop_id}';
 	public \$icon        = 'ti-package';
-	public \$css_selector = '.shop-el';
+	public \$css_selector = '.counter-el';
 
 	public function get_label(): string {
 		return '{$shopElement->name()}';
@@ -56,7 +56,7 @@ class {$class_name} extends \\Bricks\\Element {
 
 	public function render(): void {
 		\$settings = \$this->settings ?? [];
-		\$adapter  = \\Shop\\Container::instance()->get( \\Shop\\Builders\\Bricks\\BricksAdapter::class );
+		\$adapter  = \\Counter\\Container::instance()->get( \\Counter\\Builders\\Bricks\\BricksAdapter::class );
 		echo \$adapter->render( '{$shop_id}', \$settings );
 	}
 }

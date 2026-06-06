@@ -12,12 +12,12 @@
  * click-to-swap). Carousel needs full JS.
  */
 
-namespace Shop\Elements\Catalog;
+namespace Counter\Elements\Catalog;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Repositories\ProductRepository;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Repositories\ProductRepository;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -73,25 +73,25 @@ final class ProductGallery implements Element {
 		$primary = (int) $image_ids[0];
 
 		$class = sprintf(
-			'shop-el shop-el-gallery shop-el-gallery--%s%s',
+			'counter-el counter-el-gallery counter-el-gallery--%s%s',
 			esc_attr( $layout ),
-			$zoom ? ' shop-el-gallery--zoom' : '',
+			$zoom ? ' counter-el-gallery--zoom' : '',
 		);
-		$style = sprintf( '--shop-aspect:%s; --shop-radius:%dpx;', esc_attr( $aspect ), $radius );
+		$style = sprintf( '--counter-aspect:%s; --counter-radius:%dpx;', esc_attr( $aspect ), $radius );
 
-		$out = '<div class="' . $class . '" style="' . $style . '" data-shop-gallery>';
+		$out = '<div class="' . $class . '" style="' . $style . '" data-counter-gallery>';
 
 		$primary_url = (string) wp_get_attachment_image_url( $primary, 'large' );
-		$out .= '<div class="shop-el-gallery__main" data-shop-gallery-main>';
+		$out .= '<div class="counter-el-gallery__main" data-counter-gallery-main>';
 		$out .= '<img src="' . esc_url( $primary_url ) . '" alt="' . esc_attr( $product->title ) . '" />';
 		$out .= '</div>';
 
 		if ( count( $image_ids ) > 1 ) {
-			$out .= '<div class="shop-el-gallery__thumbs">';
+			$out .= '<div class="counter-el-gallery__thumbs">';
 			foreach ( $image_ids as $i => $img_id ) {
 				$thumb = (string) wp_get_attachment_image_url( (int) $img_id, 'thumbnail' );
 				$out  .= sprintf(
-					'<button class="shop-el-gallery__thumb%s" data-shop-gallery-thumb data-src="%s">'
+					'<button class="counter-el-gallery__thumb%s" data-counter-gallery-thumb data-src="%s">'
 					. '<img src="%s" alt="" loading="lazy" />'
 					. '</button>',
 					$i === 0 ? ' is-active' : '',

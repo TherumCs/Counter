@@ -4,7 +4,7 @@
  * Subscribers commonly: analytics, abandonment tracking, stock pre-reservation.
  */
 
-namespace Shop\Events;
+namespace Counter\Events;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

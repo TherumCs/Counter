@@ -6,11 +6,11 @@
  * cart logic; this one is for marketing CTAs, page nav, etc.
  */
 
-namespace Shop\Elements\Layout;
+namespace Counter\Elements\Layout;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -60,21 +60,21 @@ final class Button implements Element {
 		$radius  = (int)    ( $settings['radius']     ?? 10 );
 		$align   = $settings['alignment'] ?? 'left';
 
-		$styles = [ '--shop-radius: ' . $radius . 'px' ];
-		if ( $bg !== '' ) $styles[] = '--shop-btn-bg: ' . $bg;
-		if ( $fg !== '' ) $styles[] = '--shop-btn-fg: ' . $fg;
+		$styles = [ '--counter-radius: ' . $radius . 'px' ];
+		if ( $bg !== '' ) $styles[] = '--counter-btn-bg: ' . $bg;
+		if ( $fg !== '' ) $styles[] = '--counter-btn-fg: ' . $fg;
 
 		$class = sprintf(
-			'shop-el shop-el-button shop-el-button--%s shop-el-button--%s%s',
+			'counter-el counter-el-button counter-el-button--%s counter-el-button--%s%s',
 			esc_attr( $variant ),
 			esc_attr( $size ),
-			$full ? ' shop-el-button--full' : '',
+			$full ? ' counter-el-button--full' : '',
 		);
 
 		$target_attr = $new_tab ? ' target="_blank" rel="noopener"' : '';
 
 		return sprintf(
-			'<div class="shop-el-button-wrap shop-el--align-%s"><a class="%s" style="%s" href="%s"%s>%s</a></div>',
+			'<div class="counter-el-button-wrap counter-el--align-%s"><a class="%s" style="%s" href="%s"%s>%s</a></div>',
 			esc_attr( $align ),
 			$class,
 			esc_attr( implode( '; ', $styles ) ),

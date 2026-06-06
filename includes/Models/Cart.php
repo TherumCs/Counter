@@ -1,15 +1,15 @@
 <?php
 /**
- * Shop by Therum — Cart DTO.
+ * Counter by Therum — Cart DTO.
  *
  * Read view of a session row in 'cart' or 'checkout' status, plus its items.
  * Returned by CartService::find(). Immutable — mutations go through
  * CartService methods, which return a fresh Cart.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

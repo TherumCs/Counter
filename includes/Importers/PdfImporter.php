@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — PDF importer (vision-model backed).
+ * Counter by Therum — PDF importer (vision-model backed).
  *
  * Flow:
  *
@@ -25,11 +25,11 @@
  * a dollar; admins can raise it via the `shop_pdf_max_pages` filter.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
-use Shop\AI\ClaudeClient;
-use Shop\AI\ProductExtractionTool;
-use Shop\Money;
+use Counter\AI\ClaudeClient;
+use Counter\AI\ProductExtractionTool;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -72,7 +72,7 @@ final class PdfImporter implements Importer {
 			);
 		}
 
-		$max_pages = (int) apply_filters( 'shop_pdf_max_pages', self::MAX_PAGES_DEFAULT );
+		$max_pages = (int) apply_filters( 'counter_pdf_max_pages', self::MAX_PAGES_DEFAULT );
 		$client    = new ClaudeClient();
 		$products  = [];
 		$warnings  = [];
@@ -90,7 +90,7 @@ final class PdfImporter implements Importer {
 				$page->setImageCompressionQuality( 85 );
 				$page->scaleImage( self::RENDER_WIDTH, 0 );
 
-				$tmp = tempnam( sys_get_temp_dir(), 'shop-pdf-page-' );
+				$tmp = tempnam( sys_get_temp_dir(), 'counter-pdf-page-' );
 				$page->writeImage( $tmp );
 
 				try {
@@ -219,7 +219,7 @@ final class PdfImporter implements Importer {
 			$page->cropImage( max( 1, $cw ), max( 1, $ch ), max( 0, $x ), max( 0, $y ) );
 			$page->setImagePage( 0, 0, 0, 0 );
 
-			$crop_path = tempnam( sys_get_temp_dir(), 'shop-pdf-crop-' ) . '.jpg';
+			$crop_path = tempnam( sys_get_temp_dir(), 'counter-pdf-crop-' ) . '.jpg';
 			$page->writeImage( $crop_path );
 			$page->clear();
 

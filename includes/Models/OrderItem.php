@@ -1,14 +1,14 @@
 <?php
 /**
- * Shop by Therum — OrderItem DTO.
+ * Counter by Therum — OrderItem DTO.
  *
  * Read view of an `order_items` row. Carries the product snapshot taken at
  * order time so order history doesn't break when products are edited/deleted.
  */
 
-namespace Shop\Models;
+namespace Counter\Models;
 
-use Shop\Money;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

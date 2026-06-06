@@ -1,13 +1,13 @@
 <?php
 /**
- * Shop by Therum — ImportSource.
+ * Counter by Therum — ImportSource.
  *
  * Wraps the input to an importer. One of: a file path, a URL, or raw
  * text. The optional mimeType + filename hints help the registry
  * dispatch to the right importer.
  */
 
-namespace Shop\Importers;
+namespace Counter\Importers;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -1,12 +1,12 @@
 <?php
 /**
- * Shop by Therum — RefundRepository.
+ * Counter by Therum — RefundRepository.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\Refund;
+use Counter\DB;
+use Counter\Models\Refund;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

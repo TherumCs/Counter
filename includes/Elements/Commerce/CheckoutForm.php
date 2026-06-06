@@ -7,14 +7,14 @@
  * Sequence) follows the existing settings.
  */
 
-namespace Shop\Elements\Commerce;
+namespace Counter\Elements\Commerce;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
-use Shop\Services\CartService;
-use Shop\Services\CartTokenManager;
-use Shop\Services\CheckoutRenderer;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
+use Counter\Services\CartService;
+use Counter\Services\CartTokenManager;
+use Counter\Services\CheckoutRenderer;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -48,6 +48,6 @@ final class CheckoutForm implements Element {
 		$cart = $this->cart->getOrCreate( $this->token->current() );
 		$mode = $settings['presentation'] ?? 'default';
 		$mode = $mode === 'default' ? null : (string) $mode;
-		return '<div class="shop-el shop-el-checkout">' . $this->renderer->render( $cart, $mode ) . '</div>';
+		return '<div class="counter-el counter-el-checkout">' . $this->renderer->render( $cart, $mode ) . '</div>';
 	}
 }

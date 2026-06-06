@@ -3,11 +3,11 @@
  * Shop — RichText element. Block of formatted text.
  */
 
-namespace Shop\Elements\Content;
+namespace Counter\Elements\Content;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -41,7 +41,7 @@ final class RichText implements Element {
 
 		$style = $color !== '' ? sprintf( ' style="color:%s"', esc_attr( $color ) ) : '';
 		return sprintf(
-			'<div class="shop-el shop-el-rich shop-el-rich--%s shop-el--align-%s"%s>%s</div>',
+			'<div class="counter-el counter-el-rich counter-el-rich--%s counter-el--align-%s"%s>%s</div>',
 			esc_attr( $size ),
 			esc_attr( $alignment ),
 			$style,

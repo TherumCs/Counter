@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop by Therum — Pure builder admin page.
+ * Counter by Therum — Pure builder admin page.
  *
  * The admin shell that loads the Preact editor. The actual editor lives
  * in assets/builder/builder.js — this PHP file just emits the mount
@@ -9,7 +9,7 @@
  * Only registered when Mode::loadsPureBuilder() returns true (Pure mode).
  */
 
-namespace Shop\Admin;
+namespace Counter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -18,16 +18,16 @@ final class BuilderPage {
 	public function render(): void {
 		$page_id = isset( $_GET['page_id'] ) ? (int) $_GET['page_id'] : 0;
 		?>
-		<div class="wrap shop-admin shop-builder-wrap">
-			<div id="shop-builder-root"
+		<div class="wrap counter-admin counter-builder-wrap">
+			<div id="counter-builder-root"
 				data-page-id="<?php echo esc_attr( (string) $page_id ); ?>"
 				data-rest="<?php echo esc_url( rest_url() ); ?>"
 				data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>">
 
 				<!-- Loading shell — the Preact app replaces this on boot -->
-				<div class="shop-builder-boot">
-					<div class="shop-builder-boot__mark">T</div>
-					<div class="shop-builder-boot__title">Loading builder…</div>
+				<div class="counter-builder-boot">
+					<div class="counter-builder-boot__mark">T</div>
+					<div class="counter-builder-boot__title">Loading builder…</div>
 				</div>
 			</div>
 		</div>
@@ -42,34 +42,34 @@ final class BuilderPage {
 		$allowed = [ 'page' => 'Pages', 'header' => 'Headers', 'footer' => 'Footers', 'part' => 'Parts', 'template' => 'Templates' ];
 		if ( ! isset( $allowed[ $kind ] ) ) $kind = 'page';
 		?>
-		<div class="wrap shop-admin">
-			<h1 class="shop-admin__title">
-				<span class="shop-admin__mark">T</span>
+		<div class="wrap counter-admin">
+			<h1 class="counter-admin__title">
+				<span class="counter-admin__mark">T</span>
 				<?php echo esc_html( $allowed[ $kind ] ); ?>
-				<a href="#" class="page-title-action" data-shop-new-page data-kind="<?php echo esc_attr( $kind ); ?>"><?php esc_html_e( 'Add new', 'shop' ); ?></a>
+				<a href="#" class="page-title-action" data-counter-new-page data-kind="<?php echo esc_attr( $kind ); ?>"><?php esc_html_e( 'Add new', 'counter' ); ?></a>
 			</h1>
-			<nav class="shop-admin__tabs">
+			<nav class="counter-admin__tabs">
 				<?php foreach ( $allowed as $k => $label ) :
-					$href = add_query_arg( [ 'page' => 'shop-pages', 'kind' => $k ], admin_url( 'admin.php' ) );
-					$cls  = 'shop-admin__tab' . ( $k === $kind ? ' is-active' : '' );
+					$href = add_query_arg( [ 'page' => 'counter-pages', 'kind' => $k ], admin_url( 'admin.php' ) );
+					$cls  = 'counter-admin__tab' . ( $k === $kind ? ' is-active' : '' );
 				?>
 					<a class="<?php echo esc_attr( $cls ); ?>" href="<?php echo esc_url( $href ); ?>"><?php echo esc_html( $label ); ?></a>
 				<?php endforeach; ?>
 			</nav>
 			<div
-				id="shop-page-list"
+				id="counter-page-list"
 				data-rest="<?php echo esc_url( rest_url() ); ?>"
 				data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"
 				data-kind="<?php echo esc_attr( $kind ); ?>"
-				data-active-header="<?php echo esc_attr( (string) (int) get_option( 'shop_active_header_id', 0 ) ); ?>"
-				data-active-footer="<?php echo esc_attr( (string) (int) get_option( 'shop_active_footer_id', 0 ) ); ?>"
+				data-active-header="<?php echo esc_attr( (string) (int) get_option( 'counter_active_header_id', 0 ) ); ?>"
+				data-active-footer="<?php echo esc_attr( (string) (int) get_option( 'counter_active_footer_id', 0 ) ); ?>"
 			>
-				<p><?php esc_html_e( 'Loading…', 'shop' ); ?></p>
+				<p><?php esc_html_e( 'Loading…', 'counter' ); ?></p>
 			</div>
 		</div>
 		<script>
 		( function () {
-			var root = document.getElementById( 'shop-page-list' );
+			var root = document.getElementById( 'counter-page-list' );
 			if ( ! root ) return;
 
 			var REST  = root.getAttribute( 'data-rest' ) + 'shop/v1/';
@@ -88,30 +88,30 @@ final class BuilderPage {
 
 			function render( pages ) {
 				if ( ! pages.length ) {
-					root.innerHTML = '<p class="shop-admin__empty">Nothing here yet — click <strong>Add new</strong> to create one.</p>';
+					root.innerHTML = '<p class="counter-admin__empty">Nothing here yet — click <strong>Add new</strong> to create one.</p>';
 					return;
 				}
 				var rows = pages.map( function ( p ) {
-					var editUrl = 'admin.php?page=shop-pages&action=edit&page_id=' + p.id;
+					var editUrl = 'admin.php?page=counter-pages&action=edit&page_id=' + p.id;
 					var isActiveHeader = KIND === 'header' && p.id === activeHeaderId;
 					var isActiveFooter = KIND === 'footer' && p.id === activeFooterId;
 					var activate = '';
 					if ( KIND === 'header' || KIND === 'footer' ) {
 						activate = isActiveHeader || isActiveFooter
-							? '<span class="shop-admin__chip is-active">Active</span>'
-							: '<button class="button" data-shop-activate="' + p.id + '">Set active</button>';
+							? '<span class="counter-admin__chip is-active">Active</span>'
+							: '<button class="button" data-counter-activate="' + p.id + '">Set active</button>';
 					}
 					return '' +
 						'<tr>' +
 							'<td><a href="' + editUrl + '"><strong>' + escapeHtml( p.title ) + '</strong></a>' +
-								'<div class="shop-admin__sub">' + escapeHtml( p.slug || '' ) + '</div></td>' +
+								'<div class="counter-admin__sub">' + escapeHtml( p.slug || '' ) + '</div></td>' +
 							'<td>' + escapeHtml( p.status || '' ) + '</td>' +
 							'<td>' + activate + '</td>' +
-							'<td><button class="button-link-delete" data-shop-delete="' + p.id + '">Delete</button></td>' +
+							'<td><button class="button-link-delete" data-counter-delete="' + p.id + '">Delete</button></td>' +
 						'</tr>';
 				} ).join( '' );
 				root.innerHTML =
-					'<table class="wp-list-table widefat striped shop-admin__table">' +
+					'<table class="wp-list-table widefat striped counter-admin__table">' +
 						'<thead><tr><th>Title</th><th>Status</th><th></th><th></th></tr></thead>' +
 						'<tbody>' + rows + '</tbody>' +
 					'</table>';
@@ -131,7 +131,7 @@ final class BuilderPage {
 
 			// New + activate + delete delegation
 			document.addEventListener( 'click', function ( e ) {
-				var newBtn = e.target.closest( '[data-shop-new-page]' );
+				var newBtn = e.target.closest( '[data-counter-new-page]' );
 				if ( newBtn ) {
 					e.preventDefault();
 					var kind = newBtn.getAttribute( 'data-kind' ) || 'page';
@@ -140,19 +140,19 @@ final class BuilderPage {
 					api( 'admin/pages', { method: 'POST', body: JSON.stringify( { title: title, kind: kind } ) } )
 						.then( function ( p ) {
 							if ( p && p.id ) {
-								window.location.href = 'admin.php?page=shop-pages&action=edit&page_id=' + p.id;
+								window.location.href = 'admin.php?page=counter-pages&action=edit&page_id=' + p.id;
 							}
 						} );
 					return;
 				}
-				var actId = e.target.getAttribute && e.target.getAttribute( 'data-shop-activate' );
+				var actId = e.target.getAttribute && e.target.getAttribute( 'data-counter-activate' );
 				if ( actId ) {
 					e.preventDefault();
 					api( 'admin/builder/chrome-active', { method: 'POST', body: JSON.stringify( { kind: KIND, id: parseInt( actId, 10 ) } ) } )
 						.then( function () { window.location.reload(); } );
 					return;
 				}
-				var delId = e.target.getAttribute && e.target.getAttribute( 'data-shop-delete' );
+				var delId = e.target.getAttribute && e.target.getAttribute( 'data-counter-delete' );
 				if ( delId ) {
 					e.preventDefault();
 					if ( ! confirm( 'Delete this ' + KIND + '? This cannot be undone.' ) ) return;

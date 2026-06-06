@@ -3,11 +3,11 @@
  * Shop — Divider element. Horizontal rule.
  */
 
-namespace Shop\Elements\Layout;
+namespace Counter\Elements\Layout;
 
-use Shop\Elements\ControlBuilder;
-use Shop\Elements\Element;
-use Shop\Elements\ElementContext;
+use Counter\Elements\ControlBuilder;
+use Counter\Elements\Element;
+use Counter\Elements\ElementContext;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -47,6 +47,6 @@ final class Divider implements Element {
 		];
 		if ( $color !== '' ) $styles[] = 'border-top-color: ' . $color;
 
-		return sprintf( '<hr class="shop-el shop-el-divider" style="%s" />', esc_attr( implode( '; ', $styles ) ) );
+		return sprintf( '<hr class="counter-el counter-el-divider" style="%s" />', esc_attr( implode( '; ', $styles ) ) );
 	}
 }

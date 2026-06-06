@@ -1,13 +1,13 @@
 <?php
 /**
- * Shop by Therum — payment intent value object.
+ * Counter by Therum — payment intent value object.
  *
  * What a gateway returns from createIntent(). The client uses these fields
  * to complete payment — either by collecting card data via a provider SDK
  * (Square, Stripe) or by redirecting to a hosted page (PayPal, BNPL providers).
  */
 
-namespace Shop\Payments;
+namespace Counter\Payments;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

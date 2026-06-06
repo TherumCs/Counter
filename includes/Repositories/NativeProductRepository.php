@@ -1,18 +1,18 @@
 <?php
 /**
- * Shop by Therum — NativeProductRepository.
+ * Counter by Therum — NativeProductRepository.
  *
  * Reads products from our own SQLite tables (`products`, `product_variants`).
  * The "native" path — products created via Shop's admin UI or pushed in by
  * Nexus from connected vendors. Fast, lean, no Woo dependency.
  */
 
-namespace Shop\Repositories;
+namespace Counter\Repositories;
 
-use Shop\DB;
-use Shop\Models\Product;
-use Shop\Models\Variant;
-use Shop\Money;
+use Counter\DB;
+use Counter\Models\Product;
+use Counter\Models\Variant;
+use Counter\Money;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
