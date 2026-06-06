@@ -105,7 +105,7 @@ abstract class TaxonomyOrderPage {
 	 * @param array<int, \Counter\Models\TaxonomyOrder> $orderMap
 	 * @return array<int, array<string, mixed>>
 	 */
-	private function buildTree( array $terms, array $orderMap ): array {
+	protected function buildTree( array $terms, array $orderMap ): array {
 		$byParent = [ null => [] ];
 
 		// First pass: organize by parent
@@ -140,7 +140,7 @@ abstract class TaxonomyOrderPage {
 	 * @param array<int, \Counter\Models\TaxonomyOrder> $orderMap
 	 * @param array<int, array<string, mixed>> $termMap
 	 */
-	private function renderTree( array $items, array $orderMap, array $termMap, int $depth = 0 ): void {
+	protected function renderTree( array $items, array $orderMap, array $termMap, int $depth = 0 ): void {
 		foreach ( $items as $item ) {
 			$term = $item['term'];
 			$order = $item['order'];
