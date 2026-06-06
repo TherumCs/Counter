@@ -74,7 +74,7 @@ final class TaxonomyOrderController {
 	 */
 	public function reorder( \WP_REST_Request $req ): \WP_REST_Response {
 		$type = (string) $req->get_param( 'type' );
-		$updates = (array) $req->get_json_params()['updates'] ?? [];
+		$updates = (array) ( $req->get_json_params()['updates'] ?? [] );
 
 		if ( ! $this->isValidTaxonomy( $type ) ) {
 			return new \WP_REST_Response(
