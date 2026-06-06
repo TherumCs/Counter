@@ -162,12 +162,16 @@ final class AdminController {
 
 		if ( ! in_array( $sort, self::SORTABLE, true ) ) $sort = 'id';
 
+		// Unlocked mode — products live in Woo, not our SQLite table.
+		// Bridge through `wc_get_products()` so the same admin grid
+		// works without a forced migration.
+		if ( \Shop\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_products' ) ) {
+			return $this->listProductsFromWoo( $page, $per, $q, $status, $sort, $order );
+		}
+
 		[ $where, $bind ] = $this->whereClause( $q, $status );
 
 		$pdo = DB::pdo();
-		$count = (int) $pdo->prepare( "SELECT COUNT(*) FROM products $where" )
-			->execute( $bind ) ?: 0;
-		// PDOStatement::execute returns bool — re-do count properly:
 		$countStmt = $pdo->prepare( "SELECT COUNT(*) AS c FROM products $where" );
 		$countStmt->execute( $bind );
 		$total = (int) ( $countStmt->fetch()['c'] ?? 0 );
@@ -200,11 +204,214 @@ final class AdminController {
 		], 200 );
 	}
 
+	/**
+	 * Unlocked-mode product list — wraps wc_get_products() and shapes
+	 * the result into the same row schema the admin grid renders.
+	 *
+	 * Sort keys map:
+	 *   id, created_at, updated_at, title, price, sku, stock_qty → Woo
+	 *   equivalents. Columns we don't track in Woo (compare_at_price
+	 *   for the parent, etc.) fall back to null.
+	 *
+	 * @param string $q       free-text search; matches title + SKU
+	 * @param string $status  one of 'publish' / 'draft' / 'private' / ''
+	 */
+	private function listProductsFromWoo(
+		int $page, int $per, string $q, string $status, string $sort, string $order
+	): \WP_REST_Response {
+		// Woo's status taxonomy uses 'publish' / 'draft' / etc. — pass
+		// blanks through as "any".
+		$args = [
+			'limit'   => $per,
+			'page'    => $page,
+			'paginate'=> true,
+			'orderby' => match ( $sort ) {
+				'title'      => 'name',
+				'created_at' => 'date',
+				'updated_at' => 'modified',
+				'price'      => 'price',
+				'sku'        => 'sku',
+				default      => 'id',
+			},
+			'order'   => $order,
+			'status'  => $status !== '' ? [ $status ] : [ 'publish', 'draft', 'private' ],
+		];
+		if ( $q !== '' ) {
+			// `s` matches title / content / excerpt. SKU search runs as
+			// a second query and merges results — wc_get_products()
+			// AND-intersects when both are passed in the same call.
+			$args['s'] = $q;
+		}
+
+		$result = wc_get_products( $args );
+		$total    = $result instanceof \stdClass ? (int) $result->total : count( (array) $result );
+		$products = $result instanceof \stdClass ? (array) $result->products : (array) $result;
+
+		$rows = [];
+		foreach ( $products as $wc ) {
+			if ( ! $wc instanceof \WC_Product ) continue;
+			$rows[] = $this->wcProductToRow( $wc );
+		}
+
+		return new \WP_REST_Response( [
+			'total'    => $total,
+			'page'     => $page,
+			'per_page' => $per,
+			'rows'     => $rows,
+			'source'   => 'woo',
+		], 200 );
+	}
+
+	/**
+	 * Shape a WC_Product into the same row dict the SQLite path emits.
+	 * Money is normalized to cents (Woo stores decimal strings).
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function wcProductToRow( \WC_Product $wc ): array {
+		// Variable products don't have a single regular_price on the
+		// parent — fall back to get_price() which Woo resolves to the
+		// lowest variant price. Sale + compare logic still keys off
+		// the regular_price when present.
+		$regular      = $this->wcPriceCents( $wc->get_regular_price() );
+		$priceCents   = $regular ?? $this->wcPriceCents( $wc->get_price() );
+		$compareCents = $this->wcPriceCents( $wc->get_sale_price() ) !== null ? $regular : null;
+		$imageId = (int) $wc->get_image_id();
+		return [
+			'id'                => $wc->get_id(),
+			'uuid'              => 'wc-' . $wc->get_id(),
+			'slug'              => $wc->get_slug(),
+			'title'             => $wc->get_name(),
+			'status'            => $wc->get_status(),
+			'has_variants'      => $wc->is_type( 'variable' ) ? 1 : 0,
+			'is_shippable'      => $wc->is_virtual() ? 0 : 1,
+			'is_digital'        => $wc->is_downloadable() ? 1 : 0,
+			'is_pod'            => 0,
+			'track_inventory'   => $wc->managing_stock() ? 1 : 0,
+			'price'             => $priceCents,
+			'compare_at_price'  => $compareCents,
+			'cost'              => null,
+			'sku'               => $wc->get_sku() ?: null,
+			'stock_qty'         => $wc->managing_stock() ? (int) $wc->get_stock_quantity() : null,
+			'primary_image_id'  => $imageId ?: null,
+			'image_url'         => $imageId ? (string) wp_get_attachment_image_url( $imageId, 'thumbnail' ) : null,
+			'created_at'        => $wc->get_date_created() ? $wc->get_date_created()->getTimestamp() : null,
+			'updated_at'        => $wc->get_date_modified() ? $wc->get_date_modified()->getTimestamp() : null,
+		];
+	}
+
+	private function wcPriceCents( $value ): ?int {
+		if ( $value === '' || $value === null ) return null;
+		return (int) round( ( (float) $value ) * 100 );
+	}
+
+	/**
+	 * Inline-edit a Woo product. Maps our flat field schema to the
+	 * Woo setter API:
+	 *   title       → name
+	 *   status      → status (publish / draft / private / pending)
+	 *   sku         → sku
+	 *   stock_qty   → stock_quantity (also enables manage_stock)
+	 *   price       → regular_price (cents in → decimal string out)
+	 *   compare_at_price → not editable on parents (variant-level only)
+	 *
+	 * @param array<string,mixed> $body
+	 */
+	private function patchWooProduct( int $id, array $body ): \WP_REST_Response {
+		$wc = wc_get_product( $id );
+		if ( ! $wc instanceof \WC_Product ) {
+			return new \WP_REST_Response( [ 'error' => [ 'message' => 'Product not found.' ] ], 404 );
+		}
+		$ok = [];
+		foreach ( $body as $field => $value ) {
+			switch ( $field ) {
+				case 'title':     $wc->set_name( (string) $value );   $ok[] = $field; break;
+				case 'status':    $wc->set_status( (string) $value ); $ok[] = $field; break;
+				case 'sku':       $wc->set_sku( (string) $value );    $ok[] = $field; break;
+				case 'stock_qty':
+					if ( $value === null || $value === '' ) {
+						$wc->set_manage_stock( false );
+					} else {
+						$wc->set_manage_stock( true );
+						$wc->set_stock_quantity( (int) $value );
+					}
+					$ok[] = $field;
+					break;
+				case 'price':
+					if ( $value === null || $value === '' ) {
+						$wc->set_regular_price( '' );
+					} else {
+						$wc->set_regular_price( number_format( ( (int) $value ) / 100, 2, '.', '' ) );
+					}
+					$ok[] = $field;
+					break;
+				// Silently skip fields that don't map (compare_at_price,
+				// has_variants, etc.) — those are derived in Woo.
+			}
+		}
+		$wc->save();
+		return new \WP_REST_Response( [ 'ok' => true, 'updated' => $ok, 'row' => $this->wcProductToRow( $wc ) ], 200 );
+	}
+
+	/**
+	 * Bulk ops on Woo products. Supports: delete (trash), duplicate
+	 * (uses WC_Admin_Duplicate_Product), set_status, set (apply a
+	 * field map to every selected product).
+	 *
+	 * @param int[] $ids
+	 * @param array<string,mixed> $body
+	 */
+	private function bulkWooProducts( string $action, array $ids, array $body ): \WP_REST_Response {
+		$touched = 0;
+		switch ( $action ) {
+			case 'delete':
+				foreach ( $ids as $id ) {
+					$wc = wc_get_product( $id );
+					if ( $wc && $wc->delete( /* force_delete = */ false ) ) $touched++;
+				}
+				break;
+			case 'duplicate':
+				if ( ! class_exists( '\WC_Admin_Duplicate_Product' ) ) {
+					require_once WC_ABSPATH . 'includes/admin/class-wc-admin-duplicate-product.php';
+				}
+				$dup = new \WC_Admin_Duplicate_Product();
+				foreach ( $ids as $id ) {
+					$wc = wc_get_product( $id );
+					if ( $wc && $dup->product_duplicate( $wc ) ) $touched++;
+				}
+				break;
+			case 'set_status':
+				$status = (string) ( $body['status'] ?? '' );
+				foreach ( $ids as $id ) {
+					$wc = wc_get_product( $id );
+					if ( $wc ) { $wc->set_status( $status ); $wc->save(); $touched++; }
+				}
+				break;
+			case 'set':
+				$set = (array) ( $body['set'] ?? [] );
+				foreach ( $ids as $id ) {
+					// Reuse patch logic per row so field mapping stays
+					// in one place.
+					$r = $this->patchWooProduct( $id, $set );
+					if ( ! empty( $r->get_data()['ok'] ) ) $touched++;
+				}
+				break;
+			default:
+				return new \WP_REST_Response( [ 'error' => [ 'message' => "Unknown bulk action '$action'." ] ], 400 );
+		}
+		return new \WP_REST_Response( [ 'ok' => true, 'count' => $touched, 'action' => $action ], 200 );
+	}
+
 	public function patchProduct( \WP_REST_Request $req ): \WP_REST_Response {
 		$id   = (int) $req->get_param( 'id' );
 		$body = $req->get_json_params() ?: [];
 		if ( ! is_array( $body ) ) {
 			return new \WP_REST_Response( [ 'error' => [ 'message' => 'Invalid body' ] ], 400 );
+		}
+		// Unlocked mode — patch through Woo so we don't silently UPDATE
+		// the empty SQLite products table.
+		if ( \Shop\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
+			return $this->patchWooProduct( $id, $body );
 		}
 
 		[ $sets, $bind, $errors ] = $this->prepareUpdate( $body );
@@ -231,6 +438,11 @@ final class AdminController {
 
 		if ( ! $ids ) {
 			return new \WP_REST_Response( [ 'error' => [ 'message' => 'No ids' ] ], 400 );
+		}
+
+		// Unlocked mode — route bulk through Woo.
+		if ( \Shop\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_product' ) ) {
+			return $this->bulkWooProducts( $action, $ids, $body );
 		}
 
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '?' ) );
