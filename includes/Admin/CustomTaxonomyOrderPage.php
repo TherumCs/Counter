@@ -62,19 +62,23 @@ final class CustomTaxonomyOrderPage extends TaxonomyOrderPage {
 	protected function getTerms(): array {
 		// MVP: Show all attributes as reorderable items across all custom taxonomy tabs
 		// Vendors and Collections are managed separately via extensions/filters
-		$pdo = \Counter\DB::pdo();
-		$stmt = $pdo->prepare(
-			"SELECT id, name FROM attributes ORDER BY name"
-		);
-		$stmt->execute();
+		try {
+			$pdo = \Counter\DB::pdo();
+			$stmt = $pdo->prepare(
+				"SELECT id, name FROM attributes ORDER BY name"
+			);
+			$stmt->execute();
 
-		$terms = [];
-		foreach ( $stmt->fetchAll() as $row ) {
-			$terms[] = [
-				'id'   => (int) $row['id'],
-				'name' => (string) $row['name'],
-			];
+			$terms = [];
+			foreach ( $stmt->fetchAll() as $row ) {
+				$terms[] = [
+					'id'   => (int) $row['id'],
+					'name' => (string) $row['name'],
+				];
+			}
+			return $terms;
+		} catch ( \Throwable $e ) {
+			return [];
 		}
-		return $terms;
 	}
 }

@@ -23,22 +23,27 @@ final class ProductVariantOrderPage extends TaxonomyOrderPage {
 
 	protected function getTerms(): array {
 		// Fetch all attribute values (color, size, etc) from the database
-		$pdo = \Counter\DB::pdo();
-		$stmt = $pdo->prepare(
-			"SELECT av.id, av.value AS name, a.slug AS attribute_slug
-			 FROM attribute_values av
-			 JOIN attributes a ON av.attribute_id = a.id
-			 ORDER BY a.name, av.value"
-		);
-		$stmt->execute();
+		try {
+			$pdo = \Counter\DB::pdo();
+			$stmt = $pdo->prepare(
+				"SELECT av.id, av.value AS name, a.slug AS attribute_slug
+				 FROM attribute_values av
+				 JOIN attributes a ON av.attribute_id = a.id
+				 ORDER BY a.name, av.value"
+			);
+			$stmt->execute();
 
-		$terms = [];
-		foreach ( $stmt->fetchAll() as $row ) {
-			$terms[] = [
-				'id'   => (int) $row['id'],
-				'name' => $row['attribute_slug'] . ': ' . (string) $row['name'],
-			];
+			$terms = [];
+			foreach ( $stmt->fetchAll() as $row ) {
+				$terms[] = [
+					'id'   => (int) $row['id'],
+					'name' => $row['attribute_slug'] . ': ' . (string) $row['name'],
+				];
+			}
+			return $terms;
+		} catch ( \Throwable $e ) {
+			// Database error - return empty, let parent class show message
+			return [];
 		}
-		return $terms;
 	}
 }

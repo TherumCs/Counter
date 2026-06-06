@@ -24,19 +24,23 @@ final class ProductCategoryOrderPage extends TaxonomyOrderPage {
 	protected function getTerms(): array {
 		// Counter uses attributes as the primary category/grouping system
 		// (Color, Size, Material, etc). Fetch all attributes for reordering.
-		$pdo = \Counter\DB::pdo();
-		$stmt = $pdo->prepare(
-			"SELECT id, name FROM attributes ORDER BY name"
-		);
-		$stmt->execute();
+		try {
+			$pdo = \Counter\DB::pdo();
+			$stmt = $pdo->prepare(
+				"SELECT id, name FROM attributes ORDER BY name"
+			);
+			$stmt->execute();
 
-		$terms = [];
-		foreach ( $stmt->fetchAll() as $row ) {
-			$terms[] = [
-				'id'   => (int) $row['id'],
-				'name' => (string) $row['name'],
-			];
+			$terms = [];
+			foreach ( $stmt->fetchAll() as $row ) {
+				$terms[] = [
+					'id'   => (int) $row['id'],
+					'name' => (string) $row['name'],
+				];
+			}
+			return $terms;
+		} catch ( \Throwable $e ) {
+			return [];
 		}
-		return $terms;
 	}
 }
