@@ -33,7 +33,7 @@ final class Schema {
 	 *
 	 * Migrations are forward-only and additive — we do not auto-downgrade.
 	 */
-	public const VERSION = 4;
+	public const VERSION = 5;
 
 	/**
 	 * Ordered list of DDL statements. CREATE TABLE IF NOT EXISTS is idempotent;
@@ -611,4 +611,28 @@ final class Schema {
 
 		];
 	}
+}
+
+
+		// ────────────────────────────────────────────────────────────────
+		//  Taxonomy Ordering (v5)
+		// ────────────────────────────────────────────────────────────────
+
+		// Hierarchical ordering for product categories, variants, custom
+		// taxonomies. Stores parent/child relationships and sort position.
+		"CREATE TABLE IF NOT EXISTS taxonomy_orders (
+			id           INTEGER PRIMARY KEY AUTOINCREMENT,
+			taxonomy     TEXT NOT NULL,
+			term_id      INTEGER NOT NULL,
+			parent_id    INTEGER REFERENCES taxonomy_orders(id) ON DELETE CASCADE,
+			position     INTEGER NOT NULL DEFAULT 0,
+			created_at   INTEGER NOT NULL DEFAULT (unixepoch()),
+			updated_at   INTEGER NOT NULL DEFAULT (unixepoch()),
+			UNIQUE(taxonomy, term_id)
+		)",
+
+		"CREATE INDEX IF NOT EXISTS idx_taxonomy_orders_tax_pos ON taxonomy_orders(taxonomy, position)",
+		"CREATE INDEX IF NOT EXISTS idx_taxonomy_orders_parent  ON taxonomy_orders(parent_id)",
+
+	];
 }

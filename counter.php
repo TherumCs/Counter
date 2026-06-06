@@ -224,6 +224,11 @@ function counter_register_container_bindings(): void {
 		)
 	);
 
+	// ─── Taxonomy ordering layer ────────────────────────────────────────
+	$c->singleton( \Counter\Repositories\TaxonomyOrderRepository::class, fn() =>
+		new \Counter\Repositories\TaxonomyOrderRepository()
+	);
+
 	// ─── Payment providers (Studio Pay underlying rails) ───────────────
 	$c->singleton( \Counter\Payments\Providers\StripeProvider::class, fn() => new \Counter\Payments\Providers\StripeProvider() );
 	$c->singleton( \Counter\Payments\Providers\SquareProvider::class, fn() => new \Counter\Payments\Providers\SquareProvider() );
@@ -391,6 +396,11 @@ function counter_register_container_bindings(): void {
 		)
 	);
 	$c->singleton( \Counter\Rest\GridViewsController::class, fn() => new \Counter\Rest\GridViewsController() );
+	$c->singleton( \Counter\Rest\TaxonomyOrderController::class, fn( $c ) =>
+		new \Counter\Rest\TaxonomyOrderController(
+			$c->get( \Counter\Repositories\TaxonomyOrderRepository::class ),
+		)
+	);
 	$c->singleton( \Counter\Rest\StudioPayController::class, fn( $c ) =>
 		new \Counter\Rest\StudioPayController(
 			$c->get( \Counter\Payments\Studio\StudioPay::class ),
@@ -617,6 +627,7 @@ add_action( 'rest_api_init', function (): void {
 	$c->get( \Counter\Rest\StudioPayController::class )->register();
 	$c->get( \Counter\Rest\CustomersController::class )->register();
 	$c->get( \Counter\Rest\OrderIoController::class )->register();
+	$c->get( \Counter\Rest\TaxonomyOrderController::class )->register();
 	$c->get( \Counter\Rest\GridViewsController::class )->register();
 	$c->get( \Counter\Rest\UpdaterController::class )->register();
 } );
