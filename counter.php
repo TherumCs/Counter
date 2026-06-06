@@ -105,6 +105,11 @@ register_activation_hook( __FILE__, [ \Counter\Migrations::class, 'run' ] );
 // behind Schema::VERSION (e.g. user updated via FTP without re-activating),
 // run migrations. Cheap — one SELECT MAX(version) FROM schema_version.
 add_action( 'admin_init', function (): void {
+	// Ensure Schema is autoloaded before accessing
+	if ( ! class_exists( \Counter\Schema::class ) ) {
+		require_once COUNTER_DIR . 'includes/Schema.php';
+	}
+
 	try {
 		if ( \Counter\Migrations::currentVersion() < \Counter\Schema::VERSION ) {
 			\Counter\Migrations::run();
