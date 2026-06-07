@@ -609,30 +609,26 @@ final class Schema {
 			"CREATE INDEX IF NOT EXISTS idx_customers_total_spent ON customers(total_spent_cents)",
 			"CREATE INDEX IF NOT EXISTS idx_customers_last_order  ON customers(last_order_at)",
 
+			// ────────────────────────────────────────────────────────────────
+			//  Taxonomy Ordering (v5)
+			// ────────────────────────────────────────────────────────────────
+
+			// Hierarchical ordering for product categories, variants, custom
+			// taxonomies. Stores parent/child relationships and sort position.
+			"CREATE TABLE IF NOT EXISTS taxonomy_orders (
+				id           INTEGER PRIMARY KEY AUTOINCREMENT,
+				taxonomy     TEXT NOT NULL,
+				term_id      INTEGER NOT NULL,
+				parent_id    INTEGER REFERENCES taxonomy_orders(id) ON DELETE CASCADE,
+				position     INTEGER NOT NULL DEFAULT 0,
+				created_at   INTEGER NOT NULL DEFAULT (unixepoch()),
+				updated_at   INTEGER NOT NULL DEFAULT (unixepoch()),
+				UNIQUE(taxonomy, term_id)
+			)",
+
+			"CREATE INDEX IF NOT EXISTS idx_taxonomy_orders_tax_pos ON taxonomy_orders(taxonomy, position)",
+			"CREATE INDEX IF NOT EXISTS idx_taxonomy_orders_parent  ON taxonomy_orders(parent_id)",
+
 		];
 	}
-}
-
-
-		// ────────────────────────────────────────────────────────────────
-		//  Taxonomy Ordering (v5)
-		// ────────────────────────────────────────────────────────────────
-
-		// Hierarchical ordering for product categories, variants, custom
-		// taxonomies. Stores parent/child relationships and sort position.
-		"CREATE TABLE IF NOT EXISTS taxonomy_orders (
-			id           INTEGER PRIMARY KEY AUTOINCREMENT,
-			taxonomy     TEXT NOT NULL,
-			term_id      INTEGER NOT NULL,
-			parent_id    INTEGER REFERENCES taxonomy_orders(id) ON DELETE CASCADE,
-			position     INTEGER NOT NULL DEFAULT 0,
-			created_at   INTEGER NOT NULL DEFAULT (unixepoch()),
-			updated_at   INTEGER NOT NULL DEFAULT (unixepoch()),
-			UNIQUE(taxonomy, term_id)
-		)",
-
-		"CREATE INDEX IF NOT EXISTS idx_taxonomy_orders_tax_pos ON taxonomy_orders(taxonomy, position)",
-		"CREATE INDEX IF NOT EXISTS idx_taxonomy_orders_parent  ON taxonomy_orders(parent_id)",
-
-	];
 }
