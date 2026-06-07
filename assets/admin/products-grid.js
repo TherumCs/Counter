@@ -118,7 +118,12 @@
 					cellEditable( 'sku',      esc( r.sku || '' ),      r ) +
 					'<td class="counter-grid__td">' + type + '</td>' +
 					'<td class="counter-grid__td counter-grid__td--meta">' + ago( r.updated_at ) + '</td>' +
-					'<td class="counter-grid__td counter-grid__td--action"><button class="button button-small" data-counter-open-product="' + r.id + '">Open</button></td>' +
+					'<td class="counter-grid__td counter-grid__td--action">' +
+						'<button class="button button-small" data-counter-open-product="' + r.id + '" title="Edit product">Edit</button> ' +
+						'<button class="button button-small" data-counter-view-product="' + r.id + '" title="View on site">View Live</button> ' +
+						'<button class="button button-small" data-counter-duplicate-product="' + r.id + '" title="Duplicate product">Duplicate</button> ' +
+						'<button class="button button-small button-link-delete" data-counter-delete-product="' + r.id + '" title="Delete product">Delete</button>' +
+					'</td>' +
 				'</tr>'
 			);
 		} ).join( '' );
@@ -205,15 +210,45 @@
 		if ( state.page < Math.ceil( state.total / state.perPage ) ) { state.page++; load(); }
 	} );
 
-	// ─── Open drawer (img cell or "Open" button) ────────────────────────────
+	// ─── Open drawer (img cell or "Edit" button) ──────────────────────────
 	// Delegated to the table so newly-rendered rows pick it up automatically.
-	// The product editor module listens for `shop:open-product` on document.
+	// The product editor module listens for `counter:open-product` on document.
 	tbody.addEventListener( 'click', function ( e ) {
 		var btn = e.target.closest( '[data-counter-open-product]' );
 		if ( ! btn ) return;
 		var id = parseInt( btn.getAttribute( 'data-counter-open-product' ), 10 );
 		if ( ! id ) return;
 		document.dispatchEvent( new CustomEvent( 'counter:open-product', { detail: { id: id } } ) );
+	} );
+
+	// ─── View Live button ───────────────────────────────────────────────────
+	tbody.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '[data-counter-view-product]' );
+		if ( ! btn ) return;
+		var id = parseInt( btn.getAttribute( 'data-counter-view-product' ), 10 );
+		if ( ! id ) return;
+		var product = state.rows.find( function ( r ) { return r.id === id; } );
+		if ( product && product.slug ) {
+			window.open( '/?p=' + product.slug, '_blank' );
+		}
+	} );
+
+	// ─── Duplicate button ───────────────────────────────────────────────────
+	tbody.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '[data-counter-duplicate-product]' );
+		if ( ! btn ) return;
+		var id = parseInt( btn.getAttribute( 'data-counter-duplicate-product' ), 10 );
+		if ( ! id || ! confirm( 'Duplicate this product?' ) ) return;
+		doBulkAction( 'duplicate', [ id ] );
+	} );
+
+	// ─── Delete button ──────────────────────────────────────────────────────
+	tbody.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '[data-counter-delete-product]' );
+		if ( ! btn ) return;
+		var id = parseInt( btn.getAttribute( 'data-counter-delete-product' ), 10 );
+		if ( ! id || ! confirm( 'Delete this product? This cannot be undone.' ) ) return;
+		doBulkAction( 'delete', [ id ] );
 	} );
 
 	// ─── Selection (with shift-range) ───────────────────────────────────────
