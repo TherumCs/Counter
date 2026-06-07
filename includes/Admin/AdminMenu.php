@@ -190,7 +190,7 @@ final class AdminMenu {
 				'strategy'  => 'defer',
 			] );
 			wp_add_inline_script( 'counter-importer',
-				'window.ShopImporterConfig = ' . $rest_config . ';',
+				'window.CounterImporterConfig = ' . $rest_config . ';',
 				'before'
 			);
 			wp_enqueue_script( 'counter-importer' );
