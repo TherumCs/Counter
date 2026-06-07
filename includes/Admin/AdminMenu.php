@@ -202,7 +202,7 @@ final class AdminMenu {
 				'strategy'  => 'defer',
 			] );
 			wp_add_inline_script( 'counter-products-grid',
-				'window.ShopAdminGridConfig = ' . $rest_config . ';',
+				'window.CounterAdminGridConfig = ' . $rest_config . ';',
 				'before'
 			);
 			wp_enqueue_script( 'counter-products-grid' );
@@ -228,7 +228,7 @@ final class AdminMenu {
 				'strategy'  => 'defer',
 			] );
 			wp_add_inline_script( 'counter-orders-grid',
-				'window.ShopAdminGridConfig = ' . $rest_config . ';',
+				'window.CounterAdminGridConfig = ' . $rest_config . ';',
 				'before'
 			);
 			wp_enqueue_script( 'counter-orders-grid' );
