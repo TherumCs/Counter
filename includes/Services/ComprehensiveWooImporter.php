@@ -308,7 +308,6 @@ final class ComprehensiveWooImporter {
 			$wc_status = $wc_order->get_status();
 			$status = $status_map[ $wc_status ] ?? 'processing';
 
-			$uuid = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : self::generateUUID();
 			$paid_at = $wc_order->is_paid() ? ( $wc_order->get_date_paid() ? $wc_order->get_date_paid()->getTimestamp() : time() ) : null;
 
 			$bill_addr = [
@@ -331,12 +330,12 @@ final class ComprehensiveWooImporter {
 
 			$stmt = $pdo->prepare( <<<SQL
 				INSERT INTO orders (
-					uuid, number, user_id, email, currency, status,
+					number, user_id, email, currency, status,
 					subtotal, shipping_total, tax_total, discount_total, grand_total, refunded_total,
 					bill_address, ship_address,
 					payment_provider, payment_method, paid_at
 				) VALUES (
-					:uuid, :number, :user_id, :email, :currency, :status,
+					:number, :user_id, :email, :currency, :status,
 					:subtotal, :shipping, :tax, :discount, :total, :refunded,
 					:bill_addr, :ship_addr,
 					:provider, :method, :paid_at
@@ -344,7 +343,6 @@ final class ComprehensiveWooImporter {
 			SQL );
 
 			$stmt->execute( [
-				':uuid'      => $uuid,
 				':number'    => (string) $wc_order->get_id(),
 				':user_id'   => $wc_order->get_customer_id() ?: null,
 				':email'     => $wc_order->get_billing_email(),
