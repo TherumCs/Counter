@@ -161,23 +161,33 @@ final class ComprehensiveWooImporter {
 			$attr_id = $pdo->lastInsertId();
 
 			// Import attribute terms/values
-			$terms = get_terms( [
-				'taxonomy'   => wc_attribute_taxonomy_name( $attr->attribute_name ),
-				'hide_empty' => false,
-			] );
-
-			foreach ( $terms as $term ) {
-				$val_stmt = $pdo->prepare( <<<SQL
-					INSERT INTO attribute_values (attribute_id, value, created_at, updated_at)
-					VALUES (:attr_id, :value, :created, :updated)
-				SQL );
-
-				$val_stmt->execute( [
-					':attr_id'  => $attr_id,
-					':value'    => $term->name,
-					':created'  => time(),
-					':updated'  => time(),
+			if ( function_exists( 'wc_attribute_taxonomy_name' ) ) {
+				$taxonomy = wc_attribute_taxonomy_name( $attr->attribute_name );
+				$terms = get_terms( [
+					'taxonomy'   => $taxonomy,
+					'hide_empty' => false,
 				] );
+
+				if ( ! is_wp_error( $terms ) && is_array( $terms ) ) {
+					foreach ( $terms as $term ) {
+						// Check if already imported
+						$check = $pdo->prepare( 'SELECT id FROM attribute_values WHERE attribute_id = :attr_id AND value = :value' );
+						$check->execute( [ ':attr_id' => $attr_id, ':value' => $term->name ] );
+						if ( $check->fetch() ) continue;
+
+						$val_stmt = $pdo->prepare( <<<SQL
+							INSERT INTO attribute_values (attribute_id, value, created_at, updated_at)
+							VALUES (:attr_id, :value, :created, :updated)
+						SQL );
+
+						$val_stmt->execute( [
+							':attr_id'  => $attr_id,
+							':value'    => $term->name,
+							':created'  => time(),
+							':updated'  => time(),
+						] );
+					}
+				}
 			}
 
 			$count++;
@@ -408,13 +418,16 @@ final class ComprehensiveWooImporter {
 				$product = $item->get_product();
 				if ( ! $product ) continue;
 
+				$qty = (int) $item->get_quantity();
+				if ( $qty < 1 ) continue; // Skip zero-quantity items
+
 				// Get Counter product ID
 				$p_stmt = $pdo->prepare( 'SELECT id FROM products WHERE woo_id = :woo_id' );
 				$p_stmt->execute( [ ':woo_id' => $product->get_id() ] );
 				$prod_row = $p_stmt->fetch();
 				$prod_id = $prod_row ? $prod_row['id'] : null;
 
-				$unit_price = (int) ( ( $item->get_total() / $item->get_quantity() ) * 100 );
+				$unit_price = (int) ( ( $item->get_total() / $qty ) * 100 );
 				$line_total = (int) ( $item->get_total() * 100 );
 
 				$i_stmt = $pdo->prepare( <<<SQL
@@ -434,7 +447,7 @@ final class ComprehensiveWooImporter {
 					':product_id' => $prod_id,
 					':title'      => $item->get_name(),
 					':sku'        => $product->get_sku() ?: '',
-					':qty'        => (int) $item->get_quantity(),
+					':qty'        => $qty,
 					':unit_price' => $unit_price,
 					':total'      => $line_total,
 					':created'    => time(),
