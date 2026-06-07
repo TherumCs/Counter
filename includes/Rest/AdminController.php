@@ -207,6 +207,34 @@ final class AdminController {
 	}
 
 	/**
+	 * Get a single product for the product editor.
+	 */
+	public function getProduct( \WP_REST_Request $req ): \WP_REST_Response {
+		$id = (int) $req->get_param( 'id' );
+
+		// WooCommerce mode — fetch from Woo
+		if ( \Counter\Mode::catalogSource() === 'woo' && function_exists( 'wc_get_products' ) ) {
+			$wc_prod = wc_get_product( $id );
+			if ( ! $wc_prod ) {
+				return new \WP_REST_Response( [ 'error' => [ 'message' => 'Product not found' ] ], 404 );
+			}
+			return new \WP_REST_Response( $this->wooPatcher->toRow( $wc_prod ), 200 );
+		}
+
+		// Native mode — fetch from SQLite
+		$pdo = DB::pdo();
+		$stmt = $pdo->prepare( 'SELECT * FROM products WHERE id = :id' );
+		$stmt->execute( [ ':id' => $id ] );
+		$row = $stmt->fetch();
+
+		if ( ! $row ) {
+			return new \WP_REST_Response( [ 'error' => [ 'message' => 'Product not found' ] ], 404 );
+		}
+
+		return new \WP_REST_Response( $this->nativeProductDetail( $row ), 200 );
+	}
+
+	/**
 	 * Unlocked-mode product list — wraps wc_get_products() and shapes
 	 * the result into the same row schema the admin grid renders.
 	 *
