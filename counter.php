@@ -134,6 +134,21 @@ add_action( 'admin_init', function (): void {
 	if ( $source === false && ( defined( 'WC_VERSION' ) || function_exists( 'wc_get_product' ) ) ) {
 		update_option( 'counter_product_source', 'woo' );
 	}
+
+	// Auto-import existing WooCommerce orders on first setup
+	$woo_orders_imported = (bool) get_option( 'counter_woo_orders_imported' );
+	if ( ! $woo_orders_imported && function_exists( 'wc_get_orders' ) ) {
+		try {
+			$importer = new \Counter\Services\WooOrderImporter();
+			$imported = $importer->importFromWooCommerce();
+			if ( $imported > 0 ) {
+				update_option( 'counter_woo_orders_imported', true );
+				error_log( "Counter: Imported $imported WooCommerce orders" );
+			}
+		} catch ( \Throwable $e ) {
+			error_log( 'Counter WooCommerce order import failed: ' . $e->getMessage() );
+		}
+	}
 } );
 
 // Register default service bindings. This is the wiring map — read this to
