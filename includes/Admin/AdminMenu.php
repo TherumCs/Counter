@@ -34,7 +34,8 @@ final class AdminMenu {
 	) {}
 
 	public function register(): void {
-		add_action( 'admin_menu',   [ $this, 'menus' ] );
+		add_action( 'admin_menu',   [ $this, 'menus' ], 20 );
+		add_action( 'admin_menu',   [ $this, 'organizeMenu' ], 25 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'assets' ] );
 	}
 
@@ -172,9 +173,95 @@ final class AdminMenu {
 		}
 	}
 
+	/**
+	 * Organize menu items into sections with headers.
+	 * Called after add_submenu_page() to restructure the menu.
+	 */
+	public function organizeMenu(): void {
+		global $submenu;
+
+		if ( ! isset( $submenu['counter'] ) ) {
+			return;
+		}
+
+		$items = $submenu['counter'];
+		$organized = [];
+
+		// Section: COMMERCE
+		$organized[] = [ 'COMMERCE', 'counter', 'counter-menu-section-title' ];
+		$organized[] = [ $items[1][0], $items[1][1], $items[1][2] ]; // Products
+		$organized[] = [ $items[2][0], $items[2][1], $items[2][2] ]; // Orders
+		$organized[] = [ $items[4][0], $items[4][1], $items[4][2] ]; // Customers
+
+		// Section: MANAGE DATA
+		$organized[] = [ 'MANAGE DATA', 'counter', 'counter-menu-section-title' ];
+		$organized[] = [ $items[3][0], $items[3][1], $items[3][2] ]; // Import
+		$organized[] = [ $items[5][0], $items[5][1], $items[5][2] ]; // Order I/O
+		if ( isset( $items[8] ) ) {
+			$organized[] = [ $items[8][0], $items[8][1], $items[8][2] ]; // Updates
+		}
+
+		// Section: ORGANIZATION
+		$organized[] = [ 'ORGANIZATION', 'counter', 'counter-menu-section-title' ];
+		if ( isset( $items[9] ) ) {
+			$organized[] = [ $items[9][0], $items[9][1], $items[9][2] ]; // Category Order
+		}
+		if ( isset( $items[10] ) ) {
+			$organized[] = [ $items[10][0], $items[10][1], $items[10][2] ]; // Variant Order
+		}
+		if ( isset( $items[11] ) ) {
+			$organized[] = [ $items[11][0], $items[11][1], $items[11][2] ]; // Taxonomy Order
+		}
+
+		// Section: INTEGRATIONS
+		$organized[] = [ 'INTEGRATIONS', 'counter', 'counter-menu-section-title' ];
+		if ( isset( $items[6] ) ) {
+			$organized[] = [ $items[6][0], $items[6][1], $items[6][2] ]; // Studio Pay
+		}
+
+		// Section: SETTINGS
+		$organized[] = [ 'SETTINGS', 'counter', 'counter-menu-section-title' ];
+		$organized[] = [ $items[0][0], $items[0][1], $items[0][2] ]; // Settings
+
+		// Rebuild submenu with sections
+		$submenu['counter'] = array_map( function ( $item ) {
+			return [ $item[0], $item[1], $item[2] ];
+		}, $organized );
+
+		// Add CSS to render section headers
+		add_action( 'admin_head', function () {
+			echo '<style>
+				#adminmenu .counter-menu-section-title {
+					padding: 12px 16px;
+					font-size: 11px;
+					font-weight: 700;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+					color: #9ca3af;
+					background: #f9fafb;
+					margin: 16px 0 8px 0;
+					border-top: 1px solid #e5e7eb;
+					cursor: default;
+				}
+				#adminmenu .counter-menu-section-title:first-child {
+					border-top: none;
+					margin-top: 0;
+				}
+				#adminmenu .counter-menu-section-title:hover {
+					background: #f9fafb;
+					color: #9ca3af;
+				}
+			</style>';
+		} );
+	}
+
 	public function assets( string $hook ): void {
 		// Only enqueue on Counter's own admin pages.
 		if ( strpos( $hook, 'counter' ) === false ) return;
+
+		// Enqueue redesigned admin styles
+		wp_register_style( 'counter-admin-redesign', COUNTER_URL . 'assets/admin/admin-redesign.css', [], COUNTER_VERSION );
+		wp_enqueue_style( 'counter-admin-redesign' );
 
 		wp_register_style( 'counter-admin', COUNTER_URL . 'assets/admin/admin.css', [], COUNTER_VERSION );
 		wp_enqueue_style( 'counter-admin' );
