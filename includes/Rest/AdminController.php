@@ -178,6 +178,7 @@ final class AdminController {
 		$total = (int) ( $countStmt->fetch()['c'] ?? 0 );
 
 		$offset = ( $page - 1 ) * $per;
+		// SQLite doesn't support binding LIMIT/OFFSET, use literal values
 		$stmt = $pdo->prepare(
 			"SELECT id, uuid, slug, title, status, has_variants, is_shippable,
 			        is_digital, is_pod, track_inventory,
@@ -185,10 +186,8 @@ final class AdminController {
 			        primary_image_id, created_at, updated_at
 			   FROM products $where
 			   ORDER BY $sort $order
-			   LIMIT :per OFFSET :offset"
+			   LIMIT $per OFFSET $offset"
 		);
-		$stmt->bindValue( ':per', $per, \PDO::PARAM_INT );
-		$stmt->bindValue( ':offset', $offset, \PDO::PARAM_INT );
 		$stmt->execute( $bind );
 		$rows = $stmt->fetchAll();
 
@@ -446,6 +445,7 @@ final class AdminController {
 		$total = (int) ( $countStmt->fetch()['c'] ?? 0 );
 
 		$offset = ( $page - 1 ) * $per;
+		// SQLite doesn't support binding LIMIT/OFFSET, use literal values
 		$stmt = $pdo->prepare(
 			"SELECT id, number, user_id, email, currency, status,
 			        subtotal, shipping_total, tax_total, discount_total, grand_total, refunded_total,
@@ -453,10 +453,8 @@ final class AdminController {
 			        paid_at, created_at, updated_at
 			   FROM orders $where
 			   ORDER BY $sort $order
-			   LIMIT :per OFFSET :offset"
+			   LIMIT $per OFFSET $offset"
 		);
-		$stmt->bindValue( ':per', $per, \PDO::PARAM_INT );
-		$stmt->bindValue( ':offset', $offset, \PDO::PARAM_INT );
 		$stmt->execute( $bind );
 		$rows = $stmt->fetchAll();
 
