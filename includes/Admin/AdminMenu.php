@@ -174,7 +174,7 @@ final class AdminMenu {
 
 	public function assets( string $hook ): void {
 		// Only enqueue on Counter's own admin pages.
-		if ( strpos( $hook, 'shop' ) === false ) return;
+		if ( strpos( $hook, 'counter' ) === false ) return;
 
 		wp_register_style( 'counter-admin', COUNTER_URL . 'assets/admin/admin.css', [], COUNTER_VERSION );
 		wp_enqueue_style( 'counter-admin' );
