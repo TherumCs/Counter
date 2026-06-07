@@ -175,20 +175,19 @@ final class ComprehensiveWooImporter {
 				if ( ! is_wp_error( $terms ) && is_array( $terms ) ) {
 					foreach ( $terms as $term ) {
 						// Check if already imported
-						$check = $pdo->prepare( 'SELECT id FROM attribute_values WHERE attribute_id = :attr_id AND value = :value' );
-						$check->execute( [ ':attr_id' => $attr_id, ':value' => $term->name ] );
+						$check = $pdo->prepare( 'SELECT id FROM attribute_values WHERE attribute_id = :attr_id AND slug = :slug' );
+						$check->execute( [ ':attr_id' => $attr_id, ':slug' => $term->slug ] );
 						if ( $check->fetch() ) continue;
 
 						$val_stmt = $pdo->prepare( <<<SQL
-							INSERT INTO attribute_values (attribute_id, value, created_at, updated_at)
-							VALUES (:attr_id, :value, :created, :updated)
+							INSERT INTO attribute_values (attribute_id, slug, value, position)
+							VALUES (:attr_id, :slug, :value, 0)
 						SQL );
 
 						$val_stmt->execute( [
-							':attr_id'  => $attr_id,
-							':value'    => $term->name,
-							':created'  => time(),
-							':updated'  => time(),
+							':attr_id' => $attr_id,
+							':slug'    => $term->slug,
+							':value'   => $term->name,
 						] );
 					}
 				}
