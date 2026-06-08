@@ -249,8 +249,12 @@ final class AdminController {
 
 		foreach ( $rows as &$r ) {
 			$attachment_id = (int) ( $r['primary_image_id'] ?: ( $slug_to_image[ $r['slug'] ] ?? 0 ) );
+			// `medium_large` (~768px) so grid-view cards stay sharp on
+			// retina displays (cards are ~220px CSS = 440px physical).
+			// The list view's 60px thumbnails downscale fine from the
+			// same source — no need to send two URLs.
 			$r['image_url'] = $attachment_id
-				? (string) wp_get_attachment_image_url( $attachment_id, 'thumbnail' )
+				? (string) wp_get_attachment_image_url( $attachment_id, 'medium_large' )
 				: null;
 		}
 
