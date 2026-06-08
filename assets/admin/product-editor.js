@@ -35,7 +35,22 @@ function api( path, opts ) {
 	return fetch( REST + path, Object.assign( {
 		credentials: 'same-origin',
 		headers: { 'X-WP-Nonce': NONCE, 'Content-Type': 'application/json' },
-	}, opts || {} ) ).then( r => r.json() );
+	}, opts || {} ) ).then( async r => {
+		// Always try to parse JSON, but if the server returned non-2xx
+		// surface that as a thrown error so the drawer's `Loading…` state
+		// resolves into a visible error instead of hanging forever.
+		const text = await r.text();
+		let body;
+		try { body = text ? JSON.parse( text ) : {}; }
+		catch ( _ ) { throw new Error( `Server returned ${ r.status } with non-JSON body.` ); }
+		if ( ! r.ok ) {
+			const msg = body && body.message ? body.message
+				: body && body.error && body.error.message ? body.error.message
+				: `Server returned ${ r.status }.`;
+			throw new Error( msg );
+		}
+		return body;
+	} );
 }
 
 const TABS = [
@@ -84,10 +99,12 @@ function Drawer() {
 			setDirty( {} );
 			setSavedAt( null );
 			setError( '' );
-			api( 'products/' + id ).then( p => {
-				if ( p.error ) setError( p.error.message || 'Could not load product.' );
-				else setProduct( p );
-			} );
+			api( 'products/' + id )
+				.then( p => {
+					if ( p.error ) setError( p.error.message || 'Could not load product.' );
+					else setProduct( p );
+				} )
+				.catch( e => setError( e.message || 'Could not load product.' ) );
 		};
 		document.addEventListener( 'counter:open-product', onOpen );
 		return () => document.removeEventListener( 'counter:open-product', onOpen );
@@ -190,7 +207,11 @@ function Drawer() {
 			</nav>
 
 			<div class="counter-pe__body">
-				${ product ? renderTab( tab, product, update ) : html`<div class="counter-pe__loading">Loading…</div>` }
+				${ product
+					? renderTab( tab, product, update )
+					: error
+						? html`<div class="counter-pe__loading counter-pe__loading--err">${ error }</div>`
+						: html`<div class="counter-pe__loading">Loading…</div>` }
 			</div>
 		</aside>
 	`;

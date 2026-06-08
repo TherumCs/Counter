@@ -834,8 +834,11 @@ final class AdminController {
 		);
 		$stmt->execute( [ ':pid' => $product_id ] );
 
+		// `variant_attribute_values` is a join table (variant_id × attribute_value_id) — the
+		// human-readable value lives on `attribute_values.value`. The attribute name comes
+		// from `attributes.name` via the FK back through `attribute_values`.
 		$attrStmt = $pdo->prepare(
-			'SELECT a.name AS attribute, vv.value AS value
+			'SELECT a.name AS attribute, av.value AS value
 			   FROM variant_attribute_values vv
 			   JOIN attribute_values av ON av.id = vv.attribute_value_id
 			   JOIN attributes a       ON a.id  = av.attribute_id

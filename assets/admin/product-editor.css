@@ -146,6 +146,14 @@
 	font: 500 12px var(--pe-mono);
 	letter-spacing: .04em; text-transform: uppercase;
 }
+.counter-pe__loading--err {
+	color: var(--pe-ac);
+	letter-spacing: 0;
+	text-transform: none;
+	font: 500 13px var(--pe-f);
+	max-width: 480px; margin: 0 auto;
+	line-height: 1.5;
+}
 
 .counter-pe-rows { display: flex; flex-direction: column; gap: 16px; }
 
