@@ -536,14 +536,9 @@ function VariantRow( { v } ) {
 	};
 	const centsToDollars = c => ( c === null || c === undefined ) ? '' : ( c / 100 ).toFixed( 2 );
 
-	// Attributes column is read-only — variant attributes (Color/Size/etc)
-	// define which combination this row IS, not a property the merchant
-	// edits inline. Rendered as small chips so the read-only intent is
-	// visually distinct from the editable cells.
-	const attrPairs = Object.entries( row.attributes || {} );
-
-	// Truncate the SKU input width but keep the full value in the title
-	// attribute so the merchant can hover to see the whole thing.
+	// Variant attributes (Color/Size/etc) are picked in the dedicated
+	// Attributes tab — they don't live in this row anymore. Five columns
+	// left: SKU, Price, Sale, Stock, Status.
 	return html`
 		<tr>
 			<td class="counter-pe-vt__sku">
@@ -552,11 +547,6 @@ function VariantRow( { v } ) {
 					onInput=${ e => setRow( { ...row, sku: e.target.value } ) }
 					onBlur=${ e => e.target.value !== ( v.sku || '' ) && save( 'sku', e.target.value ) }
 					placeholder="—" />
-			</td>
-			<td class="counter-pe-vt__attrs">
-				${ attrPairs.length
-					? attrPairs.map( ( [ k, val ] ) => html`<span class="counter-pe-vt__chip" title=${ k + ': ' + val }>${ val }</span>` )
-					: html`<span class="counter-pe-vt__none">—</span>` }
 			</td>
 			<td>
 				<input class="counter-pe-vt-in counter-pe-vt-in--mono" value=${ centsToDollars( row.regular_price ) }
@@ -587,9 +577,9 @@ function Tab_Variants ( { p } ) {
 	}
 	return html`
 		<div class="counter-pe-rows">
-			<p class="counter-pe-vt-hint">${ p.variants.length } variant${ p.variants.length === 1 ? '' : 's' }. SKU, price, sale, and stock edit inline (tab out to save). Attributes are read-only — they identify which combination this row is.</p>
+			<p class="counter-pe-vt-hint">${ p.variants.length } variant${ p.variants.length === 1 ? '' : 's' }. SKU, price, sale, and stock edit inline (tab out to save). Pick which colors / sizes / etc this product comes in over in the Attributes tab.</p>
 			<table class="counter-pe-vt">
-				<thead><tr><th>SKU</th><th>Attributes</th><th>Price</th><th>Sale</th><th>Stock</th><th></th></tr></thead>
+				<thead><tr><th>SKU</th><th>Price</th><th>Sale</th><th>Stock</th><th></th></tr></thead>
 				<tbody>
 					${ p.variants.map( v => html`<${ VariantRow } key=${ v.id } v=${ v } />` ) }
 				</tbody>
