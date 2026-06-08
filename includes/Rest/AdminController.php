@@ -885,7 +885,24 @@ final class AdminController {
 				}
 			} catch ( \Throwable $e ) {
 				// Older imports may not have the attribute join tables
-				// populated — skip gracefully so the row still renders.
+				// populated — fall through to the WC fallback below.
+			}
+
+			// Fallback: bare-imported variants have empty
+			// `variant_attribute_values`. If WooCommerce is around AND
+			// the variant id maps to a WC_Product_Variation, pull
+			// attributes from there so the column isn't dashes-only.
+			if ( ! $attrs && function_exists( 'wc_get_product' ) ) {
+				$wc_var = wc_get_product( (int) $row['id'] );
+				if ( $wc_var && $wc_var->is_type( 'variation' ) ) {
+					foreach ( $wc_var->get_attributes() as $tax => $value ) {
+						$label    = wc_attribute_label( $tax, $wc_var );
+						$display  = (string) ( taxonomy_exists( $tax )
+							? ( get_term_by( 'slug', $value, $tax )->name ?? $value )
+							: $value );
+						if ( $label && $display ) $attrs[ $label ] = $display;
+					}
+				}
 			}
 
 			$out[] = [

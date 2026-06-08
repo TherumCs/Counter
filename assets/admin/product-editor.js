@@ -412,15 +412,28 @@ function VariantRow( { v } ) {
 	};
 	const centsToDollars = c => ( c === null || c === undefined ) ? '' : ( c / 100 ).toFixed( 2 );
 
+	// Attributes column is read-only — variant attributes (Color/Size/etc)
+	// define which combination this row IS, not a property the merchant
+	// edits inline. Rendered as small chips so the read-only intent is
+	// visually distinct from the editable cells.
+	const attrPairs = Object.entries( row.attributes || {} );
+
+	// Truncate the SKU input width but keep the full value in the title
+	// attribute so the merchant can hover to see the whole thing.
 	return html`
 		<tr>
-			<td>
+			<td class="counter-pe-vt__sku">
 				<input class="counter-pe-vt-in" value=${ row.sku || '' }
+					title=${ row.sku || '' }
 					onInput=${ e => setRow( { ...row, sku: e.target.value } ) }
 					onBlur=${ e => e.target.value !== ( v.sku || '' ) && save( 'sku', e.target.value ) }
 					placeholder="—" />
 			</td>
-			<td>${ Object.values( row.attributes || {} ).join( ' / ' ) || '—' }</td>
+			<td class="counter-pe-vt__attrs">
+				${ attrPairs.length
+					? attrPairs.map( ( [ k, val ] ) => html`<span class="counter-pe-vt__chip" title=${ k + ': ' + val }>${ val }</span>` )
+					: html`<span class="counter-pe-vt__none">—</span>` }
+			</td>
 			<td>
 				<input class="counter-pe-vt-in counter-pe-vt-in--mono" value=${ centsToDollars( row.regular_price ) }
 					onBlur=${ e => save( 'price', dollarsToCents( e.target.value ) ) }
@@ -428,8 +441,8 @@ function VariantRow( { v } ) {
 			</td>
 			<td>
 				<input class="counter-pe-vt-in counter-pe-vt-in--mono" value=${ centsToDollars( row.sale_price ) }
-					onBlur=${ e => save( 'sale_price', dollarsToCents( e.target.value ) ) }
-					placeholder="0.00" />
+					onBlur=${ e => save( 'sale_price', e.target.value === '' ? null : dollarsToCents( e.target.value ) ) }
+					placeholder="—" />
 			</td>
 			<td>
 				<input class="counter-pe-vt-in counter-pe-vt-in--mono" type="number" value=${ row.stock_qty ?? '' }
@@ -450,7 +463,7 @@ function Tab_Variants ( { p } ) {
 	}
 	return html`
 		<div class="counter-pe-rows">
-			<p class="counter-pe-vt-hint">${ p.variants.length } variant${ p.variants.length === 1 ? '' : 's' }. Click any cell to edit; changes save when you tab out.</p>
+			<p class="counter-pe-vt-hint">${ p.variants.length } variant${ p.variants.length === 1 ? '' : 's' }. SKU, price, sale, and stock edit inline (tab out to save). Attributes are read-only — they identify which combination this row is.</p>
 			<table class="counter-pe-vt">
 				<thead><tr><th>SKU</th><th>Attributes</th><th>Price</th><th>Sale</th><th>Stock</th><th></th></tr></thead>
 				<tbody>

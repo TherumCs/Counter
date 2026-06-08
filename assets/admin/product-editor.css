@@ -286,13 +286,48 @@ select.counter-pe-in { cursor: pointer; }
 	width: 100%; border-collapse: collapse;
 	background: var(--pe-sf); border: 1px solid var(--pe-bd);
 	border-radius: var(--pe-r); overflow: hidden;
+	table-layout: fixed; /* honors per-column widths below */
 }
 .counter-pe-vt th, .counter-pe-vt td {
 	padding: 10px 12px;
 	text-align: left;
 	font: 13px var(--pe-f);
 	border-bottom: 1px solid var(--pe-bd);
+	overflow: hidden;
 }
+/* Fixed column widths: prevents the SKU from eating the whole row when
+   long stored values (e.g. WC-imported "Product Name Color Size 17768..."
+   skus) push other cells off-screen. */
+.counter-pe-vt th:nth-child(1), .counter-pe-vt td:nth-child(1) { width: 22%; }   /* SKU */
+.counter-pe-vt th:nth-child(2), .counter-pe-vt td:nth-child(2) { width: 28%; }   /* Attributes */
+.counter-pe-vt th:nth-child(3), .counter-pe-vt td:nth-child(3) { width: 14%; }   /* Price */
+.counter-pe-vt th:nth-child(4), .counter-pe-vt td:nth-child(4) { width: 14%; }   /* Sale */
+.counter-pe-vt th:nth-child(5), .counter-pe-vt td:nth-child(5) { width: 12%; }   /* Stock */
+.counter-pe-vt th:nth-child(6), .counter-pe-vt td:nth-child(6) { width: 10%; }   /* Status */
+
+/* SKU cell: long stored SKUs truncate with ellipsis; hover the input
+   to read the full value via its title attribute. */
+.counter-pe-vt__sku .counter-pe-vt-in {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+/* Attribute chips — read-only badges. The whole column is display-only;
+   variant attributes describe WHICH variant this row is, they're not
+   editable inline. */
+.counter-pe-vt__attrs       { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.counter-pe-vt__chip {
+	display: inline-block;
+	padding: 2px 8px;
+	font: 600 11px var(--pe-f);
+	background: var(--pe-sf-2);
+	color: var(--pe-tx-2);
+	border: 1px solid var(--pe-bd);
+	border-radius: 999px;
+	white-space: nowrap;
+}
+.counter-pe-vt__none        { color: var(--pe-tx-3); font: 12px var(--pe-mono); }
 .counter-pe-vt th {
 	background: var(--pe-sf-2);
 	font: 600 11px var(--pe-mono);
