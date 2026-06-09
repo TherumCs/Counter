@@ -266,21 +266,26 @@ final class AdminMenu {
 	 * @return array<int,array<string,mixed>>
 	 */
 	public function injectIntoStoreSection( array $items ): array {
+		// Icon keys must exist in Therum's `therum_i()` registry — picking
+		// from the same vocabulary the rest of the sidebar uses so the SVGs
+		// match weight + stroke. (`box`/`receipt`/`tag`/`upload`/`card`/`page`
+		// don't exist there — `products`/`orders`/`tags`/`import`/`payments`
+		// /`pages` do.)
 		$counter_pages = [
-			[ 'label' => 'Dashboard',     'icon' => 'home',     'url' => 'admin.php?page=counter',                 'match' => 'page=counter' ],
-			[ 'label' => 'Products',      'icon' => 'box',      'url' => 'admin.php?page=counter-products',        'match' => 'page=counter-products' ],
-			[ 'label' => 'Orders',        'icon' => 'receipt',  'url' => 'admin.php?page=counter-orders',          'match' => 'page=counter-orders' ],
-			[ 'label' => 'Customers',     'icon' => 'users',    'url' => 'admin.php?page=counter-customers',       'match' => 'page=counter-customers' ],
-			[ 'label' => 'Categories',    'icon' => 'tag',      'url' => 'admin.php?page=counter-categories',      'match' => 'page=counter-categories' ],
-			[ 'label' => 'Import/Export', 'icon' => 'upload',   'url' => 'admin.php?page=counter-import',          'match' => 'page=counter-import' ],
-			[ 'label' => 'Payments',      'icon' => 'card',     'url' => 'admin.php?page=counter-studio-pay',      'match' => 'page=counter-studio-pay' ],
-			[ 'label' => 'Settings',      'icon' => 'settings', 'url' => 'admin.php?page=counter-settings',        'match' => 'page=counter-settings' ],
+			[ 'label' => 'Dashboard',     'icon' => 'home',      'url' => 'admin.php?page=counter',                 'match' => 'page=counter' ],
+			[ 'label' => 'Products',      'icon' => 'products',  'url' => 'admin.php?page=counter-products',        'match' => 'page=counter-products' ],
+			[ 'label' => 'Orders',        'icon' => 'orders',    'url' => 'admin.php?page=counter-orders',          'match' => 'page=counter-orders' ],
+			[ 'label' => 'Customers',     'icon' => 'customers', 'url' => 'admin.php?page=counter-customers',       'match' => 'page=counter-customers' ],
+			[ 'label' => 'Categories',    'icon' => 'tags',      'url' => 'admin.php?page=counter-categories',      'match' => 'page=counter-categories' ],
+			[ 'label' => 'Import/Export', 'icon' => 'import',    'url' => 'admin.php?page=counter-import',          'match' => 'page=counter-import' ],
+			[ 'label' => 'Payments',      'icon' => 'payments',  'url' => 'admin.php?page=counter-studio-pay',      'match' => 'page=counter-studio-pay' ],
+			[ 'label' => 'Settings',      'icon' => 'settings',  'url' => 'admin.php?page=counter-settings',        'match' => 'page=counter-settings' ],
 		];
 		if ( \Counter\Mode::loadsPureBuilder() ) {
 			// Insert Pages between Categories and Import/Export so the builder
 			// surfaces next to the catalog tools it edits.
 			array_splice( $counter_pages, 5, 0, [
-				[ 'label' => 'Pages', 'icon' => 'page', 'url' => 'admin.php?page=counter-pages', 'match' => 'page=counter-pages' ],
+				[ 'label' => 'Pages', 'icon' => 'pages', 'url' => 'admin.php?page=counter-pages', 'match' => 'page=counter-pages' ],
 			] );
 		}
 
