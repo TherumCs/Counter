@@ -41,34 +41,77 @@ final class AdminMenu {
 		add_action( 'admin_menu',   [ $this, 'organizeMenu' ], 25 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'assets' ] );
 
+		// When Therum OS is the host, Counter IS the store — its pages
+		// belong under Therum's "Store" sidebar section, not as a separate
+		// top-level "Counter" entry. Hook the filter that owns Therum's
+		// sidebar nav to inject the Counter routes.
+		if ( self::isTherumHost() ) {
+			add_filter( 'therum_admin_nav_items', [ $this, 'injectIntoStoreSection' ], 20 );
+		}
+
 		// Dashboard registers its own meta-box hooks on its screen load.
 		$this->dashboard->register();
 		// Categories registers admin-post handlers for create/delete.
 		$this->categories->register();
 	}
 
+	/**
+	 * True when Therum OS is loaded as the admin host. Counter then hides
+	 * its top-level WP sidebar entry and surfaces its pages under Therum's
+	 * Store section instead. Standalone (no Therum) keeps the classic
+	 * top-level menu.
+	 */
+	public static function isTherumHost(): bool {
+		return defined( 'THERUM_OS_VERSION' );
+	}
+
 	public function menus(): void {
-		add_menu_page(
-			page_title: __( 'Counter by Therum', 'counter' ),
-			menu_title: __( 'Counter', 'counter' ),
-			capability: 'manage_options',
-			menu_slug:   'counter',
-			callback:   [ $this->dashboard, 'render' ],
-			icon_url:   'dashicons-cart',
-			position:   58,
-		);
+		// Under Therum the top-level "Counter" entry is suppressed — every
+		// Counter page is registered as a hidden submenu (parent_slug: null)
+		// so URLs still resolve but nothing appears in WP's sidebar. The
+		// Therum sidebar surfaces these via injectIntoStoreSection().
+		$therum_host = self::isTherumHost();
+
+		if ( ! $therum_host ) {
+			// Standalone WP: classic top-level "Counter" menu.
+			add_menu_page(
+				page_title: __( 'Counter by Therum', 'counter' ),
+				menu_title: __( 'Counter', 'counter' ),
+				capability: 'manage_options',
+				menu_slug:   'counter',
+				callback:   [ $this->dashboard, 'render' ],
+				icon_url:   'dashicons-cart',
+				position:   58,
+			);
+
+			add_submenu_page(
+				parent_slug: 'counter',
+				page_title:  __( 'Dashboard', 'counter' ),
+				menu_title:  __( 'Dashboard', 'counter' ),
+				capability:  'manage_options',
+				menu_slug:   'counter',
+				callback:    [ $this->dashboard, 'render' ],
+			);
+		} else {
+			// Therum host: register the Dashboard page hidden so
+			// ?page=counter still resolves to the dashboard render.
+			add_submenu_page(
+				parent_slug: null,
+				page_title:  __( 'Dashboard', 'counter' ),
+				menu_title:  __( 'Dashboard', 'counter' ),
+				capability:  'manage_options',
+				menu_slug:   'counter',
+				callback:    [ $this->dashboard, 'render' ],
+			);
+		}
+
+		// Resolve the parent slug for every "visible" Counter page based on
+		// host context. Therum host → null (hidden from WP sidebar);
+		// standalone → 'counter' (under the top-level entry).
+		$parent = $therum_host ? null : 'counter';
 
 		add_submenu_page(
-			parent_slug: 'counter',
-			page_title:  __( 'Dashboard', 'counter' ),
-			menu_title:  __( 'Dashboard', 'counter' ),
-			capability:  'manage_options',
-			menu_slug:   'counter',
-			callback:    [ $this->dashboard, 'render' ],
-		);
-
-		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Settings', 'counter' ),
 			menu_title:  __( 'Settings', 'counter' ),
 			capability:  'manage_options',
@@ -77,7 +120,7 @@ final class AdminMenu {
 		);
 
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Products', 'counter' ),
 			menu_title:  __( 'Products', 'counter' ),
 			capability:  'manage_options',
@@ -86,7 +129,7 @@ final class AdminMenu {
 		);
 
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Orders', 'counter' ),
 			menu_title:  __( 'Orders', 'counter' ),
 			capability:  'manage_options',
@@ -98,7 +141,7 @@ final class AdminMenu {
 		// in one page with sub-tabs. Replaces the old separate "Import"
 		// and "Order I/O" entries.
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Import / Export', 'counter' ),
 			menu_title:  __( 'Import / Export', 'counter' ),
 			capability:  'manage_options',
@@ -107,7 +150,7 @@ final class AdminMenu {
 		);
 
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Customers', 'counter' ),
 			menu_title:  __( 'Customers', 'counter' ),
 			capability:  'manage_options',
@@ -115,7 +158,7 @@ final class AdminMenu {
 			callback:    [ $this->customers, 'render' ],
 		);
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Categories', 'counter' ),
 			menu_title:  __( 'Categories', 'counter' ),
 			capability:  'manage_options',
@@ -137,7 +180,7 @@ final class AdminMenu {
 			},
 		);
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Payments', 'counter' ),
 			menu_title:  __( 'Payments', 'counter' ),
 			capability:  'manage_options',
@@ -147,7 +190,7 @@ final class AdminMenu {
 		// Updates is gated on `manage_options` (full WP admin) since
 		// it can rewrite the plugin filesystem.
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Updates', 'counter' ),
 			menu_title:  __( 'Updates', 'counter' ),
 			capability:  'manage_options',
@@ -160,7 +203,7 @@ final class AdminMenu {
 		// sibling slugs stay registered (parent_slug:null) so existing
 		// bookmarks and the sub-tab links keep resolving.
 		add_submenu_page(
-			parent_slug: 'counter',
+			parent_slug: $parent,
 			page_title:  __( 'Order', 'counter' ),
 			menu_title:  __( 'Order', 'counter' ),
 			capability:  'manage_options',
@@ -189,7 +232,7 @@ final class AdminMenu {
 		// Pure page builder — only when the active mode wants it.
 		if ( \Counter\Mode::loadsPureBuilder() ) {
 			add_submenu_page(
-				parent_slug: 'counter',
+				parent_slug: $parent,
 				page_title:  __( 'Pages', 'counter' ),
 				menu_title:  __( 'Pages', 'counter' ),
 				capability:  'manage_options',
@@ -211,11 +254,70 @@ final class AdminMenu {
 	}
 
 	/**
+	 * Inject Counter's pages into Therum's Store sidebar section. Called via
+	 * the `therum_admin_nav_items` filter — Therum renders the resulting
+	 * structure as the left sidebar.
+	 *
+	 * If a 'store' section already exists (e.g. Woo bridge added one), we
+	 * append Counter's pages. Otherwise we create the section ourselves so
+	 * Counter standalone-on-Therum still gets a Store nav.
+	 *
+	 * @param array<int,array<string,mixed>> $items
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function injectIntoStoreSection( array $items ): array {
+		$counter_pages = [
+			[ 'label' => 'Dashboard',     'icon' => 'home',     'url' => 'admin.php?page=counter',                 'match' => 'page=counter' ],
+			[ 'label' => 'Products',      'icon' => 'box',      'url' => 'admin.php?page=counter-products',        'match' => 'page=counter-products' ],
+			[ 'label' => 'Orders',        'icon' => 'receipt',  'url' => 'admin.php?page=counter-orders',          'match' => 'page=counter-orders' ],
+			[ 'label' => 'Customers',     'icon' => 'users',    'url' => 'admin.php?page=counter-customers',       'match' => 'page=counter-customers' ],
+			[ 'label' => 'Categories',    'icon' => 'tag',      'url' => 'admin.php?page=counter-categories',      'match' => 'page=counter-categories' ],
+			[ 'label' => 'Import/Export', 'icon' => 'upload',   'url' => 'admin.php?page=counter-import',          'match' => 'page=counter-import' ],
+			[ 'label' => 'Payments',      'icon' => 'card',     'url' => 'admin.php?page=counter-studio-pay',      'match' => 'page=counter-studio-pay' ],
+			[ 'label' => 'Settings',      'icon' => 'settings', 'url' => 'admin.php?page=counter-settings',        'match' => 'page=counter-settings' ],
+		];
+		if ( \Counter\Mode::loadsPureBuilder() ) {
+			// Insert Pages between Categories and Import/Export so the builder
+			// surfaces next to the catalog tools it edits.
+			array_splice( $counter_pages, 5, 0, [
+				[ 'label' => 'Pages', 'icon' => 'page', 'url' => 'admin.php?page=counter-pages', 'match' => 'page=counter-pages' ],
+			] );
+		}
+
+		// Look for an existing Store section. Theme/host may have created
+		// one already (Woo bridge, custom mu-plugin); we append rather than
+		// replace so we don't clobber sibling integrations.
+		foreach ( $items as &$section ) {
+			if ( ( $section['id'] ?? '' ) === 'store' ) {
+				$section['items'] = array_merge( $section['items'] ?? [], $counter_pages );
+				return $items;
+			}
+		}
+		unset( $section );
+
+		// No Store section yet — create one. Therum's renderer expects
+		// id/label/icon/items at minimum.
+		$items[] = [
+			'id'    => 'store',
+			'label' => 'Store',
+			'icon'  => 'store',
+			'items' => $counter_pages,
+		];
+		return $items;
+	}
+
+	/**
 	 * Organize menu items into sections with headers.
 	 * Called after add_submenu_page() to restructure the menu.
+	 *
+	 * Skips entirely under Therum host — there's no top-level "counter"
+	 * submenu group to organize there (pages are hidden, surfaced via
+	 * `therum_admin_nav_items` instead).
 	 */
 	public function organizeMenu(): void {
 		global $submenu;
+
+		if ( self::isTherumHost() ) return;
 
 		if ( ! isset( $submenu['counter'] ) ) {
 			return;
@@ -382,7 +484,7 @@ final class AdminMenu {
 		// Taxonomy ordering pages — drag-drop term reordering
 		if ( str_contains( $hook, 'counter-categories-order' ) || str_contains( $hook, 'counter-variants-order' ) || str_contains( $hook, 'counter-taxonomies' ) ) {
 			// Load Sortable.js from CDN
-			wp_register_script( 'sortable', 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js', [], '1.15.0', [ 'strategy' => 'defer' ] );
+			wp_register_script( 'sortable', 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js', [], '1.15.0', [ 'strategy' => 'defer' ] );
 
 			wp_register_style(  'counter-taxonomy-order', COUNTER_URL . 'assets/admin/taxonomy-order.css', [], COUNTER_VERSION );
 			wp_register_script( 'counter-taxonomy-order', COUNTER_URL . 'assets/admin/taxonomy-order.js', [ 'sortable' ], COUNTER_VERSION, [ 'strategy' => 'defer' ] );

@@ -31,6 +31,7 @@ namespace Counter\Services;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+
 final class CategoryRouter {
 
 	public const TAXONOMY = 'product_cat';
